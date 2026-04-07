@@ -3846,6 +3846,44 @@
       }
 
       /*
+        Пробует несколько путей к одной и той же картинке.
+        Это полезно для GitHub Pages, если часть файлов уже лежит в assets,
+        а часть ещё осталась в старых папках с русскими именами.
+      */
+      function applyImageFallbacks(imageNode, sources, onReady, onEmpty) {
+        const queue = sources.filter(Boolean);
+
+        if (!queue.length) {
+          imageNode.removeAttribute("src");
+          imageNode.onerror = null;
+          imageNode.onload = null;
+          onEmpty?.();
+          return;
+        }
+
+        let index = 0;
+        imageNode.onerror = () => {
+          index += 1;
+          if (index >= queue.length) {
+            imageNode.onerror = null;
+            imageNode.onload = null;
+            imageNode.removeAttribute("src");
+            onEmpty?.();
+            return;
+          }
+          imageNode.src = queue[index];
+        };
+
+        imageNode.onload = () => {
+          imageNode.onerror = null;
+          imageNode.onload = null;
+          onReady?.();
+        };
+
+        imageNode.src = queue[index];
+      }
+
+      /*
         Обновляет одну карточку из блока актуального.
         index = "1", "2" или "3"
       */
@@ -3866,8 +3904,23 @@
 
         const imageSrc = (config[`newsImage${index}`] || "").trim();
         if (imageSrc) {
-          imageNode.src = imageSrc;
-          cardNode.classList.add("story-card--ready");
+          const fallbackSources = [
+            imageSrc,
+            `assets/news/promo-${index}.png`,
+            `фото акции /АКЦИЯ ${index}.png`,
+            `фото акции/АКЦИЯ ${index}.png`,
+          ];
+
+          applyImageFallbacks(
+            imageNode,
+            fallbackSources,
+            () => {
+              cardNode.classList.add("story-card--ready");
+            },
+            () => {
+              cardNode.classList.remove("story-card--ready");
+            },
+          );
         } else {
           imageNode.removeAttribute("src");
           cardNode.classList.remove("story-card--ready");
