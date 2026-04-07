@@ -2168,7 +2168,7 @@
           <img
             class="brand__icon"
             id="brandIcon"
-            src="лого/Group 17.png"
+            src="assets/logo/group-17.png"
             alt="Иконка GLAIRE"
           />
           <div class="brand__text">
@@ -2384,7 +2384,7 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="фото помещения/IMG_1407.jpg"
+                  src="assets/studio/studio-1.jpg"
                   alt="Интерьер студии GLAIRE"
                 />
               </div>
@@ -2464,7 +2464,7 @@
                   <strong data-edit="telegramQrTitle">Telegram</strong>
                   <img
                     id="telegramQr"
-                    src="qr/telegram qr.png"
+                    src="assets/qr/telegram-qr.png"
                     alt="QR Telegram"
                     class="qr-code"
                     loading="lazy"
@@ -2479,7 +2479,7 @@
                   <strong data-edit="vkQrTitle">VK</strong>
                   <img
                     id="vkQr"
-                    src="qr/vk qr.png"
+                    src="assets/qr/vk-qr.png"
                     alt="QR VK"
                     class="qr-code"
                     loading="lazy"
@@ -2598,7 +2598,7 @@
               <div class="master-photo-shell" id="masterPhotoShell">
                 <img
                   id="masterPhoto"
-                  src="фото мастера/IMG_0228.jpg"
+                  src="assets/master/master-photo.jpg"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
                 />
@@ -2950,7 +2950,7 @@
               <div class="works-slider__viewport" id="worksSliderViewport">
                 <img
                   id="worksSlideImage"
-                  src="фото моделей/IMG_2860.jpg"
+                  src="assets/models/model-1.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
                 />
@@ -3169,7 +3169,7 @@
                 <img
                   class="consult-qr__image"
                   id="consultQr"
-                  src="qr/qr консультация чат.png"
+                  src="assets/qr/consult-chat.png"
                   alt="QR для консультации GLAIRE"
                   loading="lazy"
                 />
@@ -3325,14 +3325,14 @@
         bookUrl: "https://dikidi.net/1954293?p=1.pi-ssm",
         mapEmbedUrl:
           "https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14",
-        brandImage: "лого/Group 17.png",
+        brandImage: "assets/logo/group-17.png",
         brandSub: "haircare studio | Perm",
-        heroSlide1: "фото помещения/IMG_1407.jpg",
-        heroSlide2: "фото помещения/IMG_1415.jpg",
-        masterPhoto: "фото мастера/IMG_0228.jpg",
-        consultQr: "qr/qr консультация чат.png",
-        telegramQr: "qr/telegram qr.png",
-        vkQr: "qr/vk qr.png",
+        heroSlide1: "assets/studio/studio-1.jpg",
+        heroSlide2: "assets/studio/studio-2.jpg",
+        masterPhoto: "assets/master/master-photo.jpg",
+        consultQr: "assets/qr/consult-chat.png",
+        telegramQr: "assets/qr/telegram-qr.png",
+        vkQr: "assets/qr/vk-qr.png",
         navInfoLabel: "Консультация",
         navBookLabel: "Записаться",
 
@@ -3495,17 +3495,17 @@
         newsTitle1: "Свободные окна на ближайшие дни",
         newsText1:
           "Спокойный формат для тех, кто давно хотел записаться и ищет удобное время без долгого ожидания.",
-        newsImage1: "фото акции /АКЦИЯ 1.png",
+        newsImage1: "assets/news/promo-1.png",
         newsBadge2: "Уход",
         newsTitle2: "Уход и восстановление после окрашивания",
         newsText2:
           "Подходит, если хочется вернуть волосам более собранный вид, плотность и мягкий блеск без перегруженного домашнего ухода.",
-        newsImage2: "фото акции /АКЦИЯ 2.png",
+        newsImage2: "assets/news/promo-2.png",
         newsBadge3: "Контакт",
         newsTitle3: "Консультация перед первым визитом",
         newsText3:
           "Если есть сомнения по оттенку, длине, уходу или прошлым окрашиваниям, сначала можно просто написать и уточнить детали.",
-        newsImage3: "фото акции /АКЦИЯ 3.png",
+        newsImage3: "assets/news/promo-3.png",
 
         /* Блок консультации перед записью */
         consultEyebrow: "Если хочется сначала уточнить",
@@ -3566,6 +3566,38 @@
             ...CONFIG_DEFAULT,
             ...parsedConfig,
           };
+
+          /*
+            Подмена старых путей картинок на новые безопасные пути из assets.
+            Это помогает, если раньше в браузере уже сохранились значения
+            с русскими папками, пробелами или нестабильными именами.
+          */
+          const legacyAssetMap = {
+            "лого/Group 17.png": CONFIG_DEFAULT.brandImage,
+            "фото помещения/IMG_1407.jpg": CONFIG_DEFAULT.heroSlide1,
+            "фото помещения/IMG_1415.jpg": CONFIG_DEFAULT.heroSlide2,
+            "фото мастера/IMG_0228.jpg": CONFIG_DEFAULT.masterPhoto,
+            "qr/qr консультация чат.png": CONFIG_DEFAULT.consultQr,
+            "qr/telegram qr.png": CONFIG_DEFAULT.telegramQr,
+            "qr/vk qr.png": CONFIG_DEFAULT.vkQr,
+            "qr - код/qr консультация чат.png": CONFIG_DEFAULT.consultQr,
+            "qr - код/telegram qr.png": CONFIG_DEFAULT.telegramQr,
+            "qr - код/vk qr.png": CONFIG_DEFAULT.vkQr,
+            "фото акции /АКЦИЯ 1.png": CONFIG_DEFAULT.newsImage1,
+            "фото акции /АКЦИЯ 2.png": CONFIG_DEFAULT.newsImage2,
+            "фото акции /АКЦИЯ 3.png": CONFIG_DEFAULT.newsImage3,
+            "фото акции/АКЦИЯ 1.png": CONFIG_DEFAULT.newsImage1,
+            "фото акции/АКЦИЯ 2.png": CONFIG_DEFAULT.newsImage2,
+            "фото акции/АКЦИЯ 3.png": CONFIG_DEFAULT.newsImage3,
+          };
+
+          Object.keys(legacyAssetMap).forEach((oldPath) => {
+            Object.keys(nextConfig).forEach((key) => {
+              if (nextConfig[key] === oldPath) {
+                nextConfig[key] = legacyAssetMap[oldPath];
+              }
+            });
+          });
 
           /*
             Защитная подстановка для QR консультации.
@@ -4176,15 +4208,15 @@
 
       const WORKS_SLIDES = [
         {
-          src: "фото моделей/IMG_2860.jpg",
+          src: "assets/models/model-1.jpg",
           alt: "Фото модели GLAIRE 1",
         },
         {
-          src: "фото моделей/IMG_2858.jpg",
+          src: "assets/models/model-2.jpg",
           alt: "Фото модели GLAIRE 2",
         },
         {
-          src: "фото моделей/IMG_2861.jpg",
+          src: "assets/models/model-3.jpg",
           alt: "Фото модели GLAIRE 3",
         },
       ];
@@ -4467,17 +4499,17 @@
             {
               key: "brandImage",
               label: "Логотип / иконка бренда",
-              placeholder: "лого/Group 17.png",
+              placeholder: "assets/logo/group-17.png",
             },
             {
               key: "heroSlide1",
               label: "Hero-слайд 1",
-              placeholder: "фото помещения/IMG_1407.jpg",
+              placeholder: "assets/studio/studio-1.jpg",
             },
             {
               key: "heroSlide2",
               label: "Hero-слайд 2",
-              placeholder: "фото помещения/IMG_1415.jpg",
+              placeholder: "assets/studio/studio-2.jpg",
             },
             {
               key: "masterPhoto",
@@ -4487,17 +4519,17 @@
             {
               key: "consultQr",
               label: "QR для консультации",
-              placeholder: "qr/qr консультация чат.png",
+              placeholder: "assets/qr/consult-chat.png",
             },
             {
               key: "telegramQr",
               label: "QR Telegram",
-              placeholder: "qr/telegram qr.png",
+              placeholder: "assets/qr/telegram-qr.png",
             },
             {
               key: "vkQr",
               label: "QR VK",
-              placeholder: "qr/vk qr.png",
+              placeholder: "assets/qr/vk-qr.png",
             },
           ],
         },
