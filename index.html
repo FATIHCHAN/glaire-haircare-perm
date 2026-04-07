@@ -3446,13 +3446,13 @@
         contentText1:
           "Короткий ролик, который помогает почувствовать пространство, темп и настроение визита ещё до записи.",
         contentVideo1:
-          "контент видео/IMG_3854.MOV--online-audio-convert.com.mp4",
+          "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775594089/IMG_3854.MOV--online-audio-convert.com.mp4_sswt4d.mp4",
         contentBadge2: "Совет",
         contentTitle2: "Полезный уходовый ориентир",
         contentText2:
           "Формат для простых советов: как поддерживать результат, что важно после окрашивания и на что смотреть дома.",
         contentVideo2:
-          "контент видео/1511384747569664428.MP4--online-audio-convert.com.mp4",
+          "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775594091/1511384747569664428.MP4--online-audio-convert.com.mp4_cbfxos.mp4",
         contentBadge3: "Результат",
         contentTitle3: "До, после и носибельность",
         contentText3:
@@ -3603,6 +3603,20 @@
           }
 
           if (!nextConfig.contentVideo2) {
+            nextConfig.contentVideo2 = CONFIG_DEFAULT.contentVideo2;
+          }
+
+          if (
+            nextConfig.contentVideo1 ===
+            "контент видео/IMG_3854.MOV--online-audio-convert.com.mp4"
+          ) {
+            nextConfig.contentVideo1 = CONFIG_DEFAULT.contentVideo1;
+          }
+
+          if (
+            nextConfig.contentVideo2 ===
+            "контент видео/1511384747569664428.MP4--online-audio-convert.com.mp4"
+          ) {
             nextConfig.contentVideo2 = CONFIG_DEFAULT.contentVideo2;
           }
 
