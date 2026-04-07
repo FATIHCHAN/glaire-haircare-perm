@@ -3555,6 +3555,68 @@
         ADMIN_QUERY_VALUE;
 
       /*
+        Список альтернативных путей к изображениям.
+        Это нужно, чтобы сайт одинаково работал и со старой структурой папок,
+        и с новой папкой assets после публикации на GitHub Pages.
+      */
+      const IMAGE_SOURCE_ALIASES = {
+        "assets/logo/group-17.png": ["лого/Group 17.png"],
+        "лого/Group 17.png": ["assets/logo/group-17.png"],
+
+        "assets/studio/studio-1.jpg": ["фото помещения/IMG_1407.jpg"],
+        "фото помещения/IMG_1407.jpg": ["assets/studio/studio-1.jpg"],
+        "assets/studio/studio-2.jpg": ["фото помещения/IMG_1415.jpg"],
+        "фото помещения/IMG_1415.jpg": ["assets/studio/studio-2.jpg"],
+
+        "assets/master/master-photo.jpg": ["фото мастера/IMG_0228.jpg"],
+        "фото мастера/IMG_0228.jpg": ["assets/master/master-photo.jpg"],
+
+        "assets/qr/consult-chat.png": [
+          "qr/qr консультация чат.png",
+          "qr - код/qr консультация чат.png",
+        ],
+        "qr/qr консультация чат.png": ["assets/qr/consult-chat.png"],
+        "qr - код/qr консультация чат.png": ["assets/qr/consult-chat.png"],
+
+        "assets/qr/telegram-qr.png": [
+          "qr/telegram qr.png",
+          "qr - код/telegram qr.png",
+        ],
+        "qr/telegram qr.png": ["assets/qr/telegram-qr.png"],
+        "qr - код/telegram qr.png": ["assets/qr/telegram-qr.png"],
+
+        "assets/qr/vk-qr.png": ["qr/vk qr.png", "qr - код/vk qr.png"],
+        "qr/vk qr.png": ["assets/qr/vk-qr.png"],
+        "qr - код/vk qr.png": ["assets/qr/vk-qr.png"],
+
+        "assets/models/model-1.jpg": ["фото моделей/IMG_2860.jpg"],
+        "фото моделей/IMG_2860.jpg": ["assets/models/model-1.jpg"],
+        "assets/models/model-2.jpg": ["фото моделей/IMG_2858.jpg"],
+        "фото моделей/IMG_2858.jpg": ["assets/models/model-2.jpg"],
+        "assets/models/model-3.jpg": ["фото моделей/IMG_2861.jpg"],
+        "фото моделей/IMG_2861.jpg": ["assets/models/model-3.jpg"],
+
+        "assets/news/promo-1.png": [
+          "фото акции /АКЦИЯ 1.png",
+          "фото акции/АКЦИЯ 1.png",
+        ],
+        "фото акции /АКЦИЯ 1.png": ["assets/news/promo-1.png"],
+        "фото акции/АКЦИЯ 1.png": ["assets/news/promo-1.png"],
+        "assets/news/promo-2.png": [
+          "фото акции /АКЦИЯ 2.png",
+          "фото акции/АКЦИЯ 2.png",
+        ],
+        "фото акции /АКЦИЯ 2.png": ["assets/news/promo-2.png"],
+        "фото акции/АКЦИЯ 2.png": ["assets/news/promo-2.png"],
+        "assets/news/promo-3.png": [
+          "фото акции /АКЦИЯ 3.png",
+          "фото акции/АКЦИЯ 3.png",
+        ],
+        "фото акции /АКЦИЯ 3.png": ["assets/news/promo-3.png"],
+        "фото акции/АКЦИЯ 3.png": ["assets/news/promo-3.png"],
+      };
+
+      /*
         Читает настройки из localStorage.
         Если сохранённых данных нет или JSON повреждён, используются дефолтные значения.
       */
@@ -3669,6 +3731,23 @@
           .filter(Boolean);
       }
 
+      /* Собирает список путей к одному и тому же файлу с учётом запасных вариантов */
+      function buildImageCandidateList(...values) {
+        const queue = [];
+        const seen = new Set();
+
+        function add(value) {
+          const src = String(value || "").trim();
+          if (!src || seen.has(src)) return;
+          seen.add(src);
+          queue.push(src);
+          (IMAGE_SOURCE_ALIASES[src] || []).forEach(add);
+        }
+
+        values.forEach(add);
+        return queue;
+      }
+
       /* Подставляет в DOM все тексты, связанные с data-edit */
       function applyTextBindings() {
         document.querySelectorAll("[data-edit]").forEach((node) => {
@@ -3690,12 +3769,12 @@
 
       /* Подставляет один и тот же путь в несколько изображений */
       function applyImageToIds(ids, value, fallbackValue) {
-        const nextSrc = (value || fallbackValue || "").trim();
+        const candidates = buildImageCandidateList(value, fallbackValue);
         ids.forEach((id) => {
           const node = document.getElementById(id);
           if (!node) return;
-          if (nextSrc) {
-            node.src = nextSrc;
+          if (candidates.length) {
+            applyImageFallbacks(node, candidates);
           } else {
             node.removeAttribute("src");
           }
@@ -3710,19 +3789,19 @@
         ];
         const nextSlides = [config.heroSlide1, config.heroSlide2]
           .map((src, index) => ({
-            src: (src || fallbackSlides[index] || "").trim(),
+            sources: buildImageCandidateList(src, fallbackSlides[index]),
             alt:
               index === 0
                 ? "Интерьер студии GLAIRE"
                 : "Пространство студии GLAIRE",
           }))
-          .filter((slide) => slide.src);
+          .filter((slide) => slide.sources.length);
 
         return nextSlides.length
           ? nextSlides
           : [
               {
-                src: CONFIG_DEFAULT.heroSlide1,
+                sources: buildImageCandidateList(CONFIG_DEFAULT.heroSlide1),
                 alt: "Интерьер студии GLAIRE",
               },
             ];
@@ -3835,11 +3914,23 @@
         const image = document.getElementById("masterPhoto");
         if (!shell || !image) return;
 
-        const nextSrc = (config.masterPhoto || "").trim();
-        shell.classList.toggle("is-empty", !nextSrc);
+        const candidates = buildImageCandidateList(
+          config.masterPhoto,
+          CONFIG_DEFAULT.masterPhoto,
+        );
+        shell.classList.toggle("is-empty", !candidates.length);
 
-        if (nextSrc) {
-          image.src = nextSrc;
+        if (candidates.length) {
+          applyImageFallbacks(
+            image,
+            candidates,
+            () => {
+              shell.classList.remove("is-empty");
+            },
+            () => {
+              shell.classList.add("is-empty");
+            },
+          );
         } else {
           image.removeAttribute("src");
         }
@@ -4261,15 +4352,24 @@
 
       const WORKS_SLIDES = [
         {
-          src: "assets/models/model-1.jpg",
+          sources: buildImageCandidateList(
+            "assets/models/model-1.jpg",
+            "фото моделей/IMG_2860.jpg",
+          ),
           alt: "Фото модели GLAIRE 1",
         },
         {
-          src: "assets/models/model-2.jpg",
+          sources: buildImageCandidateList(
+            "assets/models/model-2.jpg",
+            "фото моделей/IMG_2858.jpg",
+          ),
           alt: "Фото модели GLAIRE 2",
         },
         {
-          src: "assets/models/model-3.jpg",
+          sources: buildImageCandidateList(
+            "assets/models/model-3.jpg",
+            "фото моделей/IMG_2861.jpg",
+          ),
           alt: "Фото модели GLAIRE 3",
         },
       ];
@@ -4301,8 +4401,8 @@
         const slide = heroSlides[heroSlideIndex];
 
         if (heroSlideImage) {
-          heroSlideImage.src = slide.src;
           heroSlideImage.alt = slide.alt;
+          applyImageFallbacks(heroSlideImage, slide.sources);
         }
 
         renderSliderDots();
@@ -4339,8 +4439,8 @@
         const slide = WORKS_SLIDES[worksSlideIndex];
 
         if (worksSlideImage) {
-          worksSlideImage.src = slide.src;
           worksSlideImage.alt = slide.alt;
+          applyImageFallbacks(worksSlideImage, slide.sources);
         }
 
         renderWorksSliderDots();
