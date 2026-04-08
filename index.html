@@ -1754,6 +1754,13 @@
         font-size: 14px;
       }
 
+      .content-rail__hint {
+        max-width: 40ch;
+        color: rgba(222, 214, 205, 0.72);
+        line-height: 1.62;
+        font-size: 13px;
+      }
+
       .content-rail__actions {
         display: flex;
         align-items: center;
@@ -3347,8 +3354,13 @@
                 записи.
               </p>
               <p class="content-rail__note" data-edit="contentNote">
-                На компьютере видно два ролика, на телефоне один. Листайте
-                стрелками или свайпом.
+                На компьютере ролики идут парами: сначала два по очереди,
+                затем следующая пара. На телефоне ролики идут по одному.
+                Листайте стрелками или свайпом.
+              </p>
+              <p class="content-rail__hint">
+                Звук запускается автоматически по кругу. Если браузер
+                блокирует автозвук, нажмите на любой ролик один раз.
               </p>
             </div>
           </div>
@@ -4077,7 +4089,7 @@
         contentLead:
           "Атмосфера студии, советы по уходу, результаты и любимые продукты, которые помогают мягко понять подход GLAIRE ещё до записи.",
         contentNote:
-          "На компьютере видно два ролика, на телефоне один. Листайте стрелками или свайпом.",
+          "На компьютере ролики идут парами: сначала два по очереди, затем следующая пара. На телефоне ролики идут по одному. Листайте стрелками или свайпом.",
         contentBadge1: "Студия",
         contentTitle1: "Атмосфера студии",
         contentText1:
@@ -5035,7 +5047,7 @@
         const videoBaseSrc = (config[`contentVideo${index}`] || "").trim();
         videoNode.muted = true;
         videoNode.defaultMuted = true;
-        videoNode.loop = true;
+        videoNode.loop = false;
         videoNode.autoplay = true;
         videoNode.playsInline = true;
         videoNode.preload = "none";
@@ -5138,8 +5150,13 @@
         setWorksSlide(worksSlideIndex);
 
         ["1", "2", "3", "4"].forEach(applyContentCard);
+        contentSequenceIndex = 0;
+        contentAudioUnlocked = true;
+        contentAudioNeedsInteraction = false;
+        contentPendingPageAdvanceUntil = 0;
         ["1", "2", "3"].forEach(applyNewsCard);
         window.requestAnimationFrame(() => {
+          applyContentSequenceState();
           updateContentTrackControls();
           scheduleContentVideoSync();
         });
@@ -5433,10 +5450,174 @@
       let contentTrackObserver = null;
       let worksAutoplayObserver = null;
       let worksAutoplayActive = false;
+      let contentSequenceIndex = 0;
+      let contentAudioUnlocked = true;
+      let contentAudioNeedsInteraction = false;
+      let contentPendingPageAdvanceUntil = 0;
 
       /* Возвращает video-элемент внутри карточки контента */
       function getContentCardVideoNode(cardNode) {
         return cardNode?.querySelector(".content-card__video") || null;
+      }
+
+      /* Возвращает только те карточки контента, в которых реально есть видео */
+      function getConfiguredContentCards() {
+        return contentCards.filter((cardNode) =>
+          Boolean(String(getContentCardVideoNode(cardNode)?.dataset.videoBaseSrc || "").trim()),
+        );
+      }
+
+      /* Возвращает количество роликов, которые должны помещаться в один экран */
+      function getContentSlidesPerPage() {
+        return window.matchMedia("(max-width: 760px)").matches ? 1 : 2;
+      }
+
+      /* Находит первый ролик в текущей "странице" ленты */
+      function getContentPageStartIndex(index) {
+        const nextIndex = Math.max(index, 0);
+        const slidesPerPage = Math.max(getContentSlidesPerPage(), 1);
+        return Math.floor(nextIndex / slidesPerPage) * slidesPerPage;
+      }
+
+      /* Нормализует индекс активного ролика по кругу */
+      function normalizeContentSequenceIndex(nextIndex) {
+        const total = getConfiguredContentCards().length;
+        if (!total) return 0;
+        return (nextIndex % total + total) % total;
+      }
+
+      /* Возвращает карточку, которая сейчас считается главной в очереди */
+      function getActiveContentSequenceCard() {
+        const cards = getConfiguredContentCards();
+        if (!cards.length) return null;
+        contentSequenceIndex = normalizeContentSequenceIndex(contentSequenceIndex);
+        return cards[contentSequenceIndex];
+      }
+
+      /* Ищет порядковый номер карточки внутри очереди роликов */
+      function getConfiguredContentCardIndex(cardNode) {
+        return getConfiguredContentCards().indexOf(cardNode);
+      }
+
+      /* Прокручивает ленту так, чтобы нужный ролик попал в видимую часть */
+      function scrollContentCardIntoView(cardNode) {
+        if (!contentTrack || !cardNode) return;
+
+        const configuredCards = getConfiguredContentCards();
+        const activeIndex = getConfiguredContentCardIndex(cardNode);
+        const pageStartIndex = getContentPageStartIndex(activeIndex);
+        const targetCard = configuredCards[pageStartIndex] || cardNode;
+
+        const maxScrollLeft = Math.max(
+          0,
+          contentTrack.scrollWidth - contentTrack.clientWidth,
+        );
+        const nextLeft = Math.min(
+          Math.max(targetCard.offsetLeft, 0),
+          maxScrollLeft,
+        );
+
+        contentTrack.scrollTo({
+          left: nextLeft,
+          behavior: "smooth",
+        });
+      }
+
+      /* Синхронно переводит ролик в нужный режим по звуку */
+      function setContentVideoAudibleState(videoNode, shouldBeAudible) {
+        if (!videoNode) return;
+
+        videoNode.dataset.syncingAudio = "1";
+        videoNode.defaultMuted = !shouldBeAudible;
+        videoNode.muted = !shouldBeAudible;
+
+        if (shouldBeAudible && videoNode.volume === 0) {
+          videoNode.volume = 1;
+        }
+
+        window.setTimeout(() => {
+          if (videoNode.isConnected) {
+            delete videoNode.dataset.syncingAudio;
+          }
+        }, 0);
+      }
+
+      /* Обновляет, какой ролик сейчас должен быть со звуком */
+      function applyContentSequenceState(options = {}) {
+        const { scrollIntoView = false, restartActive = false } = options;
+        const activeCard = getActiveContentSequenceCard();
+        if (!activeCard) return;
+
+        if (scrollIntoView) {
+          scrollContentCardIntoView(activeCard);
+        }
+
+        contentCards.forEach((cardNode) => {
+          const videoNode = getContentCardVideoNode(cardNode);
+          if (!videoNode) return;
+          setContentVideoAudibleState(
+            videoNode,
+            contentAudioUnlocked && cardNode === activeCard,
+          );
+        });
+
+        if (!contentTrackIsActive) return;
+
+        if (restartActive) {
+          activateContentCardVideo(activeCard, { restart: true });
+          return;
+        }
+
+        scheduleContentVideoSync();
+      }
+
+      /* Переключает очередь на следующий ролик и зацикливает её */
+      function advanceContentSequence() {
+        const configuredCards = getConfiguredContentCards();
+        if (!configuredCards.length) return;
+
+        const slidesPerPage = Math.max(getContentSlidesPerPage(), 1);
+        const currentPageStart = getContentPageStartIndex(contentSequenceIndex);
+        const currentPageEnd = Math.min(
+          currentPageStart + slidesPerPage,
+          configuredCards.length,
+        );
+        const nextIndex = contentSequenceIndex + 1;
+
+        if (nextIndex < currentPageEnd) {
+          contentPendingPageAdvanceUntil = 0;
+          contentSequenceIndex = nextIndex;
+          applyContentSequenceState({
+            scrollIntoView: false,
+            restartActive: true,
+          });
+          return;
+        }
+
+        const nextPageStart =
+          currentPageStart + slidesPerPage >= configuredCards.length
+            ? 0
+            : currentPageStart + slidesPerPage;
+
+        contentPendingPageAdvanceUntil = Date.now() + 520;
+        contentSequenceIndex = nextPageStart;
+        applyContentSequenceState({
+          scrollIntoView: true,
+          restartActive: false,
+        });
+      }
+
+      /* После первого тапа по ролику пробуем включить цикл уже со звуком */
+      function unlockContentAudioForCard(cardNode) {
+        const nextIndex = getConfiguredContentCardIndex(cardNode);
+        if (nextIndex === -1) return;
+
+        contentAudioUnlocked = true;
+        contentAudioNeedsInteraction = false;
+        contentSequenceIndex = nextIndex;
+        applyContentSequenceState({
+          restartActive: true,
+        });
       }
 
       /* Сбрасывает отложенные загрузки роликов, если пользователь уже прокрутил дальше */
@@ -5447,8 +5628,11 @@
         contentVideoLoadTimers = [];
       }
 
-      /* Включает и запускает только те ролики, которые реально видны */
-      function activateContentCardVideo(cardNode) {
+      /*
+        Подготавливает соседний ролик заранее, но не запускает его.
+        Это убирает паузу между первым и вторым роликом на экране.
+      */
+      function prepareContentCardVideo(cardNode) {
         const videoNode = getContentCardVideoNode(cardNode);
         if (!videoNode) return;
 
@@ -5461,12 +5645,97 @@
           return;
         }
 
+        setContentVideoAudibleState(videoNode, false);
+        videoNode.pause();
+        videoNode.onended = null;
+
+        const revealPreparedVideo = () => {
+          cardNode.classList.add("content-card--ready");
+          try {
+            videoNode.currentTime = 0;
+          } catch (error) {
+            /* До готовности метаданных не все браузеры разрешают сброс времени */
+          }
+          videoNode.pause();
+        };
+
+        if (videoNode.dataset.activeSrc !== videoSrc) {
+          cardNode.classList.remove("content-card--ready");
+          videoNode.onloadeddata = () => {
+            if (videoNode.dataset.activeSrc !== videoSrc) return;
+            revealPreparedVideo();
+          };
+          videoNode.onerror = () => {
+            if (videoNode.dataset.activeSrc === videoSrc) {
+              cardNode.classList.remove("content-card--ready");
+            }
+          };
+          videoNode.preload = "metadata";
+          videoNode.src = videoSrc;
+          videoNode.dataset.activeSrc = videoSrc;
+          videoNode.load();
+          return;
+        }
+
+        if (videoNode.readyState >= 1) {
+          revealPreparedVideo();
+        }
+      }
+
+      /* Включает и запускает только те ролики, которые реально видны */
+      function activateContentCardVideo(cardNode, options = {}) {
+        const { restart = false } = options;
+        const videoNode = getContentCardVideoNode(cardNode);
+        if (!videoNode) return;
+
+        const videoBaseSrc = String(
+          videoNode.dataset.videoBaseSrc || "",
+        ).trim();
+        const videoSrc = optimizeConfiguredVideo(videoBaseSrc, cardNode);
+        if (!videoSrc) {
+          cardNode.classList.remove("content-card--ready");
+          return;
+        }
+
+        const activeCard = getActiveContentSequenceCard();
+        const shouldBeAudible =
+          contentAudioUnlocked && Boolean(activeCard) && activeCard === cardNode;
+
         const revealAndPlay = () => {
           cardNode.classList.add("content-card--ready");
+          setContentVideoAudibleState(videoNode, shouldBeAudible);
+          if (shouldBeAudible) {
+            contentAudioNeedsInteraction = false;
+          }
+
+          if (restart) {
+            try {
+              videoNode.currentTime = 0;
+            } catch (error) {
+              /* Некоторые браузеры могут запрещать сброс времени до полной готовности */
+            }
+          }
+
           const playPromise = videoNode.play();
           if (playPromise && typeof playPromise.catch === "function") {
-            playPromise.catch(() => {});
+            playPromise.catch(() => {
+              if (!shouldBeAudible) return;
+
+              contentAudioUnlocked = false;
+              contentAudioNeedsInteraction = true;
+              setContentVideoAudibleState(videoNode, false);
+
+              const mutedRetry = videoNode.play();
+              if (mutedRetry && typeof mutedRetry.catch === "function") {
+                mutedRetry.catch(() => {});
+              }
+            });
           }
+        };
+
+        videoNode.onended = () => {
+          if (cardNode !== getActiveContentSequenceCard()) return;
+          advanceContentSequence();
         };
 
         if (videoNode.dataset.activeSrc !== videoSrc) {
@@ -5500,6 +5769,7 @@
         videoNode.pause();
         videoNode.onloadeddata = null;
         videoNode.onerror = null;
+        videoNode.onended = null;
         if (videoNode.getAttribute("src")) {
           videoNode.removeAttribute("src");
           videoNode.load();
@@ -5516,6 +5786,7 @@
 
         clearScheduledContentVideoLoads();
         const visibleCards = [];
+        let activeCard = getActiveContentSequenceCard();
 
         contentCards.forEach((cardNode) => {
           const rect = cardNode.getBoundingClientRect();
@@ -5534,19 +5805,60 @@
           }
         });
 
-        visibleCards
-          .sort((left, right) => right.visibleRatio - left.visibleRatio)
-          .forEach(({ cardNode }, index) => {
-            if (index === 0) {
-              activateContentCardVideo(cardNode);
-              return;
-            }
+        const sortedVisibleCards = visibleCards.sort(
+          (left, right) => right.visibleRatio - left.visibleRatio,
+        );
 
-            const timerId = window.setTimeout(() => {
-              activateContentCardVideo(cardNode);
-            }, 260 * index);
-            contentVideoLoadTimers.push(timerId);
-          });
+        if (
+          activeCard &&
+          sortedVisibleCards.some(({ cardNode }) => cardNode === activeCard)
+        ) {
+          contentPendingPageAdvanceUntil = 0;
+        }
+
+        if (
+          sortedVisibleCards.length &&
+          Date.now() > contentPendingPageAdvanceUntil &&
+          (!activeCard ||
+            !sortedVisibleCards.some(
+              ({ cardNode }) => cardNode === activeCard,
+            ))
+        ) {
+          const fallbackCard = sortedVisibleCards[0].cardNode;
+          const fallbackIndex = getConfiguredContentCardIndex(fallbackCard);
+          if (fallbackIndex !== -1) {
+            contentSequenceIndex = getContentPageStartIndex(fallbackIndex);
+            activeCard = getActiveContentSequenceCard();
+          }
+        }
+
+        const prioritizedVisibleCards = [];
+
+        if (activeCard) {
+          const activeVisibleEntry = sortedVisibleCards.find(
+            ({ cardNode }) => cardNode === activeCard,
+          );
+          if (activeVisibleEntry) {
+            prioritizedVisibleCards.push(activeVisibleEntry);
+          }
+        }
+
+        sortedVisibleCards.forEach((entry) => {
+          if (prioritizedVisibleCards.includes(entry)) return;
+          prioritizedVisibleCards.push(entry);
+        });
+
+        prioritizedVisibleCards.forEach(({ cardNode }, index) => {
+          if (cardNode === activeCard) {
+            activateContentCardVideo(cardNode);
+            return;
+          }
+
+          const timerId = window.setTimeout(() => {
+            prepareContentCardVideo(cardNode);
+          }, 260 * index);
+          contentVideoLoadTimers.push(timerId);
+        });
       }
 
       /* Обновляет список активных роликов не чаще одного кадра */
@@ -5775,6 +6087,57 @@
       }
 
       if (contentTrack) {
+        contentCards.forEach((cardNode) => {
+          const videoNode = getContentCardVideoNode(cardNode);
+          if (!videoNode || videoNode.dataset.sequenceBound === "1") return;
+
+          videoNode.dataset.sequenceBound = "1";
+
+          videoNode.addEventListener("click", () => {
+            unlockContentAudioForCard(cardNode);
+          });
+
+          videoNode.addEventListener("volumechange", () => {
+            if (videoNode.dataset.syncingAudio === "1") return;
+            if (videoNode.muted || videoNode.volume <= 0) return;
+
+            const nextIndex = getConfiguredContentCardIndex(cardNode);
+            if (nextIndex === -1) return;
+
+            contentAudioUnlocked = true;
+            contentAudioNeedsInteraction = false;
+            contentSequenceIndex = nextIndex;
+            applyContentSequenceState({
+              restartActive: true,
+            });
+          });
+        });
+
+        const resumeContentAudioFromInteraction = () => {
+          if (!contentTrackIsActive || !contentAudioNeedsInteraction) return;
+          contentAudioUnlocked = true;
+          contentAudioNeedsInteraction = false;
+          applyContentSequenceState({
+            restartActive: true,
+          });
+        };
+
+        document.addEventListener(
+          "pointerup",
+          resumeContentAudioFromInteraction,
+          {
+            passive: true,
+          },
+        );
+        document.addEventListener(
+          "touchend",
+          resumeContentAudioFromInteraction,
+          {
+            passive: true,
+          },
+        );
+        document.addEventListener("keydown", resumeContentAudioFromInteraction);
+
         contentPrevBtn?.addEventListener("click", () => {
           scrollContentTrack(-1);
         });
