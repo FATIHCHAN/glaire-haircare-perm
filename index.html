@@ -77,6 +77,8 @@
 
       html {
         scroll-behavior: smooth;
+        min-height: 100%;
+        background: #0a1017;
       }
 
       body {
@@ -86,6 +88,7 @@
         overflow-x: hidden;
         font-family: var(--font-ui);
         color: var(--text-main);
+        background-color: #0a1017;
         background:
           radial-gradient(
             circle at 14% 12%,
@@ -2682,9 +2685,7 @@
 
               <div class="master-socials">
                 <div class="master-socials__copy">
-                  <strong data-edit="socialsTitle"
-                    >Соцсети мастера</strong
-                  >
+                  <strong data-edit="socialsTitle">Соцсети мастера</strong>
                   <p data-edit="socialsText">
                     Здесь можно оставить быстрые ссылки на рабочие соцсети
                     мастера: VK, Instagram и Telegram для связи, фото работ и
@@ -2767,13 +2768,14 @@
               <div class="eyebrow" data-edit="contentEyebrow">
                 Контент студии
               </div>
-              <h2 data-edit="contentTitle">
-                Почувствуйте студию через видео
-              </h2>
+              <h2 data-edit="contentTitle">Почувствуйте студию через видео</h2>
             </div>
             <!-- Правый текст рядом с заголовком объясняет смысл контент-блока -->
             <div class="content-section__copy">
-              <p class="section__lead content-section__lead" data-edit="contentLead">
+              <p
+                class="section__lead content-section__lead"
+                data-edit="contentLead"
+              >
                 Атмосфера студии, советы по уходу, результаты и любимые
                 продукты, которые помогают мягко понять подход GLAIRE ещё до
                 записи.
@@ -2823,7 +2825,9 @@
                   <div class="content-card__placeholder">
                     <div>
                       <strong>Video 01</strong>
-                      <span>Добавь вертикальное видео о пространстве студии</span>
+                      <span
+                        >Добавь вертикальное видео о пространстве студии</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2883,7 +2887,9 @@
                   <div class="content-card__placeholder">
                     <div>
                       <strong>Video 03</strong>
-                      <span>Добавь вертикальное видео с результатом работы</span>
+                      <span
+                        >Добавь вертикальное видео с результатом работы</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2913,7 +2919,10 @@
                   <div class="content-card__placeholder">
                     <div>
                       <strong>Video 04</strong>
-                      <span>Добавь вертикальное видео про косметику и продукты</span>
+                      <span
+                        >Добавь вертикальное видео про косметику и
+                        продукты</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2963,7 +2972,7 @@
               <div class="works-slider__viewport" id="worksSliderViewport">
                 <img
                   id="worksSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644891/IMG_2860_op5luc.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
                 />
@@ -3359,8 +3368,7 @@
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
         telegramQr:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
-        vkQr:
-          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+        vkQr: "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
         navInfoLabel: "Консультация",
         navBookLabel: "Записаться",
 
@@ -3463,8 +3471,7 @@
 
         /* Блок с вертикальными видео */
         contentEyebrow: "Контент студии",
-        contentTitle:
-          "Почувствуйте студию через видео",
+        contentTitle: "Почувствуйте студию через видео",
         contentLead:
           "Атмосфера студии, советы по уходу, результаты и любимые продукты, которые помогают мягко понять подход GLAIRE ещё до записи.",
         contentNote:
@@ -3811,7 +3818,10 @@
 
       /* Собирает список источников для конкретного поля config с локальным резервом */
       function getImageCandidatesForKey(key, ...values) {
-        return buildImageCandidateList(...values, ...(LOCAL_IMAGE_FALLBACKS[key] || []));
+        return buildImageCandidateList(
+          ...values,
+          ...(LOCAL_IMAGE_FALLBACKS[key] || []),
+        );
       }
 
       /* Подставляет в DOM все тексты, связанные с data-edit */
@@ -4099,7 +4109,9 @@
         const titleNode = document.getElementById(`contentTitle${index}`);
         const textNode = document.getElementById(`contentText${index}`);
         const videoNode = document.getElementById(`contentVideo${index}`);
-        const cardNode = document.querySelector(`[data-content-card="${index}"]`);
+        const cardNode = document.querySelector(
+          `[data-content-card="${index}"]`,
+        );
 
         if (!badgeNode || !titleNode || !textNode || !videoNode || !cardNode) {
           return;
@@ -4407,7 +4419,9 @@
       const heroPrevBtn = document.getElementById("worksPrevBtn");
       const heroNextBtn = document.getElementById("worksNextBtn");
       const worksSlideImage = document.getElementById("worksSlideImage");
-      const worksSliderViewport = document.getElementById("worksSliderViewport");
+      const worksSliderViewport = document.getElementById(
+        "worksSliderViewport",
+      );
       const worksSliderDots = document.getElementById("worksSliderDots");
       const worksPrevBtn = document.getElementById("worksModelsPrevBtn");
       const worksNextBtn = document.getElementById("worksModelsNextBtn");
@@ -4428,7 +4442,7 @@
       const WORKS_SLIDES = [
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644891/IMG_2860_op5luc.jpg",
+            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
             "assets/models/model-1.jpg",
             "фото моделей/IMG_2860.jpg",
           ),
@@ -4436,7 +4450,7 @@
         },
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644891/IMG_2858_lf8l40.jpg",
+            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
             "assets/models/model-2.jpg",
             "фото моделей/IMG_2858.jpg",
           ),
@@ -4444,7 +4458,7 @@
         },
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644897/IMG_2861_wk6hsm.jpg",
+            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
             "assets/models/model-3.jpg",
             "фото моделей/IMG_2861.jpg",
           ),
@@ -4686,10 +4700,7 @@
         };
 
         worksSliderViewport.addEventListener("pointerup", finishWorksSwipe);
-        worksSliderViewport.addEventListener(
-          "pointercancel",
-          finishWorksSwipe,
-        );
+        worksSliderViewport.addEventListener("pointercancel", finishWorksSwipe);
       }
 
       /* ------------------------------------------------------------------ */
@@ -4929,9 +4940,17 @@
           hint: "Блок для reels, stories и другого вертикального контента. Можно подставлять локальные пути к mp4, mov или webm-файлам.",
           fields: [
             { key: "contentEyebrow", label: "Подзаголовок секции" },
-            { key: "contentTitle", label: "Заголовок секции", type: "textarea" },
+            {
+              key: "contentTitle",
+              label: "Заголовок секции",
+              type: "textarea",
+            },
             { key: "contentLead", label: "Описание секции", type: "textarea" },
-            { key: "contentNote", label: "Подпись над лентой", type: "textarea" },
+            {
+              key: "contentNote",
+              label: "Подпись над лентой",
+              type: "textarea",
+            },
             { key: "contentBadge1", label: "Видео 1 — бейдж" },
             { key: "contentTitle1", label: "Видео 1 — заголовок" },
             { key: "contentText1", label: "Видео 1 — текст", type: "textarea" },
