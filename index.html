@@ -105,31 +105,14 @@
     />
     <link rel="manifest" href="site.webmanifest" />
     <link rel="dns-prefetch" href="//res.cloudinary.com" />
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     <link rel="dns-prefetch" href="//dikidi.net" />
-    <link rel="dns-prefetch" href="//yandex.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link
       rel="preload"
       as="image"
-      href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775644872/IMG_1407_vuas5m.jpg"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
     />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -1124,6 +1107,37 @@
         max-width: 34ch;
         color: var(--text-soft);
         line-height: 1.68;
+      }
+
+      .map-placeholder__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 2px;
+      }
+
+      .map-placeholder__action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(222, 214, 205, 0.14);
+        background: rgba(244, 241, 236, 0.06);
+        color: var(--text-main);
+        cursor: pointer;
+        transition:
+          transform 0.18s ease,
+          background 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .map-placeholder__action:hover,
+      .map-placeholder__action:focus-visible {
+        transform: translateY(-1px);
+        background: rgba(244, 241, 236, 0.1);
+        border-color: rgba(222, 214, 205, 0.22);
       }
 
       .map-embed:not(.is-placeholder) .map-placeholder {
@@ -2932,7 +2946,7 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775644872/IMG_1407_vuas5m.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
                   alt="Интерьер студии GLAIRE"
                   fetchpriority="high"
                   decoding="async"
@@ -3002,9 +3016,28 @@
                   <div class="map-placeholder" id="mapPlaceholder">
                     <strong>Карта студии</strong>
                     <p>
-                      Если карта временно недоступна, маршрут всегда можно
-                      уточнить перед визитом в сообщении или по QR-коду ниже.
+                      Чтобы не перегружать страницу, интерактивная карта
+                      загружается только по нажатию. Маршрут всегда можно
+                      открыть отдельно или уточнить перед визитом в сообщении.
                     </p>
+                    <div class="map-placeholder__actions">
+                      <button
+                        class="map-placeholder__action"
+                        id="mapLoadBtn"
+                        type="button"
+                      >
+                        Показать карту здесь
+                      </button>
+                      <a
+                        class="map-placeholder__action"
+                        id="mapOpenLink"
+                        href="#"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Открыть в Яндекс Картах
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3174,7 +3207,7 @@
               <div class="master-photo-shell" id="masterPhotoShell">
                 <img
                   id="masterPhoto"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_960/v1775644909/IMG_0228_wncs1p.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_720/v1775644909/IMG_0228_wncs1p.jpg"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -3546,7 +3579,7 @@
               <div class="works-slider__viewport" id="worksSliderViewport">
                 <img
                   id="worksSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775647544/IMG_2860_aeyldt.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775647544/IMG_2860_aeyldt.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -4235,17 +4268,17 @@
         версии изображений и видео под конкретный блок.
       */
       const CLOUDINARY_IMAGE_TRANSFORMS = {
-        brandImage: "f_auto,q_auto,dpr_auto,c_limit,w_160",
-        heroSlide1: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
-        heroSlide2: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
-        masterPhoto: "f_auto,q_auto,dpr_auto,c_limit,w_960",
-        consultQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
-        telegramQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
-        vkQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
-        newsImage1: "f_auto,q_auto,dpr_auto,c_limit,w_900",
-        newsImage2: "f_auto,q_auto,dpr_auto,c_limit,w_900",
-        newsImage3: "f_auto,q_auto,dpr_auto,c_limit,w_900",
-        worksSlide: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
+        brandImage: "f_auto,q_auto:eco,dpr_auto,c_limit,w_144",
+        heroSlide1: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
+        heroSlide2: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
+        masterPhoto: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
+        consultQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
+        telegramQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
+        vkQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
+        newsImage1: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
+        newsImage2: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
+        newsImage3: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
+        worksSlide: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
       };
 
       /* Проверяет, является ли ссылка Cloudinary-адресом */
@@ -4289,6 +4322,44 @@
           navigator.mozConnection ||
           navigator.webkitConnection ||
           null
+        );
+      }
+
+      /*
+        Фирменные веб-шрифты больше не блокируют первый экран.
+        Сначала сайт рисуется системными шрифтами, а затем на спокойной сети
+        Google Fonts догружаются в фоне.
+      */
+      const OPTIONAL_GOOGLE_FONT_STYLESHEET =
+        "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=optional";
+      let optionalFontsRequested = false;
+
+      function loadOptionalGoogleFonts() {
+        if (optionalFontsRequested) return;
+
+        optionalFontsRequested = true;
+        const stylesheetNode = document.createElement("link");
+        stylesheetNode.rel = "stylesheet";
+        stylesheetNode.href = OPTIONAL_GOOGLE_FONT_STYLESHEET;
+        stylesheetNode.dataset.optionalFonts = "1";
+        document.head.appendChild(stylesheetNode);
+      }
+
+      const initialConnection = getNetworkConnectionInfo();
+      const initialNetworkType = String(initialConnection?.effectiveType || "");
+      const shouldSkipOptionalFontLoad =
+        Boolean(initialConnection?.saveData) ||
+        /slow-2g|2g/.test(initialNetworkType);
+
+      if (!shouldSkipOptionalFontLoad) {
+        window.addEventListener(
+          "load",
+          () => {
+            runWhenIdle(() => {
+              window.setTimeout(loadOptionalGoogleFonts, 1200);
+            }, 1800);
+          },
+          { once: true },
         );
       }
 
@@ -4726,61 +4797,28 @@
           .filter((prize) => prize.title && prize.text);
       }
 
-      let mapLoadObserver = null;
       let currentMapUrl = "";
 
-      /* Очищает отложенную загрузку карты, если она больше не нужна */
-      function disconnectMapObserver() {
-        if (!mapLoadObserver) return;
-        mapLoadObserver.disconnect();
-        mapLoadObserver = null;
-      }
-
-      /* Загружает карту только когда блок реально подошёл к экрану */
-      function scheduleMapLoad(mapUrl) {
+      /* Загружает интерактивную карту только по прямому запросу пользователя */
+      function loadMapNow(mapUrl) {
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
         if (!mapEmbed || !mapFrame || !mapUrl) return;
 
-        const loadMap = () => {
-          disconnectMapObserver();
-          if (
-            currentMapUrl === mapUrl &&
-            mapFrame.getAttribute("src") === mapUrl
-          ) {
-            mapEmbed.classList.remove("is-placeholder");
-            return;
-          }
-
-          currentMapUrl = mapUrl;
-          mapFrame.onload = () => {
-            mapEmbed.classList.remove("is-placeholder");
-            mapFrame.onload = null;
-          };
-          mapFrame.src = mapUrl;
-        };
-
-        if (!("IntersectionObserver" in window)) {
-          window.setTimeout(loadMap, 260);
+        if (
+          currentMapUrl === mapUrl &&
+          mapFrame.getAttribute("src") === mapUrl
+        ) {
+          mapEmbed.classList.remove("is-placeholder");
           return;
         }
 
-        disconnectMapObserver();
-        mapLoadObserver = new IntersectionObserver(
-          (entries) => {
-            if (
-              entries.some(
-                (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
-              )
-            ) {
-              loadMap();
-            }
-          },
-          {
-            rootMargin: "80px 0px",
-          },
-        );
-        mapLoadObserver.observe(mapEmbed);
+        currentMapUrl = mapUrl;
+        mapFrame.onload = () => {
+          mapEmbed.classList.remove("is-placeholder");
+          mapFrame.onload = null;
+        };
+        mapFrame.src = mapUrl;
       }
 
       /*
@@ -4791,21 +4829,43 @@
       function applyMapState() {
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
+        const mapLoadBtn = document.getElementById("mapLoadBtn");
+        const mapOpenLink = document.getElementById("mapOpenLink");
         if (!mapEmbed || !mapFrame) return;
 
         const mapUrl = (config.mapEmbedUrl || "").trim();
         const hasRealMap = Boolean(mapUrl) && !mapUrl.includes("YOUR_MAP_ID");
 
         if (!hasRealMap) {
-          disconnectMapObserver();
           currentMapUrl = "";
           mapEmbed.classList.add("is-placeholder");
           mapFrame.src = "about:blank";
+          if (mapLoadBtn) {
+            mapLoadBtn.hidden = true;
+            mapLoadBtn.onclick = null;
+          }
+          if (mapOpenLink) {
+            mapOpenLink.hidden = true;
+            mapOpenLink.removeAttribute("href");
+          }
           return;
         }
 
         mapEmbed.classList.add("is-placeholder");
-        scheduleMapLoad(mapUrl);
+        if (currentMapUrl !== mapUrl) {
+          currentMapUrl = "";
+          mapFrame.src = "about:blank";
+        }
+
+        if (mapLoadBtn) {
+          mapLoadBtn.hidden = false;
+          mapLoadBtn.onclick = () => loadMapNow(mapUrl);
+        }
+
+        if (mapOpenLink) {
+          mapOpenLink.hidden = false;
+          mapOpenLink.href = mapUrl;
+        }
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
@@ -6281,556 +6341,43 @@
       /* Локальная админка                                                   */
       /* Панель редактирования контента прямо в браузере                     */
       /* ------------------------------------------------------------------ */
-      /* Основные DOM-узлы, к которым скрипт обращается много раз */
-      const adminPanel = document.getElementById("adminPanel");
-      const adminGrid = document.getElementById("adminGrid");
-      const openAdminBtn = document.getElementById("openAdminBtn");
-      const closeAdminBtn = document.getElementById("closeAdminBtn");
-      const saveAdminBtn = document.getElementById("saveAdminBtn");
-      const resetAdminBtn = document.getElementById("resetAdminBtn");
       const menuToggleBtn = document.getElementById("menuToggleBtn");
       const siteNav = document.getElementById("siteNav");
       const backToTopBtn = document.getElementById("backToTopBtn");
       const mobileMenuMedia = window.matchMedia("(max-width: 1080px)");
-
       /*
-        Секции админки.
-        Здесь хранится состав панели редактирования:
-        заголовки секций, подсказки и список полей для каждой части сайта.
+        Админка вынесена в отдельный файл и подключается только в режиме ?admin=1.
+        Так обычная версия сайта не скачивает и не парсит лишний JS.
       */
-      let ADMIN_SECTIONS = [];
-      let ADMIN_FIELDS = [];
-
-      function ensureAdminSchema() {
-        if (ADMIN_FIELDS.length) return;
-
-        ADMIN_SECTIONS = [
-        {
-          title: "Основные ссылки и изображения",
-          hint: "Здесь меняются основные URL, логотип, фотографии, QR и картинки ключевых блоков.",
-          fields: [
-            {
-              key: "infoUrl",
-              label: "Ссылка для консультации / информации",
-              placeholder: "https://dikidi.net/...",
-            },
-            {
-              key: "bookUrl",
-              label: "Ссылка на запись в DIKIDI",
-              placeholder: "https://dikidi.net/...",
-            },
-            {
-              key: "mapEmbedUrl",
-              label: "Ссылка на embed карты",
-              placeholder: "https://yandex.ru/map-widget/...",
-            },
-            {
-              key: "brandImage",
-              label: "Логотип / иконка бренда",
-              placeholder: "assets/logo/group-17.png",
-            },
-            {
-              key: "heroSlide1",
-              label: "Hero-слайд 1",
-              placeholder: "assets/studio/studio-1.jpg",
-            },
-            {
-              key: "heroSlide2",
-              label: "Hero-слайд 2",
-              placeholder: "assets/studio/studio-2.jpg",
-            },
-            {
-              key: "masterPhoto",
-              label: "Фото мастера",
-              placeholder: "https://... или локальный путь",
-            },
-            {
-              key: "consultQr",
-              label: "QR для консультации",
-              placeholder: "assets/qr/consult-chat.png",
-            },
-            {
-              key: "consultQrLink",
-              label: "Ссылка по QR консультации",
-              placeholder: "https://t.me/...",
-            },
-            {
-              key: "telegramQr",
-              label: "QR Telegram",
-              placeholder: "assets/qr/telegram-qr.png",
-            },
-            {
-              key: "telegramQrLink",
-              label: "Ссылка по QR Telegram",
-              placeholder: "https://t.me/...",
-            },
-            {
-              key: "vkQr",
-              label: "QR VK",
-              placeholder: "assets/qr/vk-qr.png",
-            },
-            {
-              key: "vkQrLink",
-              label: "Ссылка по QR VK",
-              placeholder: "https://vk.com/...",
-            },
-            {
-              key: "mobileMenuPhone",
-              label: "Телефон в мобильном меню",
-              placeholder: "+7 (999) 000-00-00",
-            },
-            {
-              key: "mobileMenuHours",
-              label: "Часы работы в мобильном меню",
-              placeholder: "Ежедневно с 9:00 до 21:00",
-            },
-          ],
+      window.__glaireAdminApi = window.__glaireAdminApi || {
+        closeAdmin() {},
+      };
+      window.__glaireRuntime = {
+        isAdminMode,
+        runWhenIdle,
+        closeMobileMenu,
+        STORAGE_KEY,
+        CONFIG_DEFAULT,
+        applyConfig,
+        getConfig: () => config,
+        setConfig: (nextConfig) => {
+          config = nextConfig;
         },
-        {
-          title: "Главный экран",
-          hint: "Первый экран отвечает за первое впечатление. Лучше держать подачу спокойной, ясной и без перегруза.",
-          fields: [
-            { key: "brandSub", label: "Подпись под логотипом" },
-            { key: "navInfoLabel", label: "Кнопка в шапке: консультация" },
-            { key: "navBookLabel", label: "Кнопка в шапке: запись" },
-            { key: "heroEyebrow", label: "Подзаголовок hero" },
-            { key: "heroTitle", label: "Главный заголовок", type: "textarea" },
-            { key: "heroText", label: "Описание hero", type: "textarea" },
-            { key: "heroBookLabel", label: "Главная CTA-кнопка" },
-            { key: "heroInfoLabel", label: "Вторичная CTA-кнопка" },
-            { key: "heroSliderCaption", label: "Подпись под фото студии" },
-            { key: "heroMetaTitle1", label: "Карточка 1 — заголовок" },
-            {
-              key: "heroMetaText1",
-              label: "Карточка 1 — текст",
-              type: "textarea",
-            },
-            { key: "heroMetaTitle2", label: "Карточка 2 — заголовок" },
-            {
-              key: "heroMetaText2",
-              label: "Карточка 2 — текст",
-              type: "textarea",
-            },
-            { key: "heroMetaTitle3", label: "Карточка 3 — заголовок" },
-            {
-              key: "heroMetaText3",
-              label: "Карточка 3 — текст",
-              type: "textarea",
-            },
-          ],
-        },
-        {
-          title: "Контакты, карта и QR",
-          hint: "Эта секция помогает человеку быстро понять локацию и каналы связи без лишнего поиска.",
-          fields: [
-            {
-              key: "contactText",
-              label: "Текст контактного блока",
-              type: "textarea",
-            },
-            { key: "locationTitle", label: "Заголовок блока карты" },
-            { key: "addressText", label: "Подпись у карты", type: "textarea" },
-            { key: "telegramQrTitle", label: "Telegram — заголовок" },
-            {
-              key: "telegramQrText",
-              label: "Telegram — описание",
-              type: "textarea",
-            },
-            { key: "vkQrTitle", label: "VK — заголовок" },
-            { key: "vkQrText", label: "VK — описание", type: "textarea" },
-          ],
-        },
-        {
-          title: "Scratch-бонус",
-          hint: "Главная digital-механика сайта. Здесь управляются тексты блока и пояснения рядом с бонусом.",
-          fields: [
-            { key: "bonusEyebrow", label: "Подзаголовок секции" },
-            { key: "bonusTitle", label: "Заголовок секции", type: "textarea" },
-            { key: "bonusText", label: "Описание секции", type: "textarea" },
-            { key: "scratchLabel", label: "Подпись внутри scratch" },
-            { key: "scratchSwipeHint", label: "Подсказка поверх scratch" },
-            {
-              key: "scratchHint",
-              label: "Подсказка под scratch",
-              type: "textarea",
-            },
-            { key: "scratchResetLabel", label: "Кнопка перезапуска" },
-            { key: "bonusSideTitle1", label: "Правая карточка 1 — заголовок" },
-            {
-              key: "bonusSideText1",
-              label: "Правая карточка 1 — текст",
-              type: "textarea",
-            },
-            { key: "bonusSideTitle2", label: "Правая карточка 2 — заголовок" },
-            {
-              key: "bonusSideList",
-              label: "Правая карточка 2 — список",
-              type: "textarea",
-              help: "По одному пункту с новой строки.",
-            },
-            { key: "bonusSideTitle3", label: "Правая карточка 3 — заголовок" },
-            {
-              key: "bonusSideText3",
-              label: "Правая карточка 3 — текст",
-              type: "textarea",
-            },
-          ],
-        },
-        {
-          title: "Призы внутри scratch",
-          hint: "Каждый бонус хранится отдельно, чтобы можно было быстро поменять смысл механики без редактирования JS.",
-          fields: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].flatMap((index) => [
-            {
-              key: `scratchPrize${index}Title`,
-              label: `Бонус ${index} — заголовок`,
-            },
-            {
-              key: `scratchPrize${index}Text`,
-              label: `Бонус ${index} — описание`,
-              type: "textarea",
-            },
-          ]),
-        },
-        {
-          title: "Блок мастера и соцсети",
-          hint: "Секция нужна, чтобы клиент понимал, к кому он идёт, и мог перейти в нужную соцсеть или канал связи.",
-          fields: [
-            { key: "masterSectionEyebrow", label: "Подзаголовок секции" },
-            { key: "masterTitle", label: "Заголовок секции", type: "textarea" },
-            { key: "masterText", label: "Описание секции", type: "textarea" },
-            { key: "masterEyebrow", label: "Подпись над именем мастера" },
-            { key: "masterName", label: "Имя мастера / подпись" },
-            { key: "masterRole", label: "Роль / специализация" },
-            {
-              key: "masterDescription",
-              label: "Описание мастера",
-              type: "textarea",
-            },
-            { key: "masterPointTitle1", label: "Преимущество 1 — заголовок" },
-            {
-              key: "masterPointText1",
-              label: "Преимущество 1 — текст",
-              type: "textarea",
-            },
-            { key: "masterPointTitle2", label: "Преимущество 2 — заголовок" },
-            {
-              key: "masterPointText2",
-              label: "Преимущество 2 — текст",
-              type: "textarea",
-            },
-            { key: "masterPointTitle3", label: "Преимущество 3 — заголовок" },
-            {
-              key: "masterPointText3",
-              label: "Преимущество 3 — текст",
-              type: "textarea",
-            },
-            { key: "socialsTitle", label: "Заголовок блока соцсетей" },
-            {
-              key: "socialsText",
-              label: "Текст блока соцсетей",
-              type: "textarea",
-            },
-            {
-              key: "socialsEmptyText",
-              label: "Текст, если ссылки пока пустые",
-              type: "textarea",
-            },
-            { key: "masterSocialVkUrl", label: "Ссылка мастера — VK" },
-            {
-              key: "masterSocialInstagramUrl",
-              label: "Ссылка мастера — Instagram",
-            },
-            {
-              key: "masterSocialTelegramUrl",
-              label: "Ссылка мастера — Telegram",
-            },
-          ],
-        },
-        {
-          title: "Контент / вертикальные видео",
-          hint: "Блок для reels, stories и другого вертикального контента. Можно подставлять локальные пути к mp4, mov или webm-файлам.",
-          fields: [
-            { key: "contentEyebrow", label: "Подзаголовок секции" },
-            {
-              key: "contentTitle",
-              label: "Заголовок секции",
-              type: "textarea",
-            },
-            { key: "contentLead", label: "Описание секции", type: "textarea" },
-            {
-              key: "contentNote",
-              label: "Подпись над лентой",
-              type: "textarea",
-            },
-            { key: "contentBadge1", label: "Видео 1 — бейдж" },
-            { key: "contentTitle1", label: "Видео 1 — заголовок" },
-            { key: "contentText1", label: "Видео 1 — текст", type: "textarea" },
-            {
-              key: "contentVideo1",
-              label: "Видео 1 — файл / ссылка",
-              placeholder: "видео/clip-01.mp4",
-            },
-            { key: "contentBadge2", label: "Видео 2 — бейдж" },
-            { key: "contentTitle2", label: "Видео 2 — заголовок" },
-            { key: "contentText2", label: "Видео 2 — текст", type: "textarea" },
-            {
-              key: "contentVideo2",
-              label: "Видео 2 — файл / ссылка",
-              placeholder: "видео/clip-02.mp4",
-            },
-            { key: "contentBadge3", label: "Видео 3 — бейдж" },
-            { key: "contentTitle3", label: "Видео 3 — заголовок" },
-            { key: "contentText3", label: "Видео 3 — текст", type: "textarea" },
-            {
-              key: "contentVideo3",
-              label: "Видео 3 — файл / ссылка",
-              placeholder: "видео/clip-03.mp4",
-            },
-            { key: "contentBadge4", label: "Видео 4 — бейдж" },
-            { key: "contentTitle4", label: "Видео 4 — заголовок" },
-            { key: "contentText4", label: "Видео 4 — текст", type: "textarea" },
-            {
-              key: "contentVideo4",
-              label: "Видео 4 — файл / ссылка",
-              placeholder: "видео/clip-04.mp4",
-            },
-          ],
-        },
-        {
-          title: "Работы",
-          hint: "Здесь редактируется визуальный блок направлений и короткий список того, что получает клиент.",
-          fields: [
-            { key: "worksEyebrow", label: "Подзаголовок секции" },
-            { key: "worksTitle", label: "Заголовок секции", type: "textarea" },
-            { key: "worksNote", label: "Подпись под фото", type: "textarea" },
-            {
-              key: "worksTags",
-              label: "Теги направления",
-              type: "textarea",
-              help: "По одному тегу с новой строки.",
-            },
-            { key: "worksInfoEyebrow", label: "Подзаголовок правой колонки" },
-            {
-              key: "worksInfoLead",
-              label: "Лид правой колонки",
-              type: "textarea",
-            },
-            { key: "worksItemTitle1", label: "Карточка 1 — заголовок" },
-            {
-              key: "worksItemText1",
-              label: "Карточка 1 — текст",
-              type: "textarea",
-            },
-            { key: "worksItemTitle2", label: "Карточка 2 — заголовок" },
-            {
-              key: "worksItemText2",
-              label: "Карточка 2 — текст",
-              type: "textarea",
-            },
-            { key: "worksItemTitle3", label: "Карточка 3 — заголовок" },
-            {
-              key: "worksItemText3",
-              label: "Карточка 3 — текст",
-              type: "textarea",
-            },
-            { key: "worksItemTitle4", label: "Карточка 4 — заголовок" },
-            {
-              key: "worksItemText4",
-              label: "Карточка 4 — текст",
-              type: "textarea",
-            },
-          ],
-        },
-        {
-          title: "Актуальные карточки",
-          hint: "Stories-карточки удобно использовать для окон, сезонных предложений, новинок и поводов написать мастеру.",
-          fields: [
-            { key: "newsEyebrow", label: "Подзаголовок секции" },
-            { key: "newsTitle", label: "Заголовок секции", type: "textarea" },
-            { key: "newsLead", label: "Описание секции", type: "textarea" },
-            { key: "newsBadge1", label: "Карточка 1 — бейдж" },
-            { key: "newsTitle1", label: "Карточка 1 — заголовок" },
-            { key: "newsText1", label: "Карточка 1 — текст", type: "textarea" },
-            { key: "newsImage1", label: "Карточка 1 — фото" },
-            { key: "newsBadge2", label: "Карточка 2 — бейдж" },
-            { key: "newsTitle2", label: "Карточка 2 — заголовок" },
-            { key: "newsText2", label: "Карточка 2 — текст", type: "textarea" },
-            { key: "newsImage2", label: "Карточка 2 — фото" },
-            { key: "newsBadge3", label: "Карточка 3 — бейдж" },
-            { key: "newsTitle3", label: "Карточка 3 — заголовок" },
-            { key: "newsText3", label: "Карточка 3 — текст", type: "textarea" },
-            { key: "newsImage3", label: "Карточка 3 — фото" },
-          ],
-        },
-        {
-          title: "Консультация и финальный CTA",
-          hint: "Последние экраны помогают снять сомнения и привести человека к записи без давления.",
-          fields: [
-            { key: "consultEyebrow", label: "Подзаголовок консультации" },
-            {
-              key: "consultTitle",
-              label: "Заголовок консультации",
-              type: "textarea",
-            },
-            {
-              key: "consultText",
-              label: "Текст консультации",
-              type: "textarea",
-            },
-            { key: "consultNote", label: "Текст рядом с QR", type: "textarea" },
-            { key: "visitEyebrow", label: "Подзаголовок правой карточки" },
-            {
-              key: "visitTitle",
-              label: "Заголовок правой карточки",
-              type: "textarea",
-            },
-            {
-              key: "visitText",
-              label: "Описание правой карточки",
-              type: "textarea",
-            },
-            {
-              key: "visitItems",
-              label: "Список перед визитом",
-              type: "textarea",
-              help: "По одному пункту с новой строки.",
-            },
-            { key: "ctaEyebrow", label: "Подзаголовок финального CTA" },
-            {
-              key: "ctaTitle",
-              label: "Заголовок финального CTA",
-              type: "textarea",
-            },
-            { key: "ctaText", label: "Текст финального CTA", type: "textarea" },
-            { key: "ctaButtonLabel", label: "Кнопка финального CTA" },
-            { key: "footerText", label: "Текст в подвале", type: "textarea" },
-          ],
-        },
-        ];
+      };
 
-        ADMIN_FIELDS = ADMIN_SECTIONS.flatMap((section) =>
-          section.fields.map((field) => field.key),
-        );
-      }
-      /* ADMIN_FIELDS — это плоский список всех ключей, чтобы проще читать и сохранять форму */
+      function loadAdminScript() {
+        if (!isAdminMode) return;
+        if (document.querySelector("script[data-glaire-admin]")) return;
 
-      /* Преобразует ключ из config в id поля формы админки */
-      function fieldIdFromKey(key) {
-        return `cfg${key.charAt(0).toUpperCase()}${key.slice(1)}`;
-      }
-
-      /* Строит HTML формы админки на основе схемы ADMIN_SECTIONS */
-      function renderAdminForm() {
-        if (!adminGrid) return;
-        ensureAdminSchema();
-
-        adminGrid.innerHTML = "";
-
-        ADMIN_SECTIONS.forEach((section) => {
-          const sectionNode = document.createElement("section");
-          sectionNode.className = "admin-section";
-
-          const headNode = document.createElement("div");
-          headNode.className = "admin-section__head";
-
-          const titleNode = document.createElement("div");
-          titleNode.className = "admin-section__title";
-          titleNode.textContent = section.title;
-
-          const hintNode = document.createElement("div");
-          hintNode.className = "admin-section__hint";
-          hintNode.textContent = section.hint;
-
-          headNode.appendChild(titleNode);
-          headNode.appendChild(hintNode);
-
-          const fieldsNode = document.createElement("div");
-          fieldsNode.className = "admin-fields";
-
-          section.fields.forEach((field) => {
-            const wrapper = document.createElement("div");
-            wrapper.className = "field";
-
-            const label = document.createElement("label");
-            label.htmlFor = fieldIdFromKey(field.key);
-            label.textContent = field.label;
-
-            /* Для длинных текстов создаётся textarea, для коротких — input */
-            const control =
-              field.type === "textarea"
-                ? document.createElement("textarea")
-                : document.createElement("input");
-
-            control.id = fieldIdFromKey(field.key);
-
-            if (field.type !== "textarea") {
-              control.type = "text";
-            }
-
-            if (field.placeholder) {
-              control.placeholder = field.placeholder;
-            }
-
-            wrapper.appendChild(label);
-            wrapper.appendChild(control);
-
-            if (field.help) {
-              const help = document.createElement("small");
-              help.textContent = field.help;
-              wrapper.appendChild(help);
-            }
-
-            fieldsNode.appendChild(wrapper);
-          });
-
-          sectionNode.appendChild(headNode);
-          sectionNode.appendChild(fieldsNode);
-          adminGrid.appendChild(sectionNode);
-        });
-      }
-
-      /* Заполняет поля админки текущими значениями из config */
-      function fillAdminForm() {
-        ensureAdminSchema();
-        ADMIN_FIELDS.forEach((key) => {
-          const field = document.getElementById(fieldIdFromKey(key));
-          if (field) field.value = config[key] || "";
-        });
-      }
-
-      /* Считывает значения из формы и собирает обновлённый config */
-      function readAdminForm() {
-        ensureAdminSchema();
-        const nextConfig = { ...config };
-
-        ADMIN_FIELDS.forEach((key) => {
-          const field = document.getElementById(fieldIdFromKey(key));
-          if (field) nextConfig[key] = field.value.trim();
-        });
-
-        return nextConfig;
+        const adminScript = document.createElement("script");
+        adminScript.src = "admin-panel.js";
+        adminScript.defer = true;
+        adminScript.dataset.glaireAdmin = "1";
+        document.body.appendChild(adminScript);
       }
 
       if (isAdminMode) {
-        runWhenIdle(() => {
-          ensureAdminSchema();
-          renderAdminForm();
-        });
-      }
-
-      /* Открывает окно админки */
-      function openAdmin() {
-        ensureAdminSchema();
-        if (adminGrid && !adminGrid.children.length) {
-          renderAdminForm();
-        }
-        fillAdminForm();
-        adminPanel?.classList.add("is-open");
-      }
-
-      /* Закрывает окно админки */
-      function closeAdmin() {
-        adminPanel?.classList.remove("is-open");
+        loadAdminScript();
       }
 
       /* Открывает или закрывает мобильное меню и обновляет aria-атрибуты */
@@ -6856,22 +6403,6 @@
         const showAfter = Math.max(520, window.innerHeight * 0.8);
         backToTopBtn.classList.toggle("is-visible", window.scrollY > showAfter);
       }
-
-      /*
-        Доступ к админке:
-        панель доступна только при открытии страницы с параметром ?admin=1.
-      */
-      if (isAdminMode && openAdminBtn) {
-        openAdminBtn.hidden = false;
-      }
-
-      /* Кнопка в шапке открывает админку только в режиме ?admin=1 */
-      openAdminBtn?.addEventListener("click", () => {
-        if (!isAdminMode) return;
-        openAdmin();
-        closeMobileMenu();
-      });
-      closeAdminBtn?.addEventListener("click", closeAdmin);
 
       /* Бургер работает только на ширине мобильного меню */
       menuToggleBtn?.addEventListener("click", () => {
@@ -6908,34 +6439,11 @@
       window.addEventListener("resize", updateBackToTopState);
       updateBackToTopState();
 
-      /* Клик по затемнению вокруг панели тоже закрывает админку */
-      adminPanel?.addEventListener("click", (event) => {
-        if (event.target === adminPanel) closeAdmin();
-      });
-
       /* Escape закрывает админку и мобильное меню */
       document.addEventListener("keydown", (event) => {
         if (event.key !== "Escape") return;
-        closeAdmin();
+        window.__glaireAdminApi?.closeAdmin?.();
         closeMobileMenu();
-      });
-
-      /* Сохраняет изменения из админки и сразу обновляет страницу */
-      saveAdminBtn?.addEventListener("click", () => {
-        if (!isAdminMode) return;
-        config = readAdminForm();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-        applyConfig();
-        closeAdmin();
-      });
-
-      /* Возвращает значения из CONFIG_DEFAULT и обновляет страницу */
-      resetAdminBtn?.addEventListener("click", () => {
-        if (!isAdminMode) return;
-        localStorage.removeItem(STORAGE_KEY);
-        config = { ...CONFIG_DEFAULT };
-        applyConfig();
-        fillAdminForm();
       });
     </script>
   </body>
