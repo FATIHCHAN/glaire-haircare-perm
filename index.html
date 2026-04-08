@@ -79,6 +79,7 @@
         scroll-behavior: smooth;
         min-height: 100%;
         background: #0a1017;
+        background-color: #0a1017;
       }
 
       body {
@@ -89,6 +90,19 @@
         font-family: var(--font-ui);
         color: var(--text-main);
         background-color: #0a1017;
+        isolation: isolate;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        pointer-events: none;
+      }
+
+      body::before {
+        inset: 0;
+        z-index: -2;
         background:
           radial-gradient(
             circle at 14% 12%,
@@ -105,36 +119,28 @@
             rgba(121, 131, 144, 0.1),
             transparent 22%
           ),
+          radial-gradient(
+            circle at 8% 4%,
+            rgba(188, 178, 168, 0.12),
+            transparent 24%
+          ),
+          radial-gradient(
+            circle at 94% 18%,
+            rgba(131, 145, 160, 0.08),
+            transparent 26%
+          ),
           linear-gradient(180deg, #0a1017 0%, #0d141d 36%, #0a1017 100%);
+        background-repeat: no-repeat;
       }
 
-      body::before,
       body::after {
-        content: "";
-        position: fixed;
         z-index: -1;
-        pointer-events: none;
-        border-radius: 999px;
-        filter: blur(14px);
-      }
-
-      body::before {
-        top: -180px;
-        left: -120px;
-        width: 620px;
-        height: 620px;
-        background: radial-gradient(
-          circle,
-          rgba(188, 178, 168, 0.12),
-          transparent 60%
-        );
-      }
-
-      body::after {
         top: 90px;
         right: -180px;
         width: 640px;
         height: 640px;
+        border-radius: 999px;
+        filter: blur(14px);
         background: radial-gradient(
           circle,
           rgba(131, 145, 160, 0.08),
