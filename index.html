@@ -11,6 +11,7 @@
     <meta name="theme-color" content="#0b1118" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -197,6 +198,11 @@
 
       section {
         scroll-margin-top: 96px;
+      }
+
+      section.section:not(.hero) {
+        content-visibility: auto;
+        contain-intrinsic-size: 960px;
       }
 
       .container {
@@ -2038,6 +2044,36 @@
       }
 
       @media (max-width: 900px) {
+        .glass-card,
+        .topbar,
+        .back-to-top,
+        .admin-panel {
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+
+        .glass-card {
+          background:
+            linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.048),
+              rgba(255, 255, 255, 0.02)
+            ),
+            rgba(18, 25, 35, 0.96);
+        }
+
+        .topbar {
+          background: linear-gradient(
+            180deg,
+            rgba(10, 15, 22, 0.94),
+            rgba(10, 15, 22, 0.9)
+          );
+        }
+
+        .map-embed iframe {
+          filter: none;
+        }
+
         .news-track {
           grid-template-columns: none;
           grid-auto-flow: column;
@@ -2065,6 +2101,10 @@
       @media (max-width: 760px) {
         .container {
           width: min(var(--container), calc(100% - 24px));
+        }
+
+        body::after {
+          display: none;
         }
 
         .hero {
@@ -2178,8 +2218,10 @@
           <img
             class="brand__icon"
             id="brandIcon"
-            src="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
+            src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_160/v1775644952/Group_17_gwygic.png"
             alt="Иконка GLAIRE"
+            fetchpriority="high"
+            decoding="async"
           />
           <div class="brand__text">
             <div class="brand__title">GLAIRE</div>
@@ -2398,8 +2440,10 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644872/IMG_1407_vuas5m.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775644872/IMG_1407_vuas5m.jpg"
                   alt="Интерьер студии GLAIRE"
+                  fetchpriority="high"
+                  decoding="async"
                 />
               </div>
 
@@ -2459,7 +2503,7 @@
                   <iframe
                     id="mapFrame"
                     title="Карта студии GLAIRE"
-                    src="https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14"
+                    src="about:blank"
                     loading="lazy"
                     allowfullscreen="true"
                   ></iframe>
@@ -2478,10 +2522,11 @@
                   <strong data-edit="telegramQrTitle">Telegram</strong>
                   <img
                     id="telegramQr"
-                    src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png"
+                    src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_320/v1775644812/telegram_qr_kczbjt.png"
                     alt="QR Telegram"
                     class="qr-code"
                     loading="lazy"
+                    decoding="async"
                   />
                   <p data-edit="telegramQrText">
                     Быстрый способ написать, отправить фото волос и уточнить
@@ -2493,10 +2538,11 @@
                   <strong data-edit="vkQrTitle">VK</strong>
                   <img
                     id="vkQr"
-                    src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png"
+                    src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_320/v1775644812/vk_qr_lv3vds.png"
                     alt="QR VK"
                     class="qr-code"
                     loading="lazy"
+                    decoding="async"
                   />
                   <p data-edit="vkQrText">
                     Удобно, если хочется посмотреть контент студии и перейти к
@@ -2615,9 +2661,10 @@
               <div class="master-photo-shell" id="masterPhotoShell">
                 <img
                   id="masterPhoto"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_960/v1775644909/IMG_0228_wncs1p.jpg"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div class="master-photo__empty" id="masterPhotoEmpty">
                   <span>GLAIRE</span>
@@ -2821,12 +2868,11 @@
                   <video
                     class="content-card__video"
                     id="contentVideo1"
-                    autoplay
                     playsinline
                     muted
                     loop
                     controls
-                    preload="metadata"
+                    preload="none"
                   ></video>
                   <div class="content-card__placeholder">
                     <div>
@@ -2853,12 +2899,11 @@
                   <video
                     class="content-card__video"
                     id="contentVideo2"
-                    autoplay
                     playsinline
                     muted
                     loop
                     controls
-                    preload="metadata"
+                    preload="none"
                   ></video>
                   <div class="content-card__placeholder">
                     <div>
@@ -2883,12 +2928,11 @@
                   <video
                     class="content-card__video"
                     id="contentVideo3"
-                    autoplay
                     playsinline
                     muted
                     loop
                     controls
-                    preload="metadata"
+                    preload="none"
                   ></video>
                   <div class="content-card__placeholder">
                     <div>
@@ -2915,12 +2959,11 @@
                   <video
                     class="content-card__video"
                     id="contentVideo4"
-                    autoplay
                     playsinline
                     muted
                     loop
                     controls
-                    preload="metadata"
+                    preload="none"
                   ></video>
                   <div class="content-card__placeholder">
                     <div>
@@ -2978,9 +3021,10 @@
               <div class="works-slider__viewport" id="worksSliderViewport">
                 <img
                   id="worksSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775647544/IMG_2860_aeyldt.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
 
@@ -3200,9 +3244,10 @@
                 <img
                   class="consult-qr__image"
                   id="consultQr"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_320/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png"
                   alt="QR для консультации GLAIRE"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div class="consult-note">
@@ -3599,6 +3644,102 @@
         ADMIN_QUERY_VALUE;
 
       /*
+        Профили оптимизации для Cloudinary.
+        Сайт старается получать не оригиналы, а уже ограниченные по размеру
+        версии изображений и видео под конкретный блок.
+      */
+      const CLOUDINARY_IMAGE_TRANSFORMS = {
+        brandImage: "f_auto,q_auto,dpr_auto,c_limit,w_160",
+        heroSlide1: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
+        heroSlide2: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
+        masterPhoto: "f_auto,q_auto,dpr_auto,c_limit,w_960",
+        consultQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
+        telegramQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
+        vkQr: "f_auto,q_auto,dpr_auto,c_limit,w_320",
+        newsImage1: "f_auto,q_auto,dpr_auto,c_limit,w_900",
+        newsImage2: "f_auto,q_auto,dpr_auto,c_limit,w_900",
+        newsImage3: "f_auto,q_auto,dpr_auto,c_limit,w_900",
+        worksSlide: "f_auto,q_auto,dpr_auto,c_limit,w_1280",
+      };
+
+      /* Проверяет, является ли ссылка Cloudinary-адресом */
+      function isCloudinaryUrl(value) {
+        return /^https?:\/\/res\.cloudinary\.com\//.test(String(value || ""));
+      }
+
+      /*
+        Вставляет в Cloudinary-ссылку нужный набор трансформаций.
+        Это даёт более лёгкий файл без ручной правки каждой ссылки.
+      */
+      function applyCloudinaryTransform(value, transform) {
+        const source = String(value || "").trim();
+        if (!source || !transform || !isCloudinaryUrl(source)) return source;
+
+        const match = source.match(/^(.*\/(?:image|video)\/upload\/)(.*)$/);
+        if (!match) return source;
+
+        const prefix = match[1];
+        const remainder = match[2];
+        const versionMatch = remainder.match(/(?:^|\/)(v\d+\/.*)$/);
+        const tail = versionMatch ? versionMatch[1] : remainder.replace(/^\/+/, "");
+
+        return `${prefix}${transform}/${tail}`;
+      }
+
+      /* Оптимизирует изображение под конкретный блок сайта */
+      function optimizeConfiguredImage(key, value) {
+        return applyCloudinaryTransform(
+          value,
+          CLOUDINARY_IMAGE_TRANSFORMS[key],
+        );
+      }
+
+      /* Возвращает данные о сети, если браузер их умеет сообщать */
+      function getNetworkConnectionInfo() {
+        return (
+          navigator.connection ||
+          navigator.mozConnection ||
+          navigator.webkitConnection ||
+          null
+        );
+      }
+
+      /*
+        Собирает трансформацию для видео с учётом ширины карточки и сети.
+        Так ролик приходит ближе к реальному размеру, а не тяжёлым оригиналом.
+      */
+      function getContentVideoTransform(cardNode) {
+        const mediaNode =
+          cardNode?.querySelector(".content-card__media") || cardNode;
+        const renderedWidth = Math.max(mediaNode?.clientWidth || 0, 320);
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+        const connection = getNetworkConnectionInfo();
+        const effectiveType = String(connection?.effectiveType || "");
+        const saveData = Boolean(connection?.saveData);
+
+        let targetWidth = Math.ceil(renderedWidth * dpr);
+        let quality = "q_auto:good";
+
+        if (saveData || /slow-2g|2g/.test(effectiveType)) {
+          targetWidth = Math.min(targetWidth, 360);
+          quality = "q_auto:eco";
+        } else if (effectiveType === "3g") {
+          targetWidth = Math.min(targetWidth, 420);
+          quality = "q_auto:eco";
+        } else {
+          targetWidth = Math.min(targetWidth, 640);
+        }
+
+        targetWidth = Math.max(320, targetWidth);
+        return `f_auto,${quality},vc_auto,w_${targetWidth},c_limit`;
+      }
+
+      /* Оптимизирует видео под конкретную карточку контента */
+      function optimizeConfiguredVideo(value, cardNode) {
+        return applyCloudinaryTransform(value, getContentVideoTransform(cardNode));
+      }
+
+      /*
         Список альтернативных путей к изображениям.
         Это нужно, чтобы сайт одинаково работал и со старой структурой папок,
         и с новой папкой assets после публикации на GitHub Pages.
@@ -3825,7 +3966,7 @@
       /* Собирает список источников для конкретного поля config с локальным резервом */
       function getImageCandidatesForKey(key, ...values) {
         return buildImageCandidateList(
-          ...values,
+          ...values.map((value) => optimizeConfiguredImage(key, value)),
           ...(LOCAL_IMAGE_FALLBACKS[key] || []),
         );
       }
@@ -3909,6 +4050,60 @@
           .filter((prize) => prize.title && prize.text);
       }
 
+      let mapLoadObserver = null;
+      let currentMapUrl = "";
+
+      /* Очищает отложенную загрузку карты, если она больше не нужна */
+      function disconnectMapObserver() {
+        if (!mapLoadObserver) return;
+        mapLoadObserver.disconnect();
+        mapLoadObserver = null;
+      }
+
+      /* Загружает карту только когда блок реально подошёл к экрану */
+      function scheduleMapLoad(mapUrl) {
+        const mapEmbed = document.getElementById("mapEmbed");
+        const mapFrame = document.getElementById("mapFrame");
+        if (!mapEmbed || !mapFrame || !mapUrl) return;
+
+        const loadMap = () => {
+          disconnectMapObserver();
+          if (currentMapUrl === mapUrl && mapFrame.getAttribute("src") === mapUrl) {
+            mapEmbed.classList.remove("is-placeholder");
+            return;
+          }
+
+          currentMapUrl = mapUrl;
+          mapFrame.onload = () => {
+            mapEmbed.classList.remove("is-placeholder");
+            mapFrame.onload = null;
+          };
+          mapFrame.src = mapUrl;
+        };
+
+        if (!("IntersectionObserver" in window)) {
+          window.setTimeout(loadMap, 260);
+          return;
+        }
+
+        disconnectMapObserver();
+        mapLoadObserver = new IntersectionObserver(
+          (entries) => {
+            if (
+              entries.some(
+                (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
+              )
+            ) {
+              loadMap();
+            }
+          },
+          {
+            rootMargin: "220px 0px",
+          },
+        );
+        mapLoadObserver.observe(mapEmbed);
+      }
+
       /*
         Включает карту или заглушку.
         Если ссылка на карту заполнена, показывается iframe.
@@ -3922,8 +4117,16 @@
         const mapUrl = (config.mapEmbedUrl || "").trim();
         const hasRealMap = Boolean(mapUrl) && !mapUrl.includes("YOUR_MAP_ID");
 
-        mapEmbed.classList.toggle("is-placeholder", !hasRealMap);
-        mapFrame.src = hasRealMap ? mapUrl : "about:blank";
+        if (!hasRealMap) {
+          disconnectMapObserver();
+          currentMapUrl = "";
+          mapEmbed.classList.add("is-placeholder");
+          mapFrame.src = "about:blank";
+          return;
+        }
+
+        mapEmbed.classList.add("is-placeholder");
+        scheduleMapLoad(mapUrl);
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
@@ -4127,38 +4330,32 @@
         titleNode.textContent = config[`contentTitle${index}`];
         textNode.textContent = config[`contentText${index}`];
 
-        /* Видео стартует сразу без звука, а звук пользователь включает сам */
-        const videoSrc = (config[`contentVideo${index}`] || "").trim();
+        /*
+          Видео в секции контента больше не грузятся все сразу.
+          В узле хранится только адрес, а реальная загрузка начинается
+          лишь когда карточка видна в ленте.
+        */
+        const videoBaseSrc = (config[`contentVideo${index}`] || "").trim();
         videoNode.muted = true;
         videoNode.defaultMuted = true;
         videoNode.loop = true;
         videoNode.autoplay = true;
         videoNode.playsInline = true;
+        videoNode.preload = "none";
 
-        if (videoSrc) {
-          cardNode.classList.remove("content-card--ready");
-          videoNode.onloadeddata = () => {
-            cardNode.classList.add("content-card--ready");
-            const playPromise = videoNode.play();
-            if (playPromise && typeof playPromise.catch === "function") {
-              playPromise.catch(() => {});
-            }
-          };
-          videoNode.onerror = () => {
-            cardNode.classList.remove("content-card--ready");
-          };
-          if (videoNode.getAttribute("src") !== videoSrc) {
-            videoNode.src = videoSrc;
-          }
-          videoNode.load();
+        if (videoBaseSrc) {
+          videoNode.dataset.videoBaseSrc = videoBaseSrc;
         } else {
-          videoNode.onloadeddata = null;
-          videoNode.onerror = null;
-          videoNode.pause();
+          videoNode.removeAttribute("data-video-base-src");
           videoNode.removeAttribute("src");
-          videoNode.load();
-          cardNode.classList.remove("content-card--ready");
         }
+
+        videoNode.onloadeddata = null;
+        videoNode.onerror = null;
+        videoNode.dataset.activeSrc = "";
+        videoNode.pause();
+        videoNode.load();
+        cardNode.classList.remove("content-card--ready");
       }
 
       /*
@@ -4214,7 +4411,10 @@
 
         ["1", "2", "3", "4"].forEach(applyContentCard);
         ["1", "2", "3"].forEach(applyNewsCard);
-        window.requestAnimationFrame(updateContentTrackControls);
+        window.requestAnimationFrame(() => {
+          updateContentTrackControls();
+          scheduleContentVideoSync();
+        });
       }
 
       /* ------------------------------------------------------------------ */
@@ -4434,6 +4634,9 @@
       const contentTrack = document.getElementById("contentTrack");
       const contentPrevBtn = document.getElementById("contentPrevBtn");
       const contentNextBtn = document.getElementById("contentNextBtn");
+      const contentCards = Array.from(
+        document.querySelectorAll("[data-content-card]"),
+      );
 
       let heroSlideIndex = 0;
       let swipeStartX = null;
@@ -4444,11 +4647,134 @@
       let worksSliderTimer = null;
       let contentSwipeStartX = null;
       let contentSwipeDeltaX = 0;
+      let contentVideoSyncFrame = 0;
+      let contentVideoLoadTimers = [];
+
+      /* Возвращает video-элемент внутри карточки контента */
+      function getContentCardVideoNode(cardNode) {
+        return cardNode?.querySelector(".content-card__video") || null;
+      }
+
+      /* Сбрасывает отложенные загрузки роликов, если пользователь уже прокрутил дальше */
+      function clearScheduledContentVideoLoads() {
+        contentVideoLoadTimers.forEach((timerId) => window.clearTimeout(timerId));
+        contentVideoLoadTimers = [];
+      }
+
+      /* Включает и запускает только те ролики, которые реально видны */
+      function activateContentCardVideo(cardNode) {
+        const videoNode = getContentCardVideoNode(cardNode);
+        if (!videoNode) return;
+
+        const videoBaseSrc = String(videoNode.dataset.videoBaseSrc || "").trim();
+        const videoSrc = optimizeConfiguredVideo(videoBaseSrc, cardNode);
+        if (!videoSrc) {
+          cardNode.classList.remove("content-card--ready");
+          return;
+        }
+
+        const revealAndPlay = () => {
+          cardNode.classList.add("content-card--ready");
+          const playPromise = videoNode.play();
+          if (playPromise && typeof playPromise.catch === "function") {
+            playPromise.catch(() => {});
+          }
+        };
+
+        if (videoNode.dataset.activeSrc !== videoSrc) {
+          cardNode.classList.remove("content-card--ready");
+          videoNode.onloadeddata = () => {
+            if (videoNode.dataset.activeSrc !== videoSrc) return;
+            revealAndPlay();
+          };
+          videoNode.onerror = () => {
+            if (videoNode.dataset.activeSrc === videoSrc) {
+              cardNode.classList.remove("content-card--ready");
+            }
+          };
+          videoNode.src = videoSrc;
+          videoNode.dataset.activeSrc = videoSrc;
+          videoNode.load();
+          return;
+        }
+
+        if (videoNode.readyState >= 2) {
+          revealAndPlay();
+        }
+      }
+
+      /* Останавливает скрытые ролики и выгружает их, чтобы не грузить сеть */
+      function deactivateContentCardVideo(cardNode) {
+        const videoNode = getContentCardVideoNode(cardNode);
+        if (!videoNode) return;
+
+        videoNode.pause();
+        videoNode.onloadeddata = null;
+        videoNode.onerror = null;
+        if (videoNode.getAttribute("src")) {
+          videoNode.removeAttribute("src");
+          videoNode.load();
+        }
+        videoNode.dataset.activeSrc = "";
+        cardNode.classList.remove("content-card--ready");
+      }
+
+      /* Проверяет, какие карточки контента сейчас видны в ленте */
+      function syncVisibleContentVideos() {
+        if (!contentTrack) return;
+        const trackRect = contentTrack.getBoundingClientRect();
+        if (!trackRect.width) return;
+
+        clearScheduledContentVideoLoads();
+        const visibleCards = [];
+
+        contentCards.forEach((cardNode) => {
+          const rect = cardNode.getBoundingClientRect();
+          const visibleWidth = Math.max(
+            0,
+            Math.min(rect.right, trackRect.right) -
+              Math.max(rect.left, trackRect.left),
+          );
+          const visibleRatio = visibleWidth / Math.min(rect.width, trackRect.width);
+
+          if (visibleRatio >= 0.55) {
+            visibleCards.push({ cardNode, visibleRatio });
+          } else {
+            deactivateContentCardVideo(cardNode);
+          }
+        });
+
+        visibleCards
+          .sort((left, right) => right.visibleRatio - left.visibleRatio)
+          .forEach(({ cardNode }, index) => {
+            if (index === 0) {
+              activateContentCardVideo(cardNode);
+              return;
+            }
+
+            const timerId = window.setTimeout(() => {
+              activateContentCardVideo(cardNode);
+            }, 180 * index);
+            contentVideoLoadTimers.push(timerId);
+          });
+      }
+
+      /* Обновляет список активных роликов не чаще одного кадра */
+      function scheduleContentVideoSync() {
+        if (!contentTrack || contentVideoSyncFrame) return;
+        contentVideoSyncFrame = window.requestAnimationFrame(() => {
+          contentVideoSyncFrame = 0;
+          syncVisibleContentVideos();
+        });
+      }
 
       const WORKS_SLIDES = [
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
+            optimizeConfiguredImage(
+              "worksSlide",
+              "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
+            ),
             "assets/models/model-1.jpg",
             "фото моделей/IMG_2860.jpg",
           ),
@@ -4456,7 +4782,10 @@
         },
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
+            optimizeConfiguredImage(
+              "worksSlide",
+              "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
+            ),
             "assets/models/model-2.jpg",
             "фото моделей/IMG_2858.jpg",
           ),
@@ -4464,7 +4793,10 @@
         },
         {
           sources: buildImageCandidateList(
-            "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
+            optimizeConfiguredImage(
+              "worksSlide",
+              "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
+            ),
             "assets/models/model-3.jpg",
             "фото моделей/IMG_2861.jpg",
           ),
@@ -4615,11 +4947,40 @@
         contentNextBtn?.addEventListener("click", () => {
           scrollContentTrack(1);
         });
-        contentTrack.addEventListener("scroll", updateContentTrackControls, {
-          passive: true,
+        contentTrack.addEventListener(
+          "scroll",
+          () => {
+            updateContentTrackControls();
+            scheduleContentVideoSync();
+          },
+          {
+            passive: true,
+          },
+        );
+        window.addEventListener("resize", () => {
+          updateContentTrackControls();
+          scheduleContentVideoSync();
         });
-        window.addEventListener("resize", updateContentTrackControls);
-        window.requestAnimationFrame(updateContentTrackControls);
+        window.addEventListener(
+          "scroll",
+          () => {
+            scheduleContentVideoSync();
+          },
+          { passive: true },
+        );
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            document
+              .querySelectorAll(".content-card__video")
+              .forEach((videoNode) => videoNode.pause());
+            return;
+          }
+          scheduleContentVideoSync();
+        });
+        window.requestAnimationFrame(() => {
+          updateContentTrackControls();
+          scheduleContentVideoSync();
+        });
 
         contentTrack.addEventListener("pointerdown", (event) => {
           if (event.pointerType === "mouse" && event.button !== 0) return;
