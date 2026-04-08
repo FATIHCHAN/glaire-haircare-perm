@@ -426,6 +426,21 @@
         gap: 8px;
       }
 
+      .nav__meta {
+        display: none;
+      }
+
+      .nav__phone,
+      .nav__hours {
+        color: var(--text-soft);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .nav__phone {
+        font-weight: 500;
+      }
+
       .nav a,
       .nav button {
         color: var(--text-soft);
@@ -568,8 +583,8 @@
       }
 
       .hero-social-link:hover {
-        background: rgba(244, 241, 236, 0.026);
-        border-color: rgba(222, 214, 205, 0.08);
+        background: rgba(244, 241, 236, 0.05);
+        border-color: rgba(222, 214, 205, 0.18);
       }
 
       .hero-social-link .social-link__icon {
@@ -910,6 +925,26 @@
         gap: 12px;
         text-align: center;
         min-height: 184px;
+        cursor: pointer;
+      }
+
+      .qr-card-link,
+      .qr-box--link {
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          background 0.22s ease,
+          box-shadow 0.22s ease;
+      }
+
+      .qr-card-link:hover,
+      .qr-card-link:focus-visible,
+      .qr-box--link:hover,
+      .qr-box--link:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(222, 214, 205, 0.22);
+        background: rgba(244, 241, 236, 0.05);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
       }
 
       .contact-card--qr strong {
@@ -927,6 +962,27 @@
         aspect-ratio: 1 / 1;
         object-fit: contain;
         border-radius: 16px;
+      }
+
+      .qr-link-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(222, 214, 205, 0.14);
+        background: rgba(244, 241, 236, 0.05);
+        color: var(--accent-3);
+        font-size: 11px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .qr-link-hint::after {
+        content: "↗";
+        font-size: 12px;
+        line-height: 1;
       }
 
       /* ------------------------------------------------------------------ */
@@ -1048,12 +1104,58 @@
         line-height: 1.7;
       }
 
+      .scratch-swipe-hint {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: fit-content;
+        max-width: calc(100% - 36px);
+        margin: 0 auto;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(222, 214, 205, 0.14);
+        background: rgba(10, 16, 24, 0.58);
+        color: rgba(245, 240, 234, 0.86);
+        font-size: 11px;
+        line-height: 1.35;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        pointer-events: none;
+      }
+
+      .scratch-swipe-hint::before,
+      .scratch-swipe-hint::after {
+        content: "↔";
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .scratch-shell.is-open .scratch-swipe-hint {
+        opacity: 0;
+        transform: translateY(6px);
+        transition:
+          opacity 0.22s ease,
+          transform 0.22s ease;
+      }
+
       #scratchCanvas {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         cursor: crosshair;
+        touch-action: none;
+      }
+
+      .scratch-shell {
         touch-action: none;
       }
 
@@ -1240,10 +1342,16 @@
         gap: 12px;
       }
 
+      .social-links--master {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
       .social-link {
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        position: relative;
+        overflow: hidden;
         gap: 12px;
         width: 100%;
         min-height: 72px;
@@ -1255,15 +1363,84 @@
         text-decoration: none;
         cursor: pointer;
         transition:
-          transform 0.2s ease,
-          background 0.2s ease,
-          border-color 0.2s ease;
+          transform 0.22s ease,
+          background 0.22s ease,
+          border-color 0.22s ease,
+          box-shadow 0.22s ease;
+      }
+
+      .social-link > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .social-link::before,
+      .social-link::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        transition:
+          opacity 0.22s ease,
+          transform 0.45s ease;
+      }
+
+      .social-link::before {
+        inset: 0;
+        background: linear-gradient(
+          118deg,
+          transparent 0%,
+          rgba(245, 240, 234, 0.02) 26%,
+          rgba(245, 240, 234, 0.14) 48%,
+          rgba(245, 240, 234, 0.02) 70%,
+          transparent 100%
+        );
+        opacity: 0;
+        transform: translateX(-118%);
+      }
+
+      .social-link::after {
+        right: -28px;
+        bottom: -34px;
+        width: 92px;
+        height: 92px;
+        border-radius: 999px;
+        background: radial-gradient(
+          circle,
+          rgba(229, 221, 212, 0.14),
+          transparent 68%
+        );
+        opacity: 0;
+        transform: scale(0.78);
       }
 
       .social-link:hover {
-        transform: translateY(-1px);
-        background: rgba(244, 241, 236, 0.06);
+        transform: translateY(-2px);
+        background: rgba(244, 241, 236, 0.058);
         border-color: rgba(222, 214, 205, 0.22);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
+      }
+
+      .social-link:hover::before,
+      .social-link:focus-visible::before {
+        opacity: 1;
+        transform: translateX(118%);
+      }
+
+      .social-link:hover::after,
+      .social-link:focus-visible::after {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .social-link:hover .social-link__icon,
+      .social-link:focus-visible .social-link__icon {
+        transform: translateY(-1px) scale(1.05);
+        background: rgba(244, 241, 236, 0.12);
+        border-color: rgba(222, 214, 205, 0.18);
+      }
+
+      .social-link:active {
+        transform: scale(0.985);
       }
 
       .social-link.is-inactive {
@@ -1290,6 +1467,10 @@
         border-radius: 12px;
         background: rgba(244, 241, 236, 0.08);
         color: var(--accent-3);
+        transition:
+          transform 0.22s ease,
+          background 0.22s ease,
+          border-color 0.22s ease;
       }
 
       .social-link svg {
@@ -2032,6 +2213,15 @@
           display: grid;
         }
 
+        .nav__meta {
+          display: grid;
+          grid-column: 1 / -1;
+          justify-items: center;
+          gap: 4px;
+          padding: 8px 10px 0;
+          text-align: center;
+        }
+
         .nav a,
         .nav button {
           width: 100%;
@@ -2071,7 +2261,8 @@
         }
 
         .map-embed iframe {
-          filter: none;
+          filter: grayscale(0.22) invert(0.9) hue-rotate(180deg)
+            saturate(0.78) brightness(0.9) contrast(0.98);
         }
 
         .news-track {
@@ -2095,6 +2286,16 @@
         .content-card,
         .story-card {
           scroll-snap-align: start;
+        }
+
+        .social-links--master {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .social-links--master > .social-link:last-child:nth-child(3) {
+          grid-column: 1 / -1;
+          justify-self: center;
+          width: min(100%, calc(50% - 6px));
         }
       }
 
@@ -2202,6 +2403,45 @@
           grid-column: auto;
         }
       }
+
+      @media (max-width: 390px) {
+        .btn,
+        .nav a,
+        .nav button {
+          min-height: 44px;
+          padding: 0 14px;
+          font-size: 13px;
+        }
+
+        .hero__actions .btn {
+          min-height: 52px;
+          padding: 12px 14px;
+          text-align: center;
+          line-height: 1.32;
+          white-space: normal;
+        }
+
+        .hero-social-link {
+          min-height: 52px;
+          padding: 8px 10px 8px 8px;
+          gap: 8px;
+        }
+
+        .hero-social-link .social-link__icon {
+          width: 28px;
+          height: 28px;
+        }
+
+        .hero-social-link > span:last-child,
+        .social-link > span:last-child {
+          font-size: 12px;
+        }
+
+        .nav__phone,
+        .nav__hours {
+          font-size: 12px;
+        }
+      }
     </style>
   </head>
   <body id="top">
@@ -2269,6 +2509,14 @@
           <button id="openAdminBtn" class="admin-entry" type="button" hidden>
             Админ
           </button>
+          <div class="nav__meta">
+            <span class="nav__phone" data-edit="mobileMenuPhone">
+              +7 (992) 213-82-59
+            </span>
+            <span class="nav__hours" data-edit="mobileMenuHours">
+              Ежедневно с 9:00 до 21:00
+            </span>
+          </div>
         </nav>
       </div>
     </header>
@@ -2346,6 +2594,7 @@
               <div class="hero-socials">
                 <a
                   class="social-link hero-social-link"
+                  data-social-group="studio"
                   data-social-link="vk"
                   target="_blank"
                   rel="noreferrer"
@@ -2363,6 +2612,7 @@
 
                 <a
                   class="social-link hero-social-link"
+                  data-social-group="studio"
                   data-social-link="telegram"
                   target="_blank"
                   rel="noreferrer"
@@ -2380,6 +2630,7 @@
 
                 <a
                   class="social-link hero-social-link"
+                  data-social-group="studio"
                   data-social-link="instagram"
                   target="_blank"
                   rel="noreferrer"
@@ -2397,6 +2648,7 @@
 
                 <a
                   class="social-link hero-social-link"
+                  data-social-group="studio"
                   data-social-link="tiktok"
                   target="_blank"
                   rel="noreferrer"
@@ -2518,7 +2770,14 @@
               </div>
 
               <div class="qr-row">
-                <div class="contact-card contact-card--qr">
+                <a
+                  class="contact-card contact-card--qr qr-card-link"
+                  id="telegramQrLink"
+                  href="https://t.me/glaire_haircare_perm"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Открыть Telegram студии"
+                >
                   <strong data-edit="telegramQrTitle">Telegram</strong>
                   <img
                     id="telegramQr"
@@ -2528,13 +2787,21 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="qr-link-hint">Нажмите на QR</span>
                   <p data-edit="telegramQrText">
                     Быстрый способ написать, отправить фото волос и уточнить
                     детали перед визитом.
                   </p>
-                </div>
+                </a>
 
-                <div class="contact-card contact-card--qr">
+                <a
+                  class="contact-card contact-card--qr qr-card-link"
+                  id="vkQrLink"
+                  href="https://vk.com/glaire_haircare_perm"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Открыть VK студии"
+                >
                   <strong data-edit="vkQrTitle">VK</strong>
                   <img
                     id="vkQr"
@@ -2544,11 +2811,12 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="qr-link-hint">Нажмите на QR</span>
                   <p data-edit="vkQrText">
                     Удобно, если хочется посмотреть контент студии и перейти к
                     общению в привычном формате.
                   </p>
-                </div>
+                </a>
               </div>
             </div>
           </aside>
@@ -2589,6 +2857,9 @@
                       сейчас.
                     </p>
                   </div>
+                </div>
+                <div class="scratch-swipe-hint" data-edit="scratchSwipeHint">
+                  Ведите влево и вправо
                 </div>
                 <canvas id="scratchCanvas"></canvas>
               </div>
@@ -2746,9 +3017,13 @@
                   </p>
                 </div>
 
-                <div class="social-links" data-socials-wrapper>
+                <div
+                  class="social-links social-links--master"
+                  data-socials-wrapper="master"
+                >
                   <a
                     class="social-link"
+                    data-social-group="master"
                     data-social-link="vk"
                     target="_blank"
                     rel="noreferrer"
@@ -2766,6 +3041,7 @@
 
                   <a
                     class="social-link"
+                    data-social-group="master"
                     data-social-link="instagram"
                     target="_blank"
                     rel="noreferrer"
@@ -2783,6 +3059,7 @@
 
                   <a
                     class="social-link"
+                    data-social-group="master"
                     data-social-link="telegram"
                     target="_blank"
                     rel="noreferrer"
@@ -3240,7 +3517,14 @@
             </p>
 
             <div class="consult-qr">
-              <div class="qr-box">
+              <a
+                class="qr-box qr-box--link"
+                id="consultQrLink"
+                href="https://t.me/glaire_haircare_perm_admin"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Открыть консультацию в Telegram"
+              >
                 <img
                   class="consult-qr__image"
                   id="consultQr"
@@ -3249,7 +3533,8 @@
                   loading="lazy"
                   decoding="async"
                 />
-              </div>
+                <span class="qr-link-hint">Нажмите на QR</span>
+              </a>
               <div class="consult-note">
                 <span data-edit="consultNote"
                   >Сканируйте QR и перейдите в удобный канал для первого
@@ -3402,7 +3687,7 @@
       */
       const CONFIG_DEFAULT = {
         /* Основные ссылки, логотип и общие изображения */
-        infoUrl: "https://dikidi.net/1954293?p=0.pi-ssm",
+        infoUrl: "https://t.me/glaire_haircare_perm",
         bookUrl: "https://dikidi.net/1954293?p=1.pi-ssm",
         mapEmbedUrl:
           "https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14",
@@ -3420,6 +3705,11 @@
         telegramQr:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
         vkQr: "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+        consultQrLink: "https://t.me/glaire_haircare_perm_admin",
+        telegramQrLink: "https://t.me/glaire_haircare_perm",
+        vkQrLink: "https://vk.com/glaire_haircare_perm",
+        mobileMenuPhone: "+7 (992) 213-82-59",
+        mobileMenuHours: "Ежедневно с 9:00 до 21:00",
         navInfoLabel: "Консультация",
         navBookLabel: "Записаться",
 
@@ -3460,8 +3750,9 @@
         bonusText:
           "Это не шумная акция, а мягкая привилегия от студии. Механика помогает начать знакомство спокойно: сначала интерес, затем запись на удобное время.",
         scratchLabel: "Ваш бонус GLAIRE",
+        scratchSwipeHint: "Ведите влево и вправо",
         scratchHint:
-          "Проведите по слою мышкой или пальцем. Если бонус понравился, ниже уже есть быстрый переход к записи.",
+          "Лучше вести по слою влево и вправо. Так бонус открывается быстрее и страница не уходит вверх-вниз. Сохраните бонус скриншотом и покажите его при записи.",
         scratchResetLabel: "Открыть ещё раз",
         bonusSideTitle1: "Почему это лучше обычной скидки",
         bonusSideText1:
@@ -3471,7 +3762,7 @@
           "Комплимент к визиту\nДополнительный этап ухода\nЗащиту цвета в подарок\nПриоритет по свободным датам\nСекретный бонус от GLAIRE",
         bonusSideTitle3: "Как использовать бонус",
         bonusSideText3:
-          "После открытия бонуса можно сразу перейти к записи или написать перед визитом. Это оставляет человеку свободу, но не теряет его интерес.",
+          "После открытия бонуса можно сразу перейти к записи или написать перед визитом. Лучше сохранить результат скриншотом и показать его при записи, чтобы бонус было удобно активировать.",
         scratchPrize1Title: "Комплимент к визиту",
         scratchPrize1Text:
           "Небольшая привилегия от студии, которую можно активировать на ближайшем визите.",
@@ -3487,6 +3778,21 @@
         scratchPrize5Title: "Секретный бонус GLAIRE",
         scratchPrize5Text:
           "Персональная привилегия, которую можно обсудить при записи или консультации.",
+        scratchPrize6Title: "Мини-ритуал блеска",
+        scratchPrize6Text:
+          "Лёгкий завершающий этап, который делает волосы визуально более гладкими и собранными.",
+        scratchPrize7Title: "Бонус к домашнему уходу",
+        scratchPrize7Text:
+          "Подсказка по домашнему уходу и продукту, который лучше подойдёт именно под текущее состояние длины.",
+        scratchPrize8Title: "Тёплый welcome-комплимент",
+        scratchPrize8Text:
+          "Небольшой знак внимания от студии, который приятно активировать на ближайшем визите.",
+        scratchPrize9Title: "Приоритет на консультацию",
+        scratchPrize9Text:
+          "Если хочется сначала всё уточнить, у вас будет более быстрый вход в диалог перед записью.",
+        scratchPrize10Title: "Сюрприз в день визита",
+        scratchPrize10Text:
+          "Небольшой скрытый бонус, который раскрывается уже ближе к самой записи.",
 
         /* Блок о мастере */
         masterSectionEyebrow: "О мастере",
@@ -3515,10 +3821,14 @@
           "Здесь можно оставить быстрые ссылки на рабочие соцсети мастера: VK, Instagram и Telegram для связи, фото работ и спокойного контакта перед записью.",
         socialsEmptyText:
           "Ссылки можно добавить в админке. Блок уже подготовлен для VK, Instagram и Telegram.",
-        socialTelegramUrl: "",
-        socialVkUrl: "",
-        socialInstagramUrl: "",
-        socialTiktokUrl: "",
+        socialTelegramUrl: "https://t.me/glaire_haircare_perm",
+        socialVkUrl: "https://vk.com/glaire_haircare_perm",
+        socialInstagramUrl:
+          "https://www.instagram.com/glaire_haircare_perm?igsh=enpodXFjNXo1a2Zr&utm_source=qr",
+        socialTiktokUrl: "https://www.tiktok.com/@glaire.haircare.perm",
+        masterSocialTelegramUrl: "https://t.me/glaire_haircare_perm_admin",
+        masterSocialVkUrl: "https://vk.com/valeradomnin2019",
+        masterSocialInstagramUrl: "https://www.instagram.com/reald1v3rse/",
 
         /* Блок с вертикальными видео */
         contentEyebrow: "Контент студии",
@@ -3624,11 +3934,17 @@
         Список соцсетей вынесен отдельно.
         Это позволяет использовать одни и те же ссылки в нескольких блоках страницы.
       */
-      const SOCIAL_LINKS = [
+      const STUDIO_SOCIAL_LINKS = [
         { platform: "vk", key: "socialVkUrl" },
         { platform: "instagram", key: "socialInstagramUrl" },
         { platform: "telegram", key: "socialTelegramUrl" },
         { platform: "tiktok", key: "socialTiktokUrl" },
+      ];
+
+      const MASTER_SOCIAL_LINKS = [
+        { platform: "vk", key: "masterSocialVkUrl" },
+        { platform: "instagram", key: "masterSocialInstagramUrl" },
+        { platform: "telegram", key: "masterSocialTelegramUrl" },
       ];
 
       /*
@@ -3886,6 +4202,13 @@
             nextConfig.consultQr = CONFIG_DEFAULT.consultQr;
           }
 
+          if (
+            !nextConfig.infoUrl ||
+            nextConfig.infoUrl === "https://dikidi.net/1954293?p=0.pi-ssm"
+          ) {
+            nextConfig.infoUrl = CONFIG_DEFAULT.infoUrl;
+          }
+
           /*
             Защитная подстановка для фото мастера.
             Если путь не заполнен, берётся изображение по умолчанию.
@@ -3904,6 +4227,36 @@
 
           if (!nextConfig.newsImage3) {
             nextConfig.newsImage3 = CONFIG_DEFAULT.newsImage3;
+          }
+
+          if (!nextConfig.socialVkUrl) {
+            nextConfig.socialVkUrl = CONFIG_DEFAULT.socialVkUrl;
+          }
+
+          if (!nextConfig.socialInstagramUrl) {
+            nextConfig.socialInstagramUrl = CONFIG_DEFAULT.socialInstagramUrl;
+          }
+
+          if (!nextConfig.socialTelegramUrl) {
+            nextConfig.socialTelegramUrl = CONFIG_DEFAULT.socialTelegramUrl;
+          }
+
+          if (!nextConfig.socialTiktokUrl) {
+            nextConfig.socialTiktokUrl = CONFIG_DEFAULT.socialTiktokUrl;
+          }
+
+          if (!nextConfig.masterSocialVkUrl) {
+            nextConfig.masterSocialVkUrl = CONFIG_DEFAULT.masterSocialVkUrl;
+          }
+
+          if (!nextConfig.masterSocialInstagramUrl) {
+            nextConfig.masterSocialInstagramUrl =
+              CONFIG_DEFAULT.masterSocialInstagramUrl;
+          }
+
+          if (!nextConfig.masterSocialTelegramUrl) {
+            nextConfig.masterSocialTelegramUrl =
+              CONFIG_DEFAULT.masterSocialTelegramUrl;
           }
 
           if (!nextConfig.contentVideo1) {
@@ -4038,7 +4391,7 @@
 
       /* Собирает список возможных бонусов для scratch-блока */
       function getScratchPrizes() {
-        return [1, 2, 3, 4, 5]
+        return Array.from({ length: 10 }, (_, index) => index + 1)
           .map((index) => ({
             title:
               config[`scratchPrize${index}Title`] ||
@@ -4164,39 +4517,48 @@
 
       /* Показывает активные соцсети и делает пустые ссылки неактивными */
       function applySocialLinks() {
-        let visibleCount = 0;
+        function applySocialGroup(groupName, links, emptyNodeId = "") {
+          let visibleCount = 0;
 
-        SOCIAL_LINKS.forEach(({ platform, key }) => {
-          const url = (config[key] || "").trim();
+          links.forEach(({ platform, key }) => {
+            const url = (config[key] || "").trim();
+            document
+              .querySelectorAll(
+                `[data-social-group="${groupName}"][data-social-link="${platform}"]`,
+              )
+              .forEach((node) => {
+                if (url) {
+                  node.href = url;
+                  node.hidden = false;
+                  node.classList.remove("is-inactive");
+                  node.removeAttribute("aria-disabled");
+                  node.removeAttribute("tabindex");
+                  visibleCount += 1;
+                } else {
+                  node.hidden = false;
+                  node.removeAttribute("href");
+                  node.classList.add("is-inactive");
+                  node.setAttribute("aria-disabled", "true");
+                  node.tabIndex = -1;
+                }
+              });
+          });
+
           document
-            .querySelectorAll(`[data-social-link="${platform}"]`)
+            .querySelectorAll(`[data-socials-wrapper="${groupName}"]`)
             .forEach((node) => {
-              if (url) {
-                node.href = url;
-                node.hidden = false;
-                node.classList.remove("is-inactive");
-                node.removeAttribute("aria-disabled");
-                node.removeAttribute("tabindex");
-                visibleCount += 1;
-              } else {
-                node.hidden = false;
-                node.removeAttribute("href");
-                node.classList.add("is-inactive");
-                node.setAttribute("aria-disabled", "true");
-                node.tabIndex = -1;
-              }
+              node.hidden = false;
             });
-        });
 
-        document.querySelectorAll("[data-socials-wrapper]").forEach((node) => {
-          node.hidden = false;
-        });
-
-        const emptyNode = document.getElementById("socialLinksEmpty");
-        if (emptyNode) {
+          if (!emptyNodeId) return;
+          const emptyNode = document.getElementById(emptyNodeId);
+          if (!emptyNode) return;
           emptyNode.hidden = visibleCount > 0;
           emptyNode.textContent = config.socialsEmptyText;
         }
+
+        applySocialGroup("studio", STUDIO_SOCIAL_LINKS);
+        applySocialGroup("master", MASTER_SOCIAL_LINKS, "socialLinksEmpty");
       }
 
       /* Включает фото мастера или показывает заглушку, если путь пустой */
@@ -4394,6 +4756,21 @@
           config.bookUrl,
           "#book",
         );
+        applyLinks(
+          ["consultQrLink"],
+          config.consultQrLink,
+          "https://t.me/glaire_haircare_perm_admin",
+        );
+        applyLinks(
+          ["telegramQrLink"],
+          config.telegramQrLink,
+          "https://t.me/glaire_haircare_perm",
+        );
+        applyLinks(
+          ["vkQrLink"],
+          config.vkQrLink,
+          "https://vk.com/glaire_haircare_perm",
+        );
 
         renderSimpleList("bonusList", config.bonusSideList, "", "li");
         renderSimpleList("visitList", config.visitItems, "future-item");
@@ -4460,6 +4837,7 @@
       function drawScratchLayer() {
         if (!scratchShell || !scratchContext) return;
         const rect = scratchShell.getBoundingClientRect();
+        scratchShell.classList.remove("is-open");
 
         scratchContext.globalCompositeOperation = "source-over";
         scratchContext.clearRect(0, 0, rect.width, rect.height);
@@ -4537,7 +4915,7 @@
       function eraseAt(x, y) {
         if (!scratchContext) return;
         scratchContext.beginPath();
-        scratchContext.arc(x, y, 24, 0, Math.PI * 2);
+        scratchContext.arc(x, y, 34, 0, Math.PI * 2);
         scratchContext.fill();
       }
 
@@ -4563,10 +4941,11 @@
       /* Полностью открывает бонус, если стёрта достаточная часть слоя */
       function openIfNeeded() {
         if (!scratchShell || !scratchContext) return;
-        if (getOpenedPercent() > 0.36) {
+        if (getOpenedPercent() > 0.1) {
           const rect = scratchShell.getBoundingClientRect();
           scratchContext.clearRect(0, 0, rect.width, rect.height);
           scratchOpened = true;
+          scratchShell.classList.add("is-open");
         }
       }
 
@@ -5137,14 +5516,39 @@
               placeholder: "assets/qr/consult-chat.png",
             },
             {
+              key: "consultQrLink",
+              label: "Ссылка по QR консультации",
+              placeholder: "https://t.me/...",
+            },
+            {
               key: "telegramQr",
               label: "QR Telegram",
               placeholder: "assets/qr/telegram-qr.png",
             },
             {
+              key: "telegramQrLink",
+              label: "Ссылка по QR Telegram",
+              placeholder: "https://t.me/...",
+            },
+            {
               key: "vkQr",
               label: "QR VK",
               placeholder: "assets/qr/vk-qr.png",
+            },
+            {
+              key: "vkQrLink",
+              label: "Ссылка по QR VK",
+              placeholder: "https://vk.com/...",
+            },
+            {
+              key: "mobileMenuPhone",
+              label: "Телефон в мобильном меню",
+              placeholder: "+7 (999) 000-00-00",
+            },
+            {
+              key: "mobileMenuHours",
+              label: "Часы работы в мобильном меню",
+              placeholder: "Ежедневно с 9:00 до 21:00",
             },
           ],
         },
@@ -5210,6 +5614,7 @@
             { key: "bonusTitle", label: "Заголовок секции", type: "textarea" },
             { key: "bonusText", label: "Описание секции", type: "textarea" },
             { key: "scratchLabel", label: "Подпись внутри scratch" },
+            { key: "scratchSwipeHint", label: "Подсказка поверх scratch" },
             {
               key: "scratchHint",
               label: "Подсказка под scratch",
@@ -5240,7 +5645,7 @@
         {
           title: "Призы внутри scratch",
           hint: "Каждый бонус хранится отдельно, чтобы можно было быстро поменять смысл механики без редактирования JS.",
-          fields: [1, 2, 3, 4, 5].flatMap((index) => [
+          fields: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].flatMap((index) => [
             {
               key: `scratchPrize${index}Title`,
               label: `Бонус ${index} — заголовок`,
@@ -5296,10 +5701,15 @@
               label: "Текст, если ссылки пока пустые",
               type: "textarea",
             },
-            { key: "socialVkUrl", label: "Ссылка мастера — VK" },
-            { key: "socialInstagramUrl", label: "Ссылка мастера — Instagram" },
-            { key: "socialTelegramUrl", label: "Ссылка мастера — Telegram" },
-            { key: "socialTiktokUrl", label: "Ссылка — TikTok" },
+            { key: "masterSocialVkUrl", label: "Ссылка мастера — VK" },
+            {
+              key: "masterSocialInstagramUrl",
+              label: "Ссылка мастера — Instagram",
+            },
+            {
+              key: "masterSocialTelegramUrl",
+              label: "Ссылка мастера — Telegram",
+            },
           ],
         },
         {
