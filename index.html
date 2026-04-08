@@ -119,9 +119,17 @@
       fetchpriority="high"
     />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -3010,6 +3018,7 @@
                     alt="QR Telegram"
                     class="qr-code"
                     loading="lazy"
+                    fetchpriority="low"
                     decoding="async"
                   />
                   <span class="qr-link-hint">Нажмите на QR</span>
@@ -3034,6 +3043,7 @@
                     alt="QR VK"
                     class="qr-code"
                     loading="lazy"
+                    fetchpriority="low"
                     decoding="async"
                   />
                   <span class="qr-link-hint">Нажмите на QR</span>
@@ -3160,6 +3170,7 @@
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_960/v1775644909/IMG_0228_wncs1p.jpg"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
+                  fetchpriority="low"
                   decoding="async"
                 />
                 <div class="master-photo__empty" id="masterPhotoEmpty">
@@ -3526,6 +3537,7 @@
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1280/v1775647544/IMG_2860_aeyldt.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
+                  fetchpriority="low"
                   decoding="async"
                 />
               </div>
@@ -3642,6 +3654,7 @@
                   id="newsImage1"
                   alt="Акция 1"
                   loading="lazy"
+                  fetchpriority="low"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3668,6 +3681,7 @@
                   id="newsImage2"
                   alt="Акция 2"
                   loading="lazy"
+                  fetchpriority="low"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3696,6 +3710,7 @@
                   id="newsImage3"
                   alt="Акция 3"
                   loading="lazy"
+                  fetchpriority="low"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3756,6 +3771,7 @@
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_320/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png"
                   alt="QR для консультации GLAIRE"
                   loading="lazy"
+                  fetchpriority="low"
                   decoding="async"
                 />
                 <span class="qr-link-hint">Нажмите на QR</span>
@@ -4183,6 +4199,23 @@
       const isAdminMode =
         new URLSearchParams(window.location.search).get(ADMIN_QUERY_PARAM) ===
         ADMIN_QUERY_VALUE;
+
+      /*
+        Безопасная обёртка для фоновых задач.
+        Если браузер умеет requestIdleCallback, используем его.
+        Если нет, даём странице сначала отрисоваться и только потом
+        запускаем необязательную работу.
+      */
+      function runWhenIdle(callback, timeout = 600) {
+        if (typeof callback !== "function") return;
+
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(callback, { timeout });
+          return;
+        }
+
+        window.setTimeout(callback, 1);
+      }
 
       /*
         Профили оптимизации для Cloudinary.
@@ -4715,7 +4748,7 @@
             }
           },
           {
-            rootMargin: "220px 0px",
+            rootMargin: "80px 0px",
           },
         );
         mapLoadObserver.observe(mapEmbed);
@@ -5090,6 +5123,9 @@
 
       let scratchIsDrawing = false;
       let scratchOpened = false;
+      let scratchInitialized = false;
+      let scratchResizeFrame = 0;
+      let scratchObserver = null;
 
       /* Выбирает случайный бонус из списка и выводит его в блок */
       function setRandomPrize() {
@@ -5110,6 +5146,15 @@
         scratchCanvas.style.height = `${rect.height}px`;
         scratchContext.setTransform(ratio, 0, 0, ratio, 0, 0);
         drawScratchLayer();
+      }
+
+      /* Планирует resize canvas не чаще одного кадра */
+      function scheduleScratchResize() {
+        if (scratchResizeFrame) return;
+        scratchResizeFrame = window.requestAnimationFrame(() => {
+          scratchResizeFrame = 0;
+          resizeScratchCanvas();
+        });
       }
 
       /* Рисует верхний слой, который стирается курсором или пальцем */
@@ -5255,22 +5300,59 @@
         if (!scratchOpened) openIfNeeded();
       }
 
-      /* Подключает scratch-логику только если все узлы блока найдены */
-      if (scratchCanvas && scratchShell && scratchContext) {
+      /* Подключает scratch только когда пользователь реально подходит к блоку */
+      function initScratchOnce() {
+        if (
+          scratchInitialized ||
+          !scratchCanvas ||
+          !scratchShell ||
+          !scratchContext
+        ) {
+          return;
+        }
+
+        scratchInitialized = true;
         scratchCanvas.addEventListener("pointerdown", startScratch);
         scratchCanvas.addEventListener("pointermove", moveScratch);
         scratchCanvas.addEventListener("pointerup", endScratch);
         scratchCanvas.addEventListener("pointercancel", endScratch);
         scratchCanvas.addEventListener("pointerleave", endScratch);
-        window.addEventListener("resize", resizeScratchCanvas);
+        window.addEventListener("resize", scheduleScratchResize, {
+          passive: true,
+        });
 
         resetScratchBtn?.addEventListener("click", () => {
           setRandomPrize();
-          resizeScratchCanvas();
+          scheduleScratchResize();
         });
 
         setRandomPrize();
-        resizeScratchCanvas();
+        scheduleScratchResize();
+      }
+
+      if (scratchCanvas && scratchShell && scratchContext) {
+        if ("IntersectionObserver" in window) {
+          scratchObserver = new IntersectionObserver(
+            (entries) => {
+              if (
+                entries.some(
+                  (entry) =>
+                    entry.isIntersecting || entry.intersectionRatio > 0,
+                )
+              ) {
+                initScratchOnce();
+                scratchObserver?.disconnect();
+                scratchObserver = null;
+              }
+            },
+            {
+              rootMargin: "180px 0px",
+            },
+          );
+          scratchObserver.observe(scratchShell);
+        } else {
+          initScratchOnce();
+        }
       }
 
       /* ------------------------------------------------------------------ */
@@ -5289,6 +5371,7 @@
       const worksSliderDots = document.getElementById("worksSliderDots");
       const worksPrevBtn = document.getElementById("worksModelsPrevBtn");
       const worksNextBtn = document.getElementById("worksModelsNextBtn");
+      const worksSection = document.getElementById("works");
       const contentTrack = document.getElementById("contentTrack");
       const contentPrevBtn = document.getElementById("contentPrevBtn");
       const contentNextBtn = document.getElementById("contentNextBtn");
@@ -5307,6 +5390,10 @@
       let contentSwipeDeltaX = 0;
       let contentVideoSyncFrame = 0;
       let contentVideoLoadTimers = [];
+      let contentTrackIsActive = false;
+      let contentTrackObserver = null;
+      let worksAutoplayObserver = null;
+      let worksAutoplayActive = false;
 
       /* Возвращает video-элемент внутри карточки контента */
       function getContentCardVideoNode(cardNode) {
@@ -5425,11 +5512,39 @@
 
       /* Обновляет список активных роликов не чаще одного кадра */
       function scheduleContentVideoSync() {
-        if (!contentTrack || contentVideoSyncFrame) return;
+        if (!contentTrack || !contentTrackIsActive || contentVideoSyncFrame) return;
         contentVideoSyncFrame = window.requestAnimationFrame(() => {
           contentVideoSyncFrame = 0;
           syncVisibleContentVideos();
         });
+      }
+
+      /* Включает синхронизацию роликов только когда секция реально рядом */
+      function setContentTrackActive(nextActive) {
+        if (contentTrackIsActive === nextActive) return;
+        contentTrackIsActive = nextActive;
+
+        if (nextActive) {
+          updateContentTrackControls();
+          scheduleContentVideoSync();
+          return;
+        }
+
+        clearScheduledContentVideoLoads();
+        contentCards.forEach((cardNode) => deactivateContentCardVideo(cardNode));
+      }
+
+      /* Автопрокрутка блока моделей активна только пока секция в зоне просмотра */
+      function setWorksAutoplayActive(nextActive) {
+        if (worksAutoplayActive === nextActive) return;
+        worksAutoplayActive = nextActive;
+
+        if (nextActive) {
+          restartWorksSliderAutoplay();
+          return;
+        }
+
+        window.clearInterval(worksSliderTimer);
       }
 
       const WORKS_SLIDES = [
@@ -5520,7 +5635,7 @@
           if (index === worksSlideIndex) dot.classList.add("is-active");
           dot.addEventListener("click", () => {
             setWorksSlide(index);
-            restartWorksSliderAutoplay();
+            if (worksAutoplayActive) restartWorksSliderAutoplay();
           });
           worksSliderDots.appendChild(dot);
         });
@@ -5595,13 +5710,29 @@
       if (worksSlideImage) {
         worksPrevBtn?.addEventListener("click", () => {
           moveWorksSlide(-1);
-          restartWorksSliderAutoplay();
+          if (worksAutoplayActive) restartWorksSliderAutoplay();
         });
         worksNextBtn?.addEventListener("click", () => {
           moveWorksSlide(1);
-          restartWorksSliderAutoplay();
+          if (worksAutoplayActive) restartWorksSliderAutoplay();
         });
-        restartWorksSliderAutoplay();
+
+        if (worksSection && "IntersectionObserver" in window) {
+          worksAutoplayObserver = new IntersectionObserver(
+            (entries) => {
+              const isVisible = entries.some(
+                (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
+              );
+              setWorksAutoplayActive(isVisible);
+            },
+            {
+              rootMargin: "180px 0px",
+            },
+          );
+          worksAutoplayObserver.observe(worksSection);
+        } else {
+          setWorksAutoplayActive(true);
+        }
       }
 
       if (contentTrack) {
@@ -5623,15 +5754,10 @@
         );
         window.addEventListener("resize", () => {
           updateContentTrackControls();
-          scheduleContentVideoSync();
-        });
-        window.addEventListener(
-          "scroll",
-          () => {
+          if (contentTrackIsActive) {
             scheduleContentVideoSync();
-          },
-          { passive: true },
-        );
+          }
+        });
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) {
             document
@@ -5639,12 +5765,27 @@
               .forEach((videoNode) => videoNode.pause());
             return;
           }
-          scheduleContentVideoSync();
+          if (contentTrackIsActive) {
+            scheduleContentVideoSync();
+          }
         });
-        window.requestAnimationFrame(() => {
-          updateContentTrackControls();
-          scheduleContentVideoSync();
-        });
+
+        if ("IntersectionObserver" in window) {
+          contentTrackObserver = new IntersectionObserver(
+            (entries) => {
+              const isVisible = entries.some(
+                (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
+              );
+              setContentTrackActive(isVisible);
+            },
+            {
+              rootMargin: "220px 0px",
+            },
+          );
+          contentTrackObserver.observe(contentTrack);
+        } else {
+          setContentTrackActive(true);
+        }
 
         contentTrack.addEventListener("pointerdown", (event) => {
           if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -5721,7 +5862,7 @@
           if (worksSwipeStartX === null) return;
           if (Math.abs(worksSwipeDeltaX) > 44) {
             moveWorksSlide(worksSwipeDeltaX > 0 ? -1 : 1);
-            restartWorksSliderAutoplay();
+            if (worksAutoplayActive) restartWorksSliderAutoplay();
           }
           if (worksSliderViewport.hasPointerCapture?.(event.pointerId)) {
             worksSliderViewport.releasePointerCapture(event.pointerId);
@@ -5755,7 +5896,13 @@
         Здесь хранится состав панели редактирования:
         заголовки секций, подсказки и список полей для каждой части сайта.
       */
-      const ADMIN_SECTIONS = [
+      let ADMIN_SECTIONS = [];
+      let ADMIN_FIELDS = [];
+
+      function ensureAdminSchema() {
+        if (ADMIN_FIELDS.length) return;
+
+        ADMIN_SECTIONS = [
         {
           title: "Основные ссылки и изображения",
           hint: "Здесь меняются основные URL, логотип, фотографии, QR и картинки ключевых блоков.",
@@ -6157,11 +6304,12 @@
             { key: "footerText", label: "Текст в подвале", type: "textarea" },
           ],
         },
-      ];
+        ];
 
-      const ADMIN_FIELDS = ADMIN_SECTIONS.flatMap((section) =>
-        section.fields.map((field) => field.key),
-      );
+        ADMIN_FIELDS = ADMIN_SECTIONS.flatMap((section) =>
+          section.fields.map((field) => field.key),
+        );
+      }
       /* ADMIN_FIELDS — это плоский список всех ключей, чтобы проще читать и сохранять форму */
 
       /* Преобразует ключ из config в id поля формы админки */
@@ -6172,6 +6320,7 @@
       /* Строит HTML формы админки на основе схемы ADMIN_SECTIONS */
       function renderAdminForm() {
         if (!adminGrid) return;
+        ensureAdminSchema();
 
         adminGrid.innerHTML = "";
 
@@ -6240,6 +6389,7 @@
 
       /* Заполняет поля админки текущими значениями из config */
       function fillAdminForm() {
+        ensureAdminSchema();
         ADMIN_FIELDS.forEach((key) => {
           const field = document.getElementById(fieldIdFromKey(key));
           if (field) field.value = config[key] || "";
@@ -6248,6 +6398,7 @@
 
       /* Считывает значения из формы и собирает обновлённый config */
       function readAdminForm() {
+        ensureAdminSchema();
         const nextConfig = { ...config };
 
         ADMIN_FIELDS.forEach((key) => {
@@ -6258,10 +6409,19 @@
         return nextConfig;
       }
 
-      renderAdminForm();
+      if (isAdminMode) {
+        runWhenIdle(() => {
+          ensureAdminSchema();
+          renderAdminForm();
+        });
+      }
 
       /* Открывает окно админки */
       function openAdmin() {
+        ensureAdminSchema();
+        if (adminGrid && !adminGrid.children.length) {
+          renderAdminForm();
+        }
         fillAdminForm();
         adminPanel?.classList.add("is-open");
       }
