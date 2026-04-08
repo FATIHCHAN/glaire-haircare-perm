@@ -1130,37 +1130,6 @@
         line-height: 1.68;
       }
 
-      .map-placeholder__actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 2px;
-      }
-
-      .map-placeholder__action {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 42px;
-        padding: 10px 16px;
-        border-radius: 999px;
-        border: 1px solid rgba(222, 214, 205, 0.14);
-        background: rgba(244, 241, 236, 0.06);
-        color: var(--text-main);
-        cursor: pointer;
-        transition:
-          transform 0.18s ease,
-          background 0.18s ease,
-          border-color 0.18s ease;
-      }
-
-      .map-placeholder__action:hover,
-      .map-placeholder__action:focus-visible {
-        transform: translateY(-1px);
-        background: rgba(244, 241, 236, 0.1);
-        border-color: rgba(222, 214, 205, 0.22);
-      }
-
       .map-embed:not(.is-placeholder) .map-placeholder {
         opacity: 0;
         pointer-events: none;
@@ -3037,28 +3006,9 @@
                   <div class="map-placeholder" id="mapPlaceholder">
                     <strong>Карта студии</strong>
                     <p>
-                      Чтобы не перегружать страницу, интерактивная карта
-                      загружается только по нажатию. Маршрут всегда можно
-                      открыть отдельно или уточнить перед визитом в сообщении.
+                      Если карта временно недоступна, маршрут всегда можно
+                      уточнить перед визитом в сообщении или по QR-коду ниже.
                     </p>
-                    <div class="map-placeholder__actions">
-                      <button
-                        class="map-placeholder__action"
-                        id="mapLoadBtn"
-                        type="button"
-                      >
-                        Показать карту здесь
-                      </button>
-                      <a
-                        class="map-placeholder__action"
-                        id="mapOpenLink"
-                        href="#"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Открыть в Яндекс Картах
-                      </a>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -4820,26 +4770,60 @@
 
       let currentMapUrl = "";
 
-      /* Загружает интерактивную карту только по прямому запросу пользователя */
-      function loadMapNow(mapUrl) {
+      let mapLoadObserver = null;
+
+      /* Очищает отложенную загрузку карты, если она больше не нужна */
+      function disconnectMapObserver() {
+        if (!mapLoadObserver) return;
+        mapLoadObserver.disconnect();
+        mapLoadObserver = null;
+      }
+
+      /* Загружает карту только когда блок реально подошёл к экрану */
+      function scheduleMapLoad(mapUrl) {
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
         if (!mapEmbed || !mapFrame || !mapUrl) return;
 
-        if (
-          currentMapUrl === mapUrl &&
-          mapFrame.getAttribute("src") === mapUrl
-        ) {
-          mapEmbed.classList.remove("is-placeholder");
+        const loadMap = () => {
+          disconnectMapObserver();
+          if (
+            currentMapUrl === mapUrl &&
+            mapFrame.getAttribute("src") === mapUrl
+          ) {
+            mapEmbed.classList.remove("is-placeholder");
+            return;
+          }
+
+          currentMapUrl = mapUrl;
+          mapFrame.onload = () => {
+            mapEmbed.classList.remove("is-placeholder");
+            mapFrame.onload = null;
+          };
+          mapFrame.src = mapUrl;
+        };
+
+        if (!("IntersectionObserver" in window)) {
+          window.setTimeout(loadMap, 260);
           return;
         }
 
-        currentMapUrl = mapUrl;
-        mapFrame.onload = () => {
-          mapEmbed.classList.remove("is-placeholder");
-          mapFrame.onload = null;
-        };
-        mapFrame.src = mapUrl;
+        disconnectMapObserver();
+        mapLoadObserver = new IntersectionObserver(
+          (entries) => {
+            if (
+              entries.some(
+                (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
+              )
+            ) {
+              loadMap();
+            }
+          },
+          {
+            rootMargin: "80px 0px",
+          },
+        );
+        mapLoadObserver.observe(mapEmbed);
       }
 
       /*
@@ -4850,43 +4834,21 @@
       function applyMapState() {
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
-        const mapLoadBtn = document.getElementById("mapLoadBtn");
-        const mapOpenLink = document.getElementById("mapOpenLink");
         if (!mapEmbed || !mapFrame) return;
 
         const mapUrl = (config.mapEmbedUrl || "").trim();
         const hasRealMap = Boolean(mapUrl) && !mapUrl.includes("YOUR_MAP_ID");
 
         if (!hasRealMap) {
+          disconnectMapObserver();
           currentMapUrl = "";
           mapEmbed.classList.add("is-placeholder");
           mapFrame.src = "about:blank";
-          if (mapLoadBtn) {
-            mapLoadBtn.hidden = true;
-            mapLoadBtn.onclick = null;
-          }
-          if (mapOpenLink) {
-            mapOpenLink.hidden = true;
-            mapOpenLink.removeAttribute("href");
-          }
           return;
         }
 
         mapEmbed.classList.add("is-placeholder");
-        if (currentMapUrl !== mapUrl) {
-          currentMapUrl = "";
-          mapFrame.src = "about:blank";
-        }
-
-        if (mapLoadBtn) {
-          mapLoadBtn.hidden = false;
-          mapLoadBtn.onclick = () => loadMapNow(mapUrl);
-        }
-
-        if (mapOpenLink) {
-          mapOpenLink.hidden = false;
-          mapOpenLink.href = mapUrl;
-        }
+        scheduleMapLoad(mapUrl);
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
