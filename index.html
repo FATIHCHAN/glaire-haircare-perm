@@ -4574,6 +4574,8 @@
 
       let config = getConfig();
       let heroSlides = [];
+      let imageLoadRequestId = 0;
+      const loadedImageSources = new Set();
 
       /* Преобразует многострочный текст или строку через запятую в массив значений */
       function parseListValue(value) {
@@ -4681,6 +4683,21 @@
                 alt: "Интерьер студии GLAIRE",
               },
             ];
+      }
+
+      /* Тихо прогревает картинки в фоне, чтобы слайдер переключался без пустого кадра */
+      function preloadImageSources(sources) {
+        sources
+          .filter(Boolean)
+          .forEach((source) => {
+            if (loadedImageSources.has(source)) return;
+            const preloadImage = new Image();
+            preloadImage.decoding = "async";
+            preloadImage.onload = () => {
+              loadedImageSources.add(source);
+            };
+            preloadImage.src = source;
+          });
       }
 
       /* Собирает список возможных бонусов для scratch-блока */
@@ -4894,6 +4911,9 @@
       */
       function applyImageFallbacks(imageNode, sources, onReady, onEmpty) {
         const queue = sources.filter(Boolean);
+        const requestId = `${++imageLoadRequestId}`;
+
+        imageNode.dataset.imageRequestId = requestId;
 
         if (!queue.length) {
           imageNode.removeAttribute("src");
@@ -4904,25 +4924,43 @@
         }
 
         let index = 0;
-        imageNode.onerror = () => {
-          index += 1;
-          if (index >= queue.length) {
+
+        function tryLoadCandidate() {
+          const candidate = queue[index];
+
+          if (!candidate) {
+            if (imageNode.dataset.imageRequestId !== requestId) return;
             imageNode.onerror = null;
             imageNode.onload = null;
             imageNode.removeAttribute("src");
             onEmpty?.();
             return;
           }
-          imageNode.src = queue[index];
-        };
 
-        imageNode.onload = () => {
-          imageNode.onerror = null;
-          imageNode.onload = null;
-          onReady?.();
-        };
+          if (loadedImageSources.has(candidate)) {
+            if (imageNode.dataset.imageRequestId !== requestId) return;
+            imageNode.src = candidate;
+            onReady?.();
+            return;
+          }
 
-        imageNode.src = queue[index];
+          const loader = new Image();
+          loader.decoding = "async";
+          loader.onload = () => {
+            loadedImageSources.add(candidate);
+            if (imageNode.dataset.imageRequestId !== requestId) return;
+            imageNode.src = candidate;
+            onReady?.();
+          };
+          loader.onerror = () => {
+            if (imageNode.dataset.imageRequestId !== requestId) return;
+            index += 1;
+            tryLoadCandidate();
+          };
+          loader.src = candidate;
+        }
+
+        tryLoadCandidate();
       }
 
       /*
@@ -5092,6 +5130,7 @@
         applySocialLinks();
 
         heroSlides = getHeroSlides();
+        heroSlides.forEach((slide) => preloadImageSources(slide.sources));
         if (heroSlideIndex >= heroSlides.length) heroSlideIndex = 0;
         setHeroSlide(heroSlideIndex);
 
