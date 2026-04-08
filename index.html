@@ -6,7 +6,9 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>GLAIRE Haircare в Перми - стрижки, окрашивание, уход, реконструкции</title>
+    <title>
+      GLAIRE Haircare в Перми - стрижки, окрашивание, уход, реконструкции
+    </title>
     <meta
       name="description"
       content="GLAIRE Haircare Studio в Перми: уход, окрашивание, бонус перед записью, консультация, актуальные предложения и быстрый переход в DIKIDI и Telegram."
@@ -23,7 +25,10 @@
     <meta name="application-name" content="GLAIRE" />
     <meta name="apple-mobile-web-app-title" content="GLAIRE" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no,address=no,email=no" />
     <meta name="geo.region" content="RU-PER" />
@@ -33,20 +38,30 @@
     <meta name="theme-color" content="#0b1118" />
     <meta name="msapplication-TileColor" content="#0b1118" />
     <meta name="msapplication-config" content="browserconfig.xml" />
-    <link rel="canonical" href="https://fatihchan.github.io/glaire-haircare-perm/" />
-    <link rel="alternate" hreflang="ru-RU" href="https://fatihchan.github.io/glaire-haircare-perm/" />
+    <link
+      rel="canonical"
+      href="https://fatihchan.github.io/glaire-haircare-perm/"
+    />
+    <link
+      rel="alternate"
+      hreflang="ru-RU"
+      href="https://fatihchan.github.io/glaire-haircare-perm/"
+    />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="GLAIRE Haircare Studio" />
     <meta
       property="og:title"
-      content="GLAIRE Haircare в Перми - стрижки, окрашивание, уход, реконструкции"
+      content="GLAIRE Haircare в Перми - окрашивание, уход, реконструкции"
     />
     <meta
       property="og:description"
       content="Спокойный digital-вход в студию GLAIRE: подход, бонус перед записью, актуальные предложения, консультация и быстрый переход к записи в Перми."
     />
-    <meta property="og:url" content="https://fatihchan.github.io/glaire-haircare-perm/" />
+    <meta
+      property="og:url"
+      content="https://fatihchan.github.io/glaire-haircare-perm/"
+    />
     <meta
       property="og:image"
       content="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg"
@@ -2466,8 +2481,8 @@
         }
 
         .map-embed iframe {
-          filter: grayscale(0.22) invert(0.9) hue-rotate(180deg)
-            saturate(0.78) brightness(0.9) contrast(0.98);
+          filter: grayscale(0.22) invert(0.9) hue-rotate(180deg) saturate(0.78)
+            brightness(0.9) contrast(0.98);
         }
 
         .news-track {
@@ -4207,7 +4222,9 @@
         const prefix = match[1];
         const remainder = match[2];
         const versionMatch = remainder.match(/(?:^|\/)(v\d+\/.*)$/);
-        const tail = versionMatch ? versionMatch[1] : remainder.replace(/^\/+/, "");
+        const tail = versionMatch
+          ? versionMatch[1]
+          : remainder.replace(/^\/+/, "");
 
         return `${prefix}${transform}/${tail}`;
       }
@@ -4262,7 +4279,10 @@
 
       /* Оптимизирует видео под конкретную карточку контента */
       function optimizeConfiguredVideo(value, cardNode) {
-        return applyCloudinaryTransform(value, getContentVideoTransform(cardNode));
+        return applyCloudinaryTransform(
+          value,
+          getContentVideoTransform(cardNode),
+        );
       }
 
       /*
@@ -4274,7 +4294,10 @@
           cardNode?.querySelector(".content-card__media") || cardNode;
         const renderedWidth = Math.max(mediaNode?.clientWidth || 0, 320);
         const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-        const targetWidth = Math.max(320, Math.min(Math.ceil(renderedWidth * dpr), 720));
+        const targetWidth = Math.max(
+          320,
+          Math.min(Math.ceil(renderedWidth * dpr), 720),
+        );
         const posterSource = applyCloudinaryTransform(
           value,
           `f_auto,q_auto,dpr_auto,so_1,w_${targetWidth},c_limit`,
@@ -4659,7 +4682,10 @@
 
         const loadMap = () => {
           disconnectMapObserver();
-          if (currentMapUrl === mapUrl && mapFrame.getAttribute("src") === mapUrl) {
+          if (
+            currentMapUrl === mapUrl &&
+            mapFrame.getAttribute("src") === mapUrl
+          ) {
             mapEmbed.classList.remove("is-placeholder");
             return;
           }
@@ -4945,7 +4971,10 @@
 
         if (videoBaseSrc) {
           videoNode.dataset.videoBaseSrc = videoBaseSrc;
-          const posterSrc = optimizeConfiguredVideoPoster(videoBaseSrc, cardNode);
+          const posterSrc = optimizeConfiguredVideoPoster(
+            videoBaseSrc,
+            cardNode,
+          );
           if (posterSrc) {
             videoNode.poster = posterSrc;
           } else {
@@ -5286,7 +5315,9 @@
 
       /* Сбрасывает отложенные загрузки роликов, если пользователь уже прокрутил дальше */
       function clearScheduledContentVideoLoads() {
-        contentVideoLoadTimers.forEach((timerId) => window.clearTimeout(timerId));
+        contentVideoLoadTimers.forEach((timerId) =>
+          window.clearTimeout(timerId),
+        );
         contentVideoLoadTimers = [];
       }
 
@@ -5295,7 +5326,9 @@
         const videoNode = getContentCardVideoNode(cardNode);
         if (!videoNode) return;
 
-        const videoBaseSrc = String(videoNode.dataset.videoBaseSrc || "").trim();
+        const videoBaseSrc = String(
+          videoNode.dataset.videoBaseSrc || "",
+        ).trim();
         const videoSrc = optimizeConfiguredVideo(videoBaseSrc, cardNode);
         if (!videoSrc) {
           cardNode.classList.remove("content-card--ready");
@@ -5365,7 +5398,8 @@
             Math.min(rect.right, trackRect.right) -
               Math.max(rect.left, trackRect.left),
           );
-          const visibleRatio = visibleWidth / Math.min(rect.width, trackRect.width);
+          const visibleRatio =
+            visibleWidth / Math.min(rect.width, trackRect.width);
 
           if (visibleRatio >= 0.55) {
             visibleCards.push({ cardNode, visibleRatio });
