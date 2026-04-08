@@ -1,14 +1,19 @@
 <!doctype html>
 <html lang="ru-RU">
   <head>
+    <!-- Базовые технические метаданные страницы -->
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+
+    <!-- Основной заголовок страницы для браузера и поисковой выдачи -->
     <title>
       GLAIRE Haircare в Перми - стрижки, окрашивание, уход, реконструкции
     </title>
+
+    <!-- SEO-метаданные: описание, ключевые фразы и правила индексации -->
     <meta
       name="description"
       content="GLAIRE Haircare Studio в Перми: уход, окрашивание, бонус перед записью, консультация, актуальные предложения и быстрый переход в DIKIDI и Telegram."
@@ -21,6 +26,8 @@
       name="robots"
       content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
     />
+
+    <!-- Подсказки браузерам и мобильным webview, как вести себя со страницей -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="application-name" content="GLAIRE" />
     <meta name="apple-mobile-web-app-title" content="GLAIRE" />
@@ -35,9 +42,13 @@
     <meta name="geo.placename" content="Пермь" />
     <meta name="geo.position" content="58.013316;56.239864" />
     <meta name="ICBM" content="58.013316,56.239864" />
+
+    <!-- Цвет вкладки и плитки для браузеров и мобильных систем -->
     <meta name="theme-color" content="#0b1118" />
     <meta name="msapplication-TileColor" content="#0b1118" />
     <meta name="msapplication-config" content="browserconfig.xml" />
+
+    <!-- Канонический адрес и языковая версия страницы -->
     <link
       rel="canonical"
       href="https://fatihchan.github.io/glaire-haircare-perm/"
@@ -47,6 +58,8 @@
       hreflang="ru-RU"
       href="https://fatihchan.github.io/glaire-haircare-perm/"
     />
+
+    <!-- Превью для соцсетей и мессенджеров -->
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="GLAIRE Haircare Studio" />
@@ -82,6 +95,8 @@
       name="twitter:image"
       content="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg"
     />
+
+    <!-- Иконки сайта для браузеров, телефона и установки на главный экран -->
     <link
       rel="icon"
       type="image/png"
@@ -103,6 +118,8 @@
       rel="shortcut icon"
       href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_32,h_32/v1775644952/Group_17_gwygic.png"
     />
+
+    <!-- Служебные ресурсы и ранний приоритет для первого главного фото -->
     <link rel="manifest" href="site.webmanifest" />
     <link rel="dns-prefetch" href="//res.cloudinary.com" />
     <link rel="dns-prefetch" href="//dikidi.net" />
@@ -113,6 +130,8 @@
       href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
     />
+
+    <!-- Структурированные данные для поисковиков: кто мы, где находимся и как работаем -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -569,6 +588,8 @@
         align-items: center;
         gap: 14px;
         min-width: 0;
+        color: inherit;
+        text-decoration: none;
       }
 
       .brand__icon {
@@ -2703,7 +2724,7 @@
     <header class="topbar">
       <div class="container topbar__inner">
         <!-- Бренд в шапке: иконка, название и короткая подпись студии -->
-        <div class="brand">
+        <a class="brand" href="#top" aria-label="Вернуться в начало страницы">
           <img
             class="brand__icon"
             id="brandIcon"
@@ -2718,7 +2739,7 @@
               haircare studio | Perm
             </div>
           </div>
-        </div>
+        </a>
 
         <!-- Кнопка-бургер нужна только на планшетах и телефонах -->
         <button
@@ -6341,6 +6362,7 @@
       /* Локальная админка                                                   */
       /* Панель редактирования контента прямо в браузере                     */
       /* ------------------------------------------------------------------ */
+      /* Эти элементы отвечают уже не за публичный контент, а за интерфейс управления сайтом */
       const menuToggleBtn = document.getElementById("menuToggleBtn");
       const siteNav = document.getElementById("siteNav");
       const backToTopBtn = document.getElementById("backToTopBtn");
@@ -6352,6 +6374,12 @@
       window.__glaireAdminApi = window.__glaireAdminApi || {
         closeAdmin() {},
       };
+
+      /*
+        Это "мост" между основной страницей и отдельным файлом админки.
+        Сюда передаются только те функции и данные, которые нужны панели:
+        текущий config, дефолтные значения, функция перерисовки и доступ к localStorage-ключу.
+      */
       window.__glaireRuntime = {
         isAdminMode,
         runWhenIdle,
@@ -6365,6 +6393,7 @@
         },
       };
 
+      /* Подключает файл admin-panel.js только когда страница открыта с ?admin=1 */
       function loadAdminScript() {
         if (!isAdminMode) return;
         if (document.querySelector("script[data-glaire-admin]")) return;
