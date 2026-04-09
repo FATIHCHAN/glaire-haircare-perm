@@ -155,7 +155,7 @@
     <link
       rel="preload"
       as="image"
-      href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
     />
 
@@ -854,12 +854,14 @@
 
       .hero h1 {
         display: grid;
-        gap: clamp(6px, 0.9vw, 10px);
+        justify-items: start;
+        gap: clamp(12px, 1.35vw, 18px);
         font-size: clamp(38px, 4.7vw, 66px);
         line-height: 0.92;
         letter-spacing: -0.04em;
         font-weight: 600;
         max-width: min(100%, 14.8ch);
+        text-align: left;
       }
 
       .hero-title__brand-row {
@@ -873,7 +875,7 @@
 
       .hero-title__lines {
         display: grid;
-        gap: clamp(1px, 0.35vw, 4px);
+        gap: clamp(8px, 0.9vw, 14px);
       }
 
       .hero-title__line {
@@ -2695,6 +2697,18 @@
           grid-template-rows: auto auto auto;
         }
 
+        .hero h1 {
+          justify-items: center;
+          text-align: center;
+          margin-inline: auto;
+        }
+
+        .hero-title__brand,
+        .hero-title__line {
+          text-align: center;
+          margin-inline: auto;
+        }
+
         .master-points {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -2846,6 +2860,12 @@
           grid-template-columns: 1fr;
         }
 
+        .hero__text {
+          max-width: 34ch;
+          margin-inline: auto;
+          text-align: center;
+        }
+
         .content-track {
           grid-auto-columns: 100%;
         }
@@ -2874,6 +2894,15 @@
 
         .cta-box {
           text-align: center;
+        }
+
+        .cta-box > div {
+          text-align: left;
+        }
+
+        .cta-box .eyebrow {
+          display: flex;
+          width: max-content;
         }
 
         .cta-box .btn,
@@ -3256,7 +3285,7 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644872/IMG_1407_vuas5m.jpg"
                   alt="Интерьер студии GLAIRE"
                   fetchpriority="high"
                   decoding="async"
@@ -3579,7 +3608,10 @@
                 </div>
 
                 <!-- Сами рабочие ссылки мастера. Заполняются из config или админки -->
-                <div class="social-links social-links--master" data-socials-wrapper="master">
+                <div
+                  class="social-links social-links--master"
+                  data-socials-wrapper="master"
+                >
                   <a
                     class="social-link"
                     data-social-group="master"
@@ -3862,7 +3894,7 @@
               <div class="works-slider__viewport" id="worksSliderViewport">
                 <img
                   id="worksSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775647544/IMG_2860_aeyldt.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775647544/IMG_2860_aeyldt.jpg"
                   alt="Фото модели GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -4191,14 +4223,8 @@
             <!-- Последний смысловой блок перед выходом с сайта -->
             <div>
               <div class="eyebrow" data-edit="ctaEyebrow">Запись</div>
-              <h2 data-edit="ctaTitle">
-                Если формат вам близок, можно занять удобное время
-              </h2>
-              <p data-edit="ctaText">
-                Страница собрана так, чтобы сначала дать ощущение студии и
-                подхода, а затем перевести в понятное действие. Без давления,
-                только с ясным переходом к записи.
-              </p>
+              <h2 data-edit="ctaTitle"></h2>
+              <p data-edit="ctaText"></p>
             </div>
             <a
               class="btn btn--primary"
@@ -4588,17 +4614,17 @@
               версии изображений и видео под конкретный блок.
             */
       const CLOUDINARY_IMAGE_TRANSFORMS = {
-        brandImage: "f_auto,q_auto:eco,dpr_auto,c_limit,w_144",
-        heroSlide1: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
-        heroSlide2: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
-        masterPhoto: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
+        brandImage: "f_auto,q_auto:eco,dpr_auto,c_limit,w_128",
+        heroSlide1: "f_auto,q_auto:eco,dpr_auto,c_limit,w_860",
+        heroSlide2: "f_auto,q_auto:eco,dpr_auto,c_limit,w_860",
+        masterPhoto: "f_auto,q_auto:eco,dpr_auto,c_limit,w_640",
         consultQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
         telegramQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
         vkQr: "f_auto,q_auto:eco,dpr_auto,c_limit,w_256",
         newsImage1: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
         newsImage2: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
         newsImage3: "f_auto,q_auto:eco,dpr_auto,c_limit,w_720",
-        worksSlide: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
+        worksSlide: "f_auto,q_auto:eco,dpr_auto,c_limit,w_860",
       };
 
       /* Проверяет, является ли ссылка Cloudinary-адресом */
@@ -4668,7 +4694,7 @@
           targetWidth = Math.min(targetWidth, 400);
           quality = "q_auto:eco";
         } else {
-          targetWidth = Math.min(targetWidth, 560);
+          targetWidth = Math.min(targetWidth, 460);
         }
 
         targetWidth = Math.max(320, targetWidth);
@@ -4694,7 +4720,7 @@
         const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
         const targetWidth = Math.max(
           320,
-          Math.min(Math.ceil(renderedWidth * dpr), 720),
+          Math.min(Math.ceil(renderedWidth * dpr), 540),
         );
         const posterSource = applyCloudinaryTransform(
           value,
@@ -5039,7 +5065,11 @@
         const words = bodyText.split(" ").filter(Boolean);
         const lines = [];
 
-        if (words.length <= 2) {
+        if (words.length === 6) {
+          lines.push(words.slice(0, 2).join(" "));
+          lines.push(words.slice(2, 4).join(" "));
+          lines.push(words.slice(4, 6).join(" "));
+        } else if (words.length <= 2) {
           lines.push(words.join(" "));
         } else if (words.length <= 4) {
           lines.push(words.slice(0, 2).join(" "));
@@ -5074,9 +5104,10 @@
           }
           const lineNode = document.createElement("span");
           lineNode.className = "hero-title__line";
-          if (index === 0 && lineText.includes(" ")) {
+          const wordsInLine = lineText.split(" ").filter(Boolean).length;
+          if (lineText.includes(" ") && wordsInLine <= 2) {
             lineNode.classList.add("hero-title__line--locked");
-            lineNode.textContent = lineText.replace(" ", "\u00A0");
+            lineNode.textContent = lineText.replace(/ /g, "\u00A0");
           } else {
             lineNode.textContent = lineText;
           }
@@ -5179,6 +5210,57 @@
       /* Состояние карты: какой URL уже подключён и есть ли активный observer */
       let currentMapUrl = "";
       let mapLoadObserver = null;
+      let mapUserIntentPromise = null;
+
+      /*
+              Интерактивная карта тяжёлая из-за внешнего iframe.
+              Поэтому сначала ждём первого явного действия пользователя
+              или длинного таймаута, и только потом разрешаем её загрузку.
+            */
+      function waitForMapUserIntent() {
+        if (mapUserIntentPromise) return mapUserIntentPromise;
+
+        mapUserIntentPromise = new Promise((resolve) => {
+          let resolved = false;
+          let fallbackTimer = 0;
+
+          const scrollOptions = {
+            passive: true,
+            once: true,
+          };
+
+          const finish = () => {
+            if (resolved) return;
+            resolved = true;
+            window.clearTimeout(fallbackTimer);
+            window.removeEventListener("pointerdown", finish, true);
+            window.removeEventListener("touchstart", finish, true);
+            window.removeEventListener("keydown", finish, true);
+            window.removeEventListener("scroll", finish, scrollOptions);
+            resolve();
+          };
+
+          window.addEventListener("pointerdown", finish, {
+            passive: true,
+            once: true,
+            capture: true,
+          });
+          window.addEventListener("touchstart", finish, {
+            passive: true,
+            once: true,
+            capture: true,
+          });
+          window.addEventListener("keydown", finish, {
+            once: true,
+            capture: true,
+          });
+          window.addEventListener("scroll", finish, scrollOptions);
+
+          fallbackTimer = window.setTimeout(finish, 9000);
+        });
+
+        return mapUserIntentPromise;
+      }
 
       /* Очищает отложенную загрузку карты, если она больше не нужна */
       function disconnectMapObserver() {
@@ -5211,8 +5293,19 @@
           mapFrame.src = mapUrl;
         };
 
+        const queueMapLoad = () => {
+          const startLoad = () => runWhenIdle(loadMap, 1600);
+
+          if (document.readyState === "complete") {
+            startLoad();
+            return;
+          }
+
+          window.addEventListener("load", startLoad, { once: true });
+        };
+
         if (!("IntersectionObserver" in window)) {
-          window.setTimeout(loadMap, 260);
+          waitForMapUserIntent().then(queueMapLoad);
           return;
         }
 
@@ -5224,11 +5317,11 @@
                 (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
               )
             ) {
-              loadMap();
+              waitForMapUserIntent().then(queueMapLoad);
             }
           },
           {
-            rootMargin: "80px 0px",
+            rootMargin: "0px 0px",
           },
         );
         mapLoadObserver.observe(mapEmbed);
@@ -5871,7 +5964,7 @@
               }
             },
             {
-              rootMargin: "180px 0px",
+              rootMargin: "80px 0px",
             },
           );
           scratchObserver.observe(scratchShell);
@@ -6566,7 +6659,7 @@
               setWorksAutoplayActive(isVisible);
             },
             {
-              rootMargin: "180px 0px",
+              rootMargin: "80px 0px",
             },
           );
           worksAutoplayObserver.observe(worksSection);
@@ -6670,7 +6763,7 @@
               setContentTrackActive(isVisible);
             },
             {
-              rootMargin: "220px 0px",
+              rootMargin: "80px 0px",
             },
           );
           contentTrackObserver.observe(contentTrack);
