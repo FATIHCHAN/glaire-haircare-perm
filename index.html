@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru-RU">
+<html lang="ru-RU" class="fonts-loading">
   <head>
     <!-- Базовые технические метаданные страницы -->
     <meta charset="UTF-8" />
@@ -126,6 +126,34 @@
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link
       rel="preload"
+      href="assets/fonts/manrope-cyrillic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/manrope-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/cormorant-garamond-cyrillic.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/cormorant-garamond-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
       as="image"
       href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
@@ -214,6 +242,54 @@
     */
 
       /* ------------------------------------------------------------------ */
+      /* 0. Локальные фирменные шрифты                                      */
+      /* Здесь шрифты подключаются прямо из проекта, без поздней замены      */
+      /* через Google Fonts после первой отрисовки страницы.                 */
+      /* ------------------------------------------------------------------ */
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: block;
+        src: url("assets/fonts/manrope-cyrillic.woff2") format("woff2");
+        unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: block;
+        src: url("assets/fonts/manrope-latin.woff2") format("woff2");
+        unicode-range:
+          U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      @font-face {
+        font-family: "Cormorant Garamond";
+        font-style: normal;
+        font-weight: 500 700;
+        font-display: block;
+        src: url("assets/fonts/cormorant-garamond-cyrillic.woff2")
+          format("woff2");
+        unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+
+      @font-face {
+        font-family: "Cormorant Garamond";
+        font-style: normal;
+        font-weight: 500 700;
+        font-display: block;
+        src: url("assets/fonts/cormorant-garamond-latin.woff2") format("woff2");
+        unicode-range:
+          U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      /* ------------------------------------------------------------------ */
       /* 1. Глобальные переменные проекта                                   */
       /* Здесь собраны основные цвета, радиусы, тени и ширина контейнера.   */
       /* Если хочешь менять весь визуальный стиль сразу — начни отсюда.      */
@@ -265,12 +341,22 @@
         color-scheme: dark;
       }
 
+      html.fonts-loading body {
+        opacity: 0;
+      }
+
+      html.fonts-ready body {
+        opacity: 1;
+        transition: opacity 0.16s ease;
+      }
+
       body {
         margin: 0;
         position: relative;
         min-height: 100vh;
         overflow-x: hidden;
         font-family: var(--font-ui);
+        font-synthesis: none;
         color: var(--text-main);
         background-color: #0a1017;
         isolation: isolate;
@@ -758,22 +844,51 @@
         display: grid;
         grid-template-rows: auto auto minmax(0, 1fr);
         align-content: stretch;
-        gap: 20px;
+        gap: 26px;
       }
 
       .hero__copy {
         display: grid;
-        gap: 20px;
+        gap: 24px;
       }
 
       .hero h1 {
-        font-size: clamp(50px, 6vw, 86px);
+        display: grid;
+        gap: clamp(6px, 0.9vw, 10px);
+        font-size: clamp(38px, 4.7vw, 66px);
         line-height: 0.92;
         letter-spacing: -0.04em;
-        max-width: 11ch;
+        font-weight: 600;
+        max-width: min(100%, 14.8ch);
+      }
+
+      .hero-title__brand-row {
+        display: block;
+      }
+
+      .hero-title__brand {
+        display: block;
+        letter-spacing: -0.045em;
+      }
+
+      .hero-title__lines {
+        display: grid;
+        gap: clamp(1px, 0.35vw, 4px);
+      }
+
+      .hero-title__line {
+        display: block;
+        max-width: 13.2ch;
+        text-wrap: pretty;
+      }
+
+      .hero-title__line--locked {
+        max-width: none;
+        white-space: nowrap;
       }
 
       .hero__text {
+        margin-top: 2px;
         max-width: 62ch;
         color: var(--text-soft);
         font-size: clamp(16px, 2vw, 18px);
@@ -784,17 +899,19 @@
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-top: 2px;
+        margin-top: 8px;
       }
 
       .hero__meta {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: auto;
         gap: 14px;
         margin-top: 6px;
         width: 100%;
         align-self: center;
-        align-items: start;
+        align-items: stretch;
+        align-content: start;
       }
 
       .hero-socials {
@@ -803,11 +920,15 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
         margin-top: 52px;
+        align-items: start;
+        align-self: start;
       }
 
       .hero-social-link {
         gap: 10px;
         min-height: 56px;
+        height: auto;
+        align-self: start;
         padding: 10px 12px 10px 10px;
         background: rgba(244, 241, 236, 0.026);
         border-color: rgba(222, 214, 205, 0.08);
@@ -853,13 +974,33 @@
         чтобы заголовок и текст внутри смотрелись спокойно и не упирались в края.
       */
       .meta-item {
-        gap: 12px;
-        min-height: clamp(306px, 30vw, 332px);
-        padding: 74px 16px 78px;
+        display: grid;
+        grid-template-rows: minmax(54px, auto) 1fr;
+        align-content: start;
+        gap: 10px;
+        min-height: clamp(192px, 19vw, 220px);
+        padding: 22px 16px 24px;
       }
 
       .works-item {
+        display: grid;
+        align-content: start;
+        gap: 12px;
         padding: 14px 18px;
+      }
+
+      .side-card {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+        padding: 18px 18px 20px;
+      }
+
+      .master-point {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+        padding: 18px 18px 20px;
       }
 
       .meta-item strong,
@@ -867,15 +1008,17 @@
       .works-item strong,
       .master-point strong {
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 0;
         font-family: var(--font-display);
         font-size: 22px;
         line-height: 0.98;
         font-weight: 600;
       }
 
-      .works-item strong {
-        margin-bottom: 8px;
+      .side-card strong,
+      .works-item strong,
+      .master-point strong {
+        margin-bottom: 10px;
       }
 
       .meta-item span,
@@ -891,6 +1034,7 @@
 
       .meta-item span {
         display: block;
+        align-self: start;
       }
 
       .hero__contact {
@@ -1033,11 +1177,12 @@
 
       .contact-card__head {
         display: grid;
-        gap: 6px;
+        gap: 10px;
       }
 
       .contact-card__head strong {
         font-size: 16px;
+        margin-bottom: 2px;
       }
 
       .contact-card__head p {
@@ -1148,15 +1293,19 @@
       .qr-row {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 1fr;
         gap: 14px;
+        align-items: stretch;
       }
 
       .contact-card--qr {
         display: grid;
+        grid-template-rows: minmax(20px, auto) 124px minmax(32px, auto) 1fr;
+        align-content: start;
         justify-items: center;
         gap: 12px;
         text-align: center;
-        min-height: 184px;
+        min-height: 100%;
         cursor: pointer;
       }
 
@@ -1180,18 +1329,27 @@
       }
 
       .contact-card--qr strong {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
         font-size: 16px;
+        line-height: 1.1;
       }
 
       .contact-card--qr p {
+        width: 100%;
+        max-width: 22ch;
+        align-self: start;
         color: var(--text-muted);
         font-size: 13px;
         line-height: 1.55;
+        text-wrap: balance;
       }
 
       .qr-code {
-        width: min(100%, 124px);
-        aspect-ratio: 1 / 1;
+        width: 124px;
+        height: 124px;
         object-fit: contain;
         border-radius: 16px;
       }
@@ -1199,22 +1357,32 @@
       .qr-link-hint {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 7px 12px;
+        justify-content: center;
+        gap: 6px;
+        width: fit-content;
+        max-width: 100%;
+        min-height: 28px;
+        padding: 3px 12px;
         border-radius: 999px;
         border: 1px solid rgba(222, 214, 205, 0.14);
         background: rgba(244, 241, 236, 0.05);
         color: var(--accent-3);
-        font-size: 11px;
+        font-size: 9px;
+        font-weight: 500;
         line-height: 1;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
+        white-space: nowrap;
       }
 
       .qr-link-hint::after {
         content: "↗";
-        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
         line-height: 1;
+        transform: translateY(-0.5px);
       }
 
       /* ------------------------------------------------------------------ */
@@ -1393,17 +1561,25 @@
 
       .scratch-bottom {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
       }
 
       .scratch-bottom span {
-        max-width: 44ch;
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: 40ch;
         color: var(--text-soft);
-        font-size: 14px;
-        line-height: 1.65;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .scratch-bottom .btn {
+        flex: 0 0 auto;
+        margin-left: auto;
+        white-space: nowrap;
       }
 
       .scratch-side {
@@ -1414,7 +1590,7 @@
       .side-card ul {
         list-style: none;
         display: grid;
-        gap: 8px;
+        gap: 10px;
       }
 
       .side-card li::before {
@@ -1430,8 +1606,8 @@
       .master-card {
         display: grid;
         grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
-        gap: 24px;
-        padding: 24px;
+        gap: 22px;
+        padding: 22px;
       }
 
       .master-card__media,
@@ -1444,12 +1620,15 @@
       }
 
       .master-card__content {
-        align-content: start;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-height: 100%;
       }
 
       .master-photo-shell {
         position: relative;
-        min-height: 420px;
+        min-height: 388px;
         overflow: hidden;
         border-radius: 30px;
         border: 1px solid rgba(222, 214, 205, 0.08);
@@ -1465,7 +1644,7 @@
       .master-photo-shell img {
         width: 100%;
         height: 100%;
-        min-height: 420px;
+        min-height: 388px;
         object-fit: cover;
       }
 
@@ -1517,13 +1696,15 @@
       }
 
       .master-identity {
-        padding: 20px;
+        padding: 18px;
         border-radius: 24px;
         border: 1px solid rgba(222, 214, 205, 0.08);
         background: rgba(244, 241, 236, 0.026);
       }
 
       .master-identity strong {
+        display: block;
+        margin-bottom: 10px;
         font-family: var(--font-display);
         font-size: clamp(28px, 4vw, 36px);
         line-height: 0.96;
@@ -1538,6 +1719,7 @@
       }
 
       .master-identity p {
+        margin-top: 10px;
         color: var(--text-soft);
         line-height: 1.78;
       }
@@ -1545,7 +1727,7 @@
       .master-points {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
+        gap: 12px;
       }
 
       .master-socials {
@@ -1556,6 +1738,8 @@
       }
 
       .master-socials__copy strong {
+        display: block;
+        margin-bottom: 10px;
         font-family: var(--font-display);
         font-size: 28px;
         line-height: 0.96;
@@ -1875,10 +2059,11 @@
       .content-card__content {
         display: grid;
         align-content: start;
-        gap: 10px;
+        gap: 14px;
       }
 
       .content-card__content h3 {
+        margin-bottom: 4px;
         font-size: 20px;
         line-height: 1.15;
       }
@@ -1948,6 +2133,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+        justify-content: center;
       }
 
       .work-tag,
@@ -1987,6 +2173,32 @@
         margin-top: 32px;
       }
 
+      .news-hint {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: fit-content;
+        max-width: 100%;
+        margin: 6px auto 0;
+        padding: 9px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(222, 214, 205, 0.12);
+        background: rgba(244, 241, 236, 0.028);
+        color: var(--accent);
+        font-size: 12px;
+        line-height: 1.35;
+        letter-spacing: 0.02em;
+        text-align: center;
+      }
+
+      .news-hint::before {
+        content: "↗";
+        font-size: 13px;
+        line-height: 1;
+        color: var(--accent-3);
+      }
+
       .story-card {
         display: grid;
         gap: 14px;
@@ -1996,6 +2208,44 @@
         background: rgba(244, 241, 236, 0.022);
         border: 1px solid rgba(222, 214, 205, 0.08);
         box-shadow: var(--shadow-md);
+      }
+
+      .story-card--link {
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          transform 0.24s ease,
+          border-color 0.24s ease,
+          background 0.24s ease,
+          box-shadow 0.24s ease;
+      }
+
+      .story-card--link > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .story-card--link::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        background: linear-gradient(
+          118deg,
+          transparent 0%,
+          rgba(245, 240, 234, 0.018) 26%,
+          rgba(245, 240, 234, 0.11) 48%,
+          rgba(245, 240, 234, 0.018) 70%,
+          transparent 100%
+        );
+        opacity: 0;
+        transform: translateX(-118%);
+        transition:
+          opacity 0.22s ease,
+          transform 0.48s ease;
       }
 
       .story-card__media {
@@ -2090,8 +2340,36 @@
         pointer-events: none;
       }
 
-      .story-card:hover .story-card__image {
+      .story-card:hover .story-card__image,
+      .story-card--link:hover .story-card__image,
+      .story-card--link:focus-visible .story-card__image {
         transform: scale(1.02);
+      }
+
+      .story-card--link:hover,
+      .story-card--link:focus-visible {
+        transform: translateY(-4px);
+        border-color: rgba(222, 214, 205, 0.18);
+        background: rgba(244, 241, 236, 0.038);
+        box-shadow: 0 22px 42px rgba(0, 0, 0, 0.24);
+      }
+
+      .story-card--link:hover::after,
+      .story-card--link:focus-visible::after {
+        opacity: 1;
+        transform: translateX(118%);
+      }
+
+      .story-card--link:hover .story-card__media,
+      .story-card--link:focus-visible .story-card__media {
+        border-color: rgba(222, 214, 205, 0.18);
+      }
+
+      .story-card--link:hover .badge,
+      .story-card--link:focus-visible .badge {
+        border-color: rgba(222, 214, 205, 0.22);
+        background: rgba(244, 241, 236, 0.08);
+        color: var(--accent-3);
       }
 
       /* ------------------------------------------------------------------ */
@@ -2604,6 +2882,10 @@
         .social-link {
           width: 100%;
         }
+
+        .scratch-bottom span {
+          margin-left: 0;
+        }
       }
 
       @media (max-width: 560px) {
@@ -2682,6 +2964,44 @@
         }
       }
     </style>
+    <script>
+      /*
+        Раннее открытие страницы после подхвата локальных шрифтов.
+        Смысл этого мини-скрипта: не показывать сначала запасной тяжёлый шрифт,
+        а затем менять его на фирменный. Если шрифты не успели загрузиться быстро,
+        через 1200 мс страница всё равно откроется, чтобы не было зависания.
+      */
+      (() => {
+        const rootNode = document.documentElement;
+
+        const revealPage = () => {
+          rootNode.classList.remove("fonts-loading");
+          rootNode.classList.add("fonts-ready");
+        };
+
+        const revealTimeout = window.setTimeout(revealPage, 1200);
+
+        if (!("fonts" in document)) {
+          window.setTimeout(() => {
+            window.clearTimeout(revealTimeout);
+            revealPage();
+          }, 40);
+          return;
+        }
+
+        Promise.race([
+          Promise.allSettled([
+            document.fonts.load('400 1em "Manrope"'),
+            document.fonts.load('600 1em "Manrope"'),
+            document.fonts.load('600 1em "Cormorant Garamond"'),
+          ]),
+          new Promise((resolve) => window.setTimeout(resolve, 1200)),
+        ]).finally(() => {
+          window.clearTimeout(revealTimeout);
+          revealPage();
+        });
+      })();
+    </script>
   </head>
   <body id="top">
     <!--
@@ -2781,13 +3101,13 @@
               </div>
 
               <h1 data-edit="heroTitle">
-                Спокойный сервис и аккуратная работа с волосами
+                GLAIRE — комплексный уход за волосами в Перми
               </h1>
               <p class="hero__text" data-edit="heroText">
-                GLAIRE — студия, куда приходят за чистым окрашиванием, уходом и
-                восстановлением без спешки и визуального шума. Здесь важны
-                состояние волос, предсказуемый результат и ощущение, что с вами
-                работают внимательно и по делу.
+                Работаем по состоянию волос и задаче, с которой вы приходите.
+                Подбираем формат: уход, реконструкция, обновление цвета или
+                комплекс — чтобы результат выглядел аккуратно и удобно носился
+                каждый день.
               </p>
             </div>
 
@@ -2968,10 +3288,9 @@
             <div class="contact-block">
               <div class="contact-card contact-card--map">
                 <div class="contact-card__head">
-                  <strong data-edit="locationTitle">Как нас найти</strong>
+                  <strong data-edit="locationTitle">как найти нас ?</strong>
                   <p id="addressText">
-                    Пермь · актуальный адрес, вход и маршрут удобно смотреть по
-                    карте или уточнить перед визитом.
+                    Пермь · Ул.Петропавловская 40, салон Krasivo
                   </p>
                 </div>
 
@@ -3083,11 +3402,6 @@
               </div>
               <h2 data-edit="bonusTitle">Откройте персональный бонус</h2>
             </div>
-            <p class="section__lead" data-edit="bonusText">
-              Это не шумная акция, а мягкая привилегия от студии. Механика
-              помогает начать знакомство спокойно: сначала интерес, затем запись
-              на удобное время.
-            </p>
           </div>
 
           <!-- Левая часть бонусного блока: интерактивный scratch и кнопка повтора -->
@@ -3129,9 +3443,7 @@
             <!-- Правая часть бонусного блока: пояснения и список того, что можно открыть -->
             <div class="scratch-side">
               <div class="glass-card side-card">
-                <strong data-edit="bonusSideTitle1"
-                  >Почему это лучше обычной скидки</strong
-                >
+                <strong data-edit="bonusSideTitle1">Как это работает ?</strong>
                 <p data-edit="bonusSideText1">
                   Бонус выглядит как часть сервиса, а не как случайный купон. Он
                   вовлекает, запоминается и мягко подталкивает к записи без
@@ -3225,6 +3537,7 @@
               </p>
 
               <div class="master-points">
+                <!-- Три короткие карточки объясняют стиль работы мастера -->
                 <div class="master-point">
                   <strong data-edit="masterPointTitle1"
                     >Сначала разбираем задачу</strong
@@ -3255,6 +3568,7 @@
               </div>
 
               <div class="master-socials">
+                <!-- Небольшой вводный текст над рабочими соцсетями мастера -->
                 <div class="master-socials__copy">
                   <strong data-edit="socialsTitle">Соцсети мастера</strong>
                   <p data-edit="socialsText">
@@ -3264,10 +3578,8 @@
                   </p>
                 </div>
 
-                <div
-                  class="social-links social-links--master"
-                  data-socials-wrapper="master"
-                >
+                <!-- Сами рабочие ссылки мастера. Заполняются из config или админки -->
+                <div class="social-links social-links--master" data-socials-wrapper="master">
                   <a
                     class="social-link"
                     data-social-group="master"
@@ -3358,13 +3670,13 @@
                 записи.
               </p>
               <p class="content-rail__note" data-edit="contentNote">
-                На компьютере ролики идут парами: сначала два по очереди,
-                затем следующая пара. На телефоне ролики идут по одному.
-                Листайте стрелками или свайпом.
+                На компьютере ролики идут парами: сначала два по очереди, затем
+                следующая пара. На телефоне ролики идут по одному. Листайте
+                стрелками или свайпом.
               </p>
               <p class="content-rail__hint">
-                Звук запускается автоматически по кругу. Если браузер
-                блокирует автозвук, нажмите на любой ролик один раз.
+                Звук запускается автоматически по кругу. Если браузер блокирует
+                автозвук, нажмите на любой ролик один раз.
               </p>
             </div>
           </div>
@@ -3392,6 +3704,7 @@
 
             <!-- Сама горизонтальная лента вертикальных видео -->
             <div class="content-track" id="contentTrack">
+              <!-- Карточка 1: знакомство со студией и атмосферой -->
               <article class="glass-card content-card" data-content-card="1">
                 <div class="content-card__media">
                   <video
@@ -3399,7 +3712,6 @@
                     id="contentVideo1"
                     playsinline
                     muted
-                    loop
                     controls
                     preload="none"
                   ></video>
@@ -3423,6 +3735,7 @@
                 </div>
               </article>
 
+              <!-- Карточка 2: короткий совет или полезный ориентир -->
               <article class="glass-card content-card" data-content-card="2">
                 <div class="content-card__media">
                   <video
@@ -3430,7 +3743,6 @@
                     id="contentVideo2"
                     playsinline
                     muted
-                    loop
                     controls
                     preload="none"
                   ></video>
@@ -3452,6 +3764,7 @@
                 </div>
               </article>
 
+              <!-- Карточка 3: результат, запись или другой живой инфоповод -->
               <article class="glass-card content-card" data-content-card="3">
                 <div class="content-card__media">
                   <video
@@ -3459,7 +3772,6 @@
                     id="contentVideo3"
                     playsinline
                     muted
-                    loop
                     controls
                     preload="none"
                   ></video>
@@ -3483,6 +3795,7 @@
                 </div>
               </article>
 
+              <!-- Карточка 4: продукты, купоны, закулисье или спецформат -->
               <article class="glass-card content-card" data-content-card="4">
                 <div class="content-card__media">
                   <video
@@ -3490,7 +3803,6 @@
                     id="contentVideo4"
                     playsinline
                     muted
-                    loop
                     controls
                     preload="none"
                   ></video>
@@ -3636,6 +3948,16 @@
                   уходу, чтобы качество волос сохранялось дольше.
                 </p>
               </div>
+              <div class="works-item">
+                <strong data-edit="worksItemTitle5"
+                  >Спокойное сопровождение после визита</strong
+                >
+                <p data-edit="worksItemText5">
+                  Если после процедуры появляются вопросы по уходу, оттенку или
+                  поддержанию результата, остаётся понятная точка контакта без
+                  лишней суеты и догадок.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -3661,9 +3983,20 @@
             </p>
           </div>
 
+          <p class="news-hint" data-edit="newsHint">
+            Нажмите на карточку, чтобы перейти и воспользоваться акцией.
+          </p>
+
           <!-- Три карточки актуального: каждая может показывать фото, бейдж и текст -->
           <div class="news-track">
-            <article class="glass-card story-card" data-story-card="1">
+            <a
+              class="glass-card story-card story-card--link"
+              data-story-card="1"
+              href="https://t.me/glaire_haircare_perm_admin"
+              target="_blank"
+              rel="noreferrer"
+              aria-labelledby="newsTitle1"
+            >
               <div class="story-card__media">
                 <img
                   class="story-card__image"
@@ -3671,6 +4004,7 @@
                   alt="Акция 1"
                   loading="lazy"
                   fetchpriority="low"
+                  decoding="async"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3688,9 +4022,16 @@
                   удобное время без долгого ожидания.
                 </p>
               </div>
-            </article>
+            </a>
 
-            <article class="glass-card story-card" data-story-card="2">
+            <a
+              class="glass-card story-card story-card--link"
+              data-story-card="2"
+              href="https://t.me/glaire_haircare_perm_admin"
+              target="_blank"
+              rel="noreferrer"
+              aria-labelledby="newsTitle2"
+            >
               <div class="story-card__media">
                 <img
                   class="story-card__image"
@@ -3698,6 +4039,7 @@
                   alt="Акция 2"
                   loading="lazy"
                   fetchpriority="low"
+                  decoding="async"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3717,9 +4059,16 @@
                   плотность и мягкий блеск без перегруженного домашнего ухода.
                 </p>
               </div>
-            </article>
+            </a>
 
-            <article class="glass-card story-card" data-story-card="3">
+            <a
+              class="glass-card story-card story-card--link"
+              data-story-card="3"
+              href="https://t.me/glaire_haircare_perm_admin"
+              target="_blank"
+              rel="noreferrer"
+              aria-labelledby="newsTitle3"
+            >
               <div class="story-card__media">
                 <img
                   class="story-card__image"
@@ -3727,6 +4076,7 @@
                   alt="Акция 3"
                   loading="lazy"
                   fetchpriority="low"
+                  decoding="async"
                 />
                 <div class="story-card__placeholder">
                   <div>
@@ -3746,7 +4096,7 @@
                   окрашиваниям, сначала можно просто написать и уточнить детали.
                 </p>
               </div>
-            </article>
+            </a>
           </div>
         </div>
       </section>
@@ -3926,22 +4276,22 @@
 
     <script>
       /*
-      ======================================================================
-      JavaScript страницы
-      ----------------------------------------------------------------------
-      Что делает код ниже:
-      1. Читает значения из CONFIG_DEFAULT и localStorage
-      2. Подставляет тексты, ссылки, изображения, QR и видео
-      3. Управляет картой, бонусом, слайдерами и локальной админкой
-      Если хочется менять контент вручную, чаще всего достаточно блока
-      CONFIG_DEFAULT чуть ниже.
-      ======================================================================
-    */
+            ======================================================================
+            JavaScript страницы
+            ----------------------------------------------------------------------
+            Что делает код ниже:
+            1. Читает значения из CONFIG_DEFAULT и localStorage
+            2. Подставляет тексты, ссылки, изображения, QR и видео
+            3. Управляет картой, бонусом, слайдерами и локальной админкой
+            Если хочется менять контент вручную, чаще всего достаточно блока
+            CONFIG_DEFAULT чуть ниже.
+            ======================================================================
+          */
 
       /*
-        Дефолтные значения сайта.
-        Если в localStorage ничего нет, страница берёт данные отсюда.
-      */
+              Дефолтные значения сайта.
+              Если в localStorage ничего нет, страница берёт данные отсюда.
+            */
       const CONFIG_DEFAULT = {
         /* Основные ссылки, логотип и общие изображения */
         infoUrl: "https://t.me/glaire_haircare_perm",
@@ -3972,9 +4322,9 @@
 
         /* Первый экран: заголовок, кнопки и карточки преимуществ */
         heroEyebrow: "Студия ухода и окрашивания в Перми",
-        heroTitle: "Спокойный сервис и аккуратная работа с волосами",
+        heroTitle: "GLAIRE — комплексный уход за волосами в Перми",
         heroText:
-          "GLAIRE — студия, куда приходят за чистым окрашиванием, уходом и восстановлением без спешки и визуального шума. Здесь важны состояние волос, предсказуемый результат и ощущение, что с вами работают внимательно и по делу.",
+          "Работаем по состоянию волос и задаче, с которой вы приходите. Подбираем формат: уход, реконструкция, обновление цвета или комплекс — чтобы результат выглядел аккуратно и удобно носился каждый день.",
         heroBookLabel: "Записаться в DIKIDI",
         heroInfoLabel: "Задать вопрос перед визитом",
         heroSliderCaption: "Пространство студии",
@@ -3991,9 +4341,8 @@
         /* Правая колонка первого экрана: контакты, карта и QR-коды */
         contactText:
           "Если удобнее сначала понять локацию и формат связи, всё нужное уже собрано в одном месте: карта, быстрые переходы и QR-коды на основные каналы студии.",
-        locationTitle: "Как нас найти",
-        addressText:
-          "Пермь · актуальный адрес, вход и маршрут удобно смотреть по карте или уточнить перед визитом.",
+        locationTitle: "как найти нас ?",
+        addressText: "Пермь · Ул.Петропавловская 40, салон Krasivo",
         telegramQrTitle: "Telegram",
         telegramQrText:
           "Быстрый способ написать, отправить фото волос и уточнить детали перед визитом.",
@@ -4002,22 +4351,21 @@
           "Удобно, если хочется посмотреть контент студии и перейти к общению в привычном формате.",
 
         /* Блок бонуса со стиранием верхнего слоя */
-        bonusEyebrow: "Привилегия перед записью",
+        bonusEyebrow: "Бонус перед записью",
         bonusTitle: "Откройте персональный бонус",
         bonusText:
           "Это не шумная акция, а мягкая привилегия от студии. Механика помогает начать знакомство спокойно: сначала интерес, затем запись на удобное время.",
         scratchLabel: "Ваш бонус GLAIRE",
         scratchSwipeHint: "Ведите влево и вправо",
-        scratchHint:
-          "Лучше вести по слою влево и вправо. Так бонус открывается быстрее и страница не уходит вверх-вниз. Сохраните бонус скриншотом и покажите его при записи.",
+        scratchHint: "Сохраните бонус скриншотом и покажите его при записи.",
         scratchResetLabel: "Открыть ещё раз",
-        bonusSideTitle1: "Почему это лучше обычной скидки",
+        bonusSideTitle1: "Как это работает ?",
         bonusSideText1:
-          "Бонус выглядит как часть сервиса, а не как случайный купон. Он вовлекает, запоминается и мягко подталкивает к записи без ощущения давления.",
-        bonusSideTitle2: "Что можно открыть",
+          "Это не случайная акция, а дополнительный этап работы с клиентом.\nМожно заранее получить небольшой бонус к визиту, протестировать формат работы или упростить выбор услуги перед записью.",
+        bonusSideTitle2: "Что можно открыть ?",
         bonusSideList:
           "Комплимент к визиту\nДополнительный этап ухода\nЗащиту цвета в подарок\nПриоритет по свободным датам\nСекретный бонус от GLAIRE",
-        bonusSideTitle3: "Как использовать бонус",
+        bonusSideTitle3: "Как использовать бонус ?",
         bonusSideText3:
           "После открытия бонуса можно сразу перейти к записи или написать перед визитом. Лучше сохранить результат скриншотом и показать его при записи, чтобы бонус было удобно активировать.",
         scratchPrize1Title: "Комплимент к визиту",
@@ -4054,12 +4402,11 @@
         /* Блок о мастере */
         masterSectionEyebrow: "О мастере",
         masterTitle: "Понятно, к кому вы записываетесь и какой подход вас ждёт",
-        masterText:
-          "Этот блок нужен не для формальности, а чтобы человек сразу понял стиль работы, приоритеты мастера и атмосферу визита. Чем яснее первое впечатление, тем спокойнее и осознаннее запись.",
-        masterEyebrow: "Мастер студии",
-        masterName: "Основной мастер GLAIRE",
+        masterText: "",
+        masterEyebrow: "Основной мастер студии",
+        masterName: "Домнин Валерий",
         masterRole:
-          "Уход, реконструкция, окрашивание и сопровождение по домашнему уходу",
+          "Стрижки, уход, модификации, окрашивания и сопровождение по домашнему уходу",
         masterDescription:
           "Работа строится вокруг состояния волос, мягкого сервиса и результата, который красиво носится после визита, а не только в день процедуры.",
         masterPointTitle1: "Сначала разбираем задачу",
@@ -4073,9 +4420,8 @@
           "Можно спокойно задать вопрос, уточнить детали и выбрать формат, который действительно подходит именно вам.",
 
         /* Соцсети мастера и их ссылки */
-        socialsTitle: "Соцсети мастера",
-        socialsText:
-          "Здесь можно оставить быстрые ссылки на рабочие соцсети мастера: VK, Instagram и Telegram для связи, фото работ и спокойного контакта перед записью.",
+        socialsTitle: "Соц.сети мастера",
+        socialsText: "",
         socialsEmptyText:
           "Ссылки можно добавить в админке. Блок уже подготовлен для VK, Instagram и Telegram.",
         socialTelegramUrl: "https://t.me/glaire_haircare_perm",
@@ -4089,108 +4435,111 @@
 
         /* Блок с вертикальными видео */
         contentEyebrow: "Контент студии",
-        contentTitle: "Почувствуйте студию через видео",
+        contentTitle: "Почувствуйте студию через видео контент",
         contentLead:
           "Атмосфера студии, советы по уходу, результаты и любимые продукты, которые помогают мягко понять подход GLAIRE ещё до записи.",
-        contentNote:
-          "На компьютере ролики идут парами: сначала два по очереди, затем следующая пара. На телефоне ролики идут по одному. Листайте стрелками или свайпом.",
-        contentBadge1: "Студия",
-        contentTitle1: "Атмосфера студии",
+        contentNote: "",
+        contentBadge1: "Знакомство",
+        contentTitle1: "Давайте познакомимся",
         contentText1:
-          "Короткий ролик, который помогает почувствовать пространство, темп и настроение визита ещё до записи.",
+          "Короткий формат, который помогает почувствовать пространство, темп и настроение визита ещё до записи.",
         contentVideo1:
           "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775594089/IMG_3854.MOV--online-audio-convert.com.mp4_sswt4d.mp4",
-        contentBadge2: "Совет",
-        contentTitle2: "Полезный уходовый ориентир",
+        contentBadge2: "Познавательно",
+        contentTitle2: "Интересные факты",
         contentText2:
           "Формат для простых советов: как поддерживать результат, что важно после окрашивания и на что смотреть дома.",
         contentVideo2:
           "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775594091/1511384747569664428.MP4--online-audio-convert.com.mp4_cbfxos.mp4",
-        contentBadge3: "Результат",
-        contentTitle3: "До, после и носибельность",
+        contentBadge3: "Окошки",
+        contentTitle3: "Открыта запись",
         contentText3:
-          "Здесь удобно показывать трансформации, оттенок, блеск и то, как волосы выглядят в живом движении.",
-        contentVideo3: "",
-        contentBadge4: "Косметика",
-        contentTitle4: "Продукты и домашний уход",
+          "Актуальные даты и время для записи, чтобы заранее выбрать удобный слот и спокойно спланировать визит.",
+        contentVideo3:
+          "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775762946/copy_A9C1019D-0792-4E3A-81E7-8960C959AA7C.MOV--online-audio-convert.com_vxza3t.mp4",
+        contentBadge4: "Купоны",
+        contentTitle4: "Закулисье GLAIRE",
         contentText4:
-          "Отдельный слот для банок, текстур, любимых формул и объяснений, зачем конкретный продукт нужен именно сейчас.",
-        contentVideo4: "",
+          "Сделали для вас сертификаты со скрытым номиналом. Каждый с секретным сюрпризом и бонусом.",
+        contentVideo4:
+          "https://res.cloudinary.com/dhb13tygy/video/upload/q_auto/f_auto/v1775762975/-2890979638812717924_w6spqm.mp4",
 
         /* Блок работ: фото моделей, теги и карточки с описанием */
         worksEyebrow: "Направления работы",
         worksTitle: "То, за чем чаще всего приходят в GLAIRE",
-        worksNote:
-          "Блок уже собран так, чтобы в него было легко поставить реальные фото работ и сохранить чистую, спокойную подачу без визуального перегруза.",
-        worksTags: "Окрашивание\nРеконструкция\nУход\nФорма\nПоддержка блонда",
+        worksNote: "",
+        worksTags: "Окрашивание\nВыход из блонда\nУход\nСтрижка\nУкладка",
         worksInfoEyebrow: "Что получает клиент",
         worksInfoLead:
-          "Даже короткий обзор помогает понять, что здесь работают не только с внешним эффектом, но и с качеством волос после визита.",
-        worksItemTitle1: "Чистое окрашивание",
-        worksItemText1:
-          "Работа с оттенком строится так, чтобы цвет смотрелся дорого, подходил вам и не спорил с качеством длины.",
+          "Работа строится не только на визуальном результате в день визита, но и на том, как волосы ведут себя дальше.",
+        worksItemTitle3: "Чистое окрашивание",
+        worksItemText3:
+          "Работа с оттенком строится так, чтобы цвет смотрелся красиво, подходил вам и не спорил с качеством длины.",
         worksItemTitle2: "Уход и восстановление",
         worksItemText2:
           "Если волосам нужен более спокойный, собранный вид, подбирается формат ухода без лишних обещаний и перегрузки.",
-        worksItemTitle3: "Поддержка результата",
-        worksItemText3:
-          "Клиенту важно не только выйти красивой из студии, но и понимать, как поддерживать результат между визитами.",
+        worksItemTitle5: "Поддержка результата",
+        worksItemText5:
+          "Важно не только сделать, но и сохранить. Объясняем, как поддерживать результат между визитами без сложных схем.",
         worksItemTitle4: "Понятный домашний уход",
         worksItemText4:
-          "После визита остаются не общие советы, а понятные ориентиры по уходу, чтобы качество волос сохранялось дольше.",
+          "После визита остаётся не список продуктов, а понятная система: что делать с волосами в повседневной жизни.",
+        worksItemTitle1: "Сопровождение до и после визита",
+        worksItemText1:
+          "Консультация перед визитом. Если появляются вопросы по уходу, оттенку или поддержанию результата, остаётся понятная точка контакта.",
 
         /* Блок актуального: акции, новости и другие поводы написать */
         newsEyebrow: "Сейчас в студии",
-        newsTitle: "Актуальное без баннерного шума и крикливых офферов",
+        newsTitle: "Актуальные акции GLAIRE",
         newsLead:
-          "Здесь удобно показывать то, что важно прямо сейчас: свободные окна, новый комплекс ухода, сезонную рекомендацию или повод перейти к записи сегодня.",
-        newsBadge1: "Сейчас",
-        newsTitle1: "Свободные окна на ближайшие дни",
+          "Здесь собраны актуальные предложения GLAIRE: комплексы, специальные условия и форматы, с которых удобно начать или обновить результат.",
+        newsHint: "Нажмите на карточку, чтобы воспользоваться акцией.",
+        newsBadge1: "Модификация",
+        newsTitle1: "WINTER RESET",
         newsText1:
-          "Спокойный формат для тех, кто давно хотел записаться и ищет удобное время без долгого ожидания.",
+          "Реконструкция длины с диагностикой состояния волос и кожи головы.",
         newsImage1:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775645110/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
         newsBadge2: "Уход",
-        newsTitle2: "Уход и восстановление после окрашивания",
-        newsText2:
-          "Подходит, если хочется вернуть волосам более собранный вид, плотность и мягкий блеск без перегруженного домашнего ухода.",
+        newsTitle2: "SIGNATURE LOOK",
+        newsText2: "Окрашивание, форма и уход собираются в единый результат.",
         newsImage2:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644928/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
-        newsBadge3: "Контакт",
-        newsTitle3: "Консультация перед первым визитом",
+        newsBadge3: "Окрашивание",
+        newsTitle3: "COLOR ARCHITECT",
         newsText3:
-          "Если есть сомнения по оттенку, длине, уходу или прошлым окрашиваниям, сначала можно просто написать и уточнить детали.",
+          "При окрашивании добавляем уход и этап стабилизации цвета в подарок.",
         newsImage3:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644928/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
 
         /* Блок консультации перед записью */
         consultEyebrow: "Если хочется сначала уточнить",
-        consultTitle: "Можно начать с короткого вопроса, а не сразу с записи",
+        consultTitle: "Можно начать с короткого вопроса.",
         consultText:
           "Если нужно уточнить состояние волос, объём работы, длительность визита или формат окрашивания, лучше сначала написать. Так записываться спокойнее и понятнее.",
         consultNote:
           "Сканируйте QR и перейдите в удобный канал для первого контакта. Здесь можно отправить фото длины, описать задачу и получить предварительный ориентир перед записью.",
         visitEyebrow: "Перед первым визитом",
-        visitTitle: "Что обычно удобно знать заранее",
+        visitTitle: "Как проходит первый визит в GLAIRE",
         visitText:
-          "Этот блок снимает лишние вопросы и помогает быстрее решиться на запись без ощущения неопределённости.",
+          "Можно не разбираться во всех нюансах заранее. Достаточно описать задачу или отправить фото — дальше поможем сориентироваться и подобрать формат.",
         visitItems:
-          "Можно заранее отправить фото текущей длины и желаемого результата.\nЕсли была сложная история окрашиваний, лучше написать об этом заранее.\nНа консультации можно уточнить длительность визита, домашний уход и формат поддержания результата.\nОсновная запись и вся информация доступны в пару нажатий через DIKIDI.",
+          "Сначала смотрим состояние волос и обсуждаем задачу.\nПодбираем формат: уход - реконструкция или окрашивание.\nСогласовываем этапы работы и итоговый результат.\nОриентируем по времени и стоимости до начала.\nПосле визита даём понятные рекомендации по уходу.",
 
         /* Финальный блок записи и подпись в подвале */
         ctaEyebrow: "Запись",
-        ctaTitle: "Если формат вам близок, можно занять удобное время",
+        ctaTitle: "Перейти к онлайн записи в DIKIDI",
         ctaText:
-          "Страница собрана так, чтобы сначала дать ощущение студии и подхода, а затем перевести в понятное действие. Без давления, только с ясным переходом к записи.",
+          "Выберите удобное время и формат визита. Все доступные окна и услуги отображаются в записи.",
         ctaButtonLabel: "Перейти к записи в DIKIDI",
         footerText:
-          "GLAIRE Haircare Studio | Пермь — спокойный digital-вход в запись, консультацию и актуальное студии.",
+          "GLAIRE Haircare Studio | Пермь — digital-вход в запись, консультацию и актуальное студии.",
       };
 
       /*
-        Список соцсетей вынесен отдельно.
-        Это позволяет использовать одни и те же ссылки в нескольких блоках страницы.
-      */
+              Список соцсетей вынесен отдельно.
+              Это позволяет использовать одни и те же ссылки в нескольких блоках страницы.
+            */
       const STUDIO_SOCIAL_LINKS = [
         { platform: "vk", key: "socialVkUrl" },
         { platform: "instagram", key: "socialInstagramUrl" },
@@ -4205,10 +4554,10 @@
       ];
 
       /*
-        Служебные константы:
-        STORAGE_KEY — имя сохранения в localStorage,
-        ADMIN_QUERY_* — параметр, который открывает локальную админку.
-      */
+              Служебные константы:
+              STORAGE_KEY — имя сохранения в localStorage,
+              ADMIN_QUERY_* — параметр, который открывает локальную админку.
+            */
       const STORAGE_KEY = "glaireScratchLandingFinalV2";
       const ADMIN_QUERY_PARAM = "admin";
       const ADMIN_QUERY_VALUE = "1";
@@ -4217,11 +4566,11 @@
         ADMIN_QUERY_VALUE;
 
       /*
-        Безопасная обёртка для фоновых задач.
-        Если браузер умеет requestIdleCallback, используем его.
-        Если нет, даём странице сначала отрисоваться и только потом
-        запускаем необязательную работу.
-      */
+              Безопасная обёртка для фоновых задач.
+              Если браузер умеет requestIdleCallback, используем его.
+              Если нет, даём странице сначала отрисоваться и только потом
+              запускаем необязательную работу.
+            */
       function runWhenIdle(callback, timeout = 600) {
         if (typeof callback !== "function") return;
 
@@ -4234,10 +4583,10 @@
       }
 
       /*
-        Профили оптимизации для Cloudinary.
-        Сайт старается получать не оригиналы, а уже ограниченные по размеру
-        версии изображений и видео под конкретный блок.
-      */
+              Профили оптимизации для Cloudinary.
+              Сайт старается получать не оригиналы, а уже ограниченные по размеру
+              версии изображений и видео под конкретный блок.
+            */
       const CLOUDINARY_IMAGE_TRANSFORMS = {
         brandImage: "f_auto,q_auto:eco,dpr_auto,c_limit,w_144",
         heroSlide1: "f_auto,q_auto:good,dpr_auto,c_limit,w_960",
@@ -4258,9 +4607,9 @@
       }
 
       /*
-        Вставляет в Cloudinary-ссылку нужный набор трансформаций.
-        Это даёт более лёгкий файл без ручной правки каждой ссылки.
-      */
+              Вставляет в Cloudinary-ссылку нужный набор трансформаций.
+              Это даёт более лёгкий файл без ручной правки каждой ссылки.
+            */
       function applyCloudinaryTransform(value, transform) {
         const source = String(value || "").trim();
         if (!source || !transform || !isCloudinaryUrl(source)) return source;
@@ -4297,47 +4646,9 @@
       }
 
       /*
-        Фирменные веб-шрифты больше не блокируют первый экран.
-        Сначала сайт рисуется системными шрифтами, а затем на спокойной сети
-        Google Fonts догружаются в фоне.
-      */
-      const OPTIONAL_GOOGLE_FONT_STYLESHEET =
-        "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=optional";
-      let optionalFontsRequested = false;
-
-      function loadOptionalGoogleFonts() {
-        if (optionalFontsRequested) return;
-
-        optionalFontsRequested = true;
-        const stylesheetNode = document.createElement("link");
-        stylesheetNode.rel = "stylesheet";
-        stylesheetNode.href = OPTIONAL_GOOGLE_FONT_STYLESHEET;
-        stylesheetNode.dataset.optionalFonts = "1";
-        document.head.appendChild(stylesheetNode);
-      }
-
-      const initialConnection = getNetworkConnectionInfo();
-      const initialNetworkType = String(initialConnection?.effectiveType || "");
-      const shouldSkipOptionalFontLoad =
-        Boolean(initialConnection?.saveData) ||
-        /slow-2g|2g/.test(initialNetworkType);
-
-      if (!shouldSkipOptionalFontLoad) {
-        window.addEventListener(
-          "load",
-          () => {
-            runWhenIdle(() => {
-              window.setTimeout(loadOptionalGoogleFonts, 1200);
-            }, 1800);
-          },
-          { once: true },
-        );
-      }
-
-      /*
-        Собирает трансформацию для видео с учётом ширины карточки и сети.
-        Так ролик приходит ближе к реальному размеру, а не тяжёлым оригиналом.
-      */
+              Собирает трансформацию для видео с учётом ширины карточки и сети.
+              Так ролик приходит ближе к реальному размеру, а не тяжёлым оригиналом.
+            */
       function getContentVideoTransform(cardNode) {
         const mediaNode =
           cardNode?.querySelector(".content-card__media") || cardNode;
@@ -4373,9 +4684,9 @@
       }
 
       /*
-        Делает лёгкую обложку для видео из того же Cloudinary-ролика.
-        Так карточка быстрее выглядит готовой, пока сам ролик ещё загружается.
-      */
+              Делает лёгкую обложку для видео из того же Cloudinary-ролика.
+              Так карточка быстрее выглядит готовой, пока сам ролик ещё загружается.
+            */
       function optimizeConfiguredVideoPoster(value, cardNode) {
         const mediaNode =
           cardNode?.querySelector(".content-card__media") || cardNode;
@@ -4395,12 +4706,12 @@
       }
 
       /*
-        Список альтернативных путей к изображениям.
-        Это нужно, чтобы сайт одинаково работал и со старой структурой папок,
-        и с новой папкой assets после публикации на GitHub Pages.
-        Слева ключ, который может прийти из config или из старой версии сайта,
-        справа список запасных адресов того же файла.
-      */
+              Список альтернативных путей к изображениям.
+              Это нужно, чтобы сайт одинаково работал и со старой структурой папок,
+              и с новой папкой assets после публикации на GitHub Pages.
+              Слева ключ, который может прийти из config или из старой версии сайта,
+              справа список запасных адресов того же файла.
+            */
       const IMAGE_SOURCE_ALIASES = {
         "assets/logo/group-17.png": ["лого/Group 17.png"],
         "лого/Group 17.png": ["assets/logo/group-17.png"],
@@ -4459,12 +4770,12 @@
       };
 
       /*
-        Локальные запасные пути по смысловым ключам.
-        Если в config будет стоять Cloudinary-ссылка или любой другой внешний URL,
-        сайт всё равно попробует эти локальные файлы как резервный вариант.
-        Это удобно для публикации: внешний CDN остаётся основным,
-        а репозиторий хранит безопасную локальную копию.
-      */
+              Локальные запасные пути по смысловым ключам.
+              Если в config будет стоять Cloudinary-ссылка или любой другой внешний URL,
+              сайт всё равно попробует эти локальные файлы как резервный вариант.
+              Это удобно для публикации: внешний CDN остаётся основным,
+              а репозиторий хранит безопасную локальную копию.
+            */
       const LOCAL_IMAGE_FALLBACKS = {
         brandImage: ["assets/logo/group-17.png"],
         heroSlide1: ["assets/studio/studio-1.jpg"],
@@ -4479,9 +4790,9 @@
       };
 
       /*
-        Читает настройки из localStorage.
-        Если сохранённых данных нет или JSON повреждён, используются дефолтные значения.
-      */
+              Читает настройки из localStorage.
+              Если сохранённых данных нет или JSON повреждён, используются дефолтные значения.
+            */
       function getConfig() {
         try {
           const parsedConfig =
@@ -4492,17 +4803,17 @@
           };
 
           /*
-            Важно:
-            localStorage имеет приоритет над CONFIG_DEFAULT.
-            Поэтому если контент уже менялся через админку, сначала загрузятся
-            именно сохранённые пользовательские значения.
-          */
+                  Важно:
+                  localStorage имеет приоритет над CONFIG_DEFAULT.
+                  Поэтому если контент уже менялся через админку, сначала загрузятся
+                  именно сохранённые пользовательские значения.
+                */
 
           /*
-            Подмена старых путей картинок на новые безопасные пути из assets.
-            Это помогает, если раньше в браузере уже сохранились значения
-            с русскими папками, пробелами или нестабильными именами.
-          */
+                  Подмена старых путей картинок на новые безопасные пути из assets.
+                  Это помогает, если раньше в браузере уже сохранились значения
+                  с русскими папками, пробелами или нестабильными именами.
+                */
           const legacyAssetMap = {
             "лого/Group 17.png": CONFIG_DEFAULT.brandImage,
             "фото помещения/IMG_1407.jpg": CONFIG_DEFAULT.heroSlide1,
@@ -4531,9 +4842,9 @@
           });
 
           /*
-            Защитная подстановка для QR консультации.
-            Если значение пустое или подставлен старый путь, берётся дефолтный QR.
-          */
+                  Защитная подстановка для QR консультации.
+                  Если значение пустое или подставлен старый путь, берётся дефолтный QR.
+                */
           if (
             !nextConfig.consultQr ||
             nextConfig.consultQr === "qr/telegram qr.png"
@@ -4549,9 +4860,9 @@
           }
 
           /*
-            Защитная подстановка для фото мастера.
-            Если путь не заполнен, берётся изображение по умолчанию.
-          */
+                  Защитная подстановка для фото мастера.
+                  Если путь не заполнен, берётся изображение по умолчанию.
+                */
           if (!nextConfig.masterPhoto) {
             nextConfig.masterPhoto = CONFIG_DEFAULT.masterPhoto;
           }
@@ -4606,6 +4917,14 @@
             nextConfig.contentVideo2 = CONFIG_DEFAULT.contentVideo2;
           }
 
+          if (!nextConfig.contentVideo3) {
+            nextConfig.contentVideo3 = CONFIG_DEFAULT.contentVideo3;
+          }
+
+          if (!nextConfig.contentVideo4) {
+            nextConfig.contentVideo4 = CONFIG_DEFAULT.contentVideo4;
+          }
+
           if (
             nextConfig.contentVideo1 ===
             "контент видео/IMG_3854.MOV--online-audio-convert.com.mp4"
@@ -4620,12 +4939,27 @@
             nextConfig.contentVideo2 = CONFIG_DEFAULT.contentVideo2;
           }
 
+          if (
+            nextConfig.contentVideo3 ===
+            "контент видео/copy_A9C1019D-0792-4E3A-81E7-8960C959AA7C.MOV--online-audio-convert.com.mp4"
+          ) {
+            nextConfig.contentVideo3 = CONFIG_DEFAULT.contentVideo3;
+          }
+
+          if (
+            nextConfig.contentVideo4 ===
+            "контент видео/-2890979638812717924.mp4"
+          ) {
+            nextConfig.contentVideo4 = CONFIG_DEFAULT.contentVideo4;
+          }
+
           return nextConfig;
         } catch (error) {
           return { ...CONFIG_DEFAULT };
         }
       }
 
+      /* Текущая рабочая конфигурация страницы и служебное состояние изображений */
       let config = getConfig();
       let heroSlides = [];
       let imageLoadRequestId = 0;
@@ -4674,6 +5008,82 @@
             node.textContent = config[key];
           }
         });
+        applyHeroTitleLayout();
+      }
+
+      /*
+              Собирает главный слоган первого экрана в более цельную композицию:
+              название бренда остаётся отдельной строкой, а смысловая часть
+              раскладывается на компактные строки ниже.
+            */
+      function applyHeroTitleLayout() {
+        const node = document.querySelector('[data-edit="heroTitle"]');
+        if (!node) {
+          return;
+        }
+
+        const rawTitle = (node.textContent || "").replace(/\s+/g, " ").trim();
+        if (!rawTitle) {
+          return;
+        }
+
+        const parts = rawTitle.split(/\s*[—-]\s*/);
+        const brandText = (parts.shift() || "").trim();
+        const bodyText = parts.join(" ").trim();
+
+        if (!brandText || !bodyText) {
+          node.textContent = rawTitle;
+          return;
+        }
+
+        const words = bodyText.split(" ").filter(Boolean);
+        const lines = [];
+
+        if (words.length <= 2) {
+          lines.push(words.join(" "));
+        } else if (words.length <= 4) {
+          lines.push(words.slice(0, 2).join(" "));
+          lines.push(words.slice(2).join(" "));
+        } else if (words.length <= 6) {
+          lines.push(words.slice(0, 2).join(" "));
+          lines.push(words.slice(2, 4).join(" "));
+          lines.push(words.slice(4).join(" "));
+        } else {
+          lines.push(words.slice(0, 2).join(" "));
+          lines.push(words.slice(2, 4).join(" "));
+          lines.push(words.slice(4).join(" "));
+        }
+
+        node.textContent = "";
+        node.setAttribute("aria-label", rawTitle);
+
+        const brandRow = document.createElement("span");
+        brandRow.className = "hero-title__brand-row";
+
+        const brandNode = document.createElement("span");
+        brandNode.className = "hero-title__brand";
+        brandNode.textContent = brandText;
+        brandRow.appendChild(brandNode);
+
+        const linesWrap = document.createElement("span");
+        linesWrap.className = "hero-title__lines";
+
+        lines.forEach((lineText, index) => {
+          if (!lineText) {
+            return;
+          }
+          const lineNode = document.createElement("span");
+          lineNode.className = "hero-title__line";
+          if (index === 0 && lineText.includes(" ")) {
+            lineNode.classList.add("hero-title__line--locked");
+            lineNode.textContent = lineText.replace(" ", "\u00A0");
+          } else {
+            lineNode.textContent = lineText;
+          }
+          linesWrap.appendChild(lineNode);
+        });
+
+        node.append(brandRow, linesWrap);
       }
 
       /* Подставляет одну и ту же ссылку в несколько кнопок */
@@ -4741,17 +5151,15 @@
 
       /* Тихо прогревает картинки в фоне, чтобы слайдер переключался без пустого кадра */
       function preloadImageSources(sources) {
-        sources
-          .filter(Boolean)
-          .forEach((source) => {
-            if (loadedImageSources.has(source)) return;
-            const preloadImage = new Image();
-            preloadImage.decoding = "async";
-            preloadImage.onload = () => {
-              loadedImageSources.add(source);
-            };
-            preloadImage.src = source;
-          });
+        sources.filter(Boolean).forEach((source) => {
+          if (loadedImageSources.has(source)) return;
+          const preloadImage = new Image();
+          preloadImage.decoding = "async";
+          preloadImage.onload = () => {
+            loadedImageSources.add(source);
+          };
+          preloadImage.src = source;
+        });
       }
 
       /* Собирает список возможных бонусов для scratch-блока */
@@ -4768,8 +5176,8 @@
           .filter((prize) => prize.title && prize.text);
       }
 
+      /* Состояние карты: какой URL уже подключён и есть ли активный observer */
       let currentMapUrl = "";
-
       let mapLoadObserver = null;
 
       /* Очищает отложенную загрузку карты, если она больше не нужна */
@@ -4827,10 +5235,10 @@
       }
 
       /*
-        Включает карту или заглушку.
-        Если ссылка на карту заполнена, показывается iframe.
-        Если ссылка пустая, остаётся блок-заглушка.
-      */
+              Включает карту или заглушку.
+              Если ссылка на карту заполнена, показывается iframe.
+              Если ссылка пустая, остаётся блок-заглушка.
+            */
       function applyMapState() {
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
@@ -4960,10 +5368,10 @@
       }
 
       /*
-        Пробует несколько путей к одной и той же картинке.
-        Это полезно для GitHub Pages, если часть файлов уже лежит в assets,
-        а часть ещё осталась в старых папках с русскими именами.
-      */
+              Пробует несколько путей к одной и той же картинке.
+              Это полезно для GitHub Pages, если часть файлов уже лежит в assets,
+              а часть ещё осталась в старых папках с русскими именами.
+            */
       function applyImageFallbacks(imageNode, sources, onReady, onEmpty) {
         const queue = sources.filter(Boolean);
         const requestId = `${++imageLoadRequestId}`;
@@ -5019,9 +5427,9 @@
       }
 
       /*
-        Обновляет одну карточку из блока актуального.
-        index = "1", "2" или "3"
-      */
+              Обновляет одну карточку из блока актуального.
+              index = "1", "2" или "3"
+            */
       function applyNewsCard(index) {
         const badgeNode = document.getElementById(`newsBadge${index}`);
         const titleNode = document.getElementById(`newsTitle${index}`);
@@ -5036,6 +5444,19 @@
         badgeNode.textContent = config[`newsBadge${index}`];
         titleNode.textContent = config[`newsTitle${index}`];
         textNode.textContent = config[`newsText${index}`];
+
+        if (cardNode instanceof HTMLAnchorElement) {
+          const storyCardLink = (
+            config.consultQrLink ||
+            CONFIG_DEFAULT.consultQrLink ||
+            cardNode.getAttribute("href") ||
+            ""
+          ).trim();
+
+          if (storyCardLink) {
+            cardNode.href = storyCardLink;
+          }
+        }
 
         const imageSrc = (config[`newsImage${index}`] || "").trim();
         if (imageSrc) {
@@ -5062,9 +5483,9 @@
       }
 
       /*
-        Обновляет одну карточку с видео в секции контента.
-        index = "1", "2", "3" или "4"
-      */
+              Обновляет одну карточку с видео в секции контента.
+              index = "1", "2", "3" или "4"
+            */
       function applyContentCard(index) {
         const badgeNode = document.getElementById(`contentBadge${index}`);
         const titleNode = document.getElementById(`contentTitle${index}`);
@@ -5083,10 +5504,10 @@
         textNode.textContent = config[`contentText${index}`];
 
         /*
-          Видео в секции контента больше не грузятся все сразу.
-          В узле хранится только адрес, а реальная загрузка начинается
-          лишь когда карточка видна в ленте.
-        */
+                Видео в секции контента больше не грузятся все сразу.
+                В узле хранится только адрес, а реальная загрузка начинается
+                лишь когда карточка видна в ленте.
+              */
         const videoBaseSrc = (config[`contentVideo${index}`] || "").trim();
         videoNode.muted = true;
         videoNode.defaultMuted = true;
@@ -5121,9 +5542,9 @@
       }
 
       /*
-        Главная синхронизация страницы.
-        После вызова этой функции весь контент заново подставляется в DOM.
-      */
+              Главная синхронизация страницы.
+              После вызова этой функции весь контент заново подставляется в DOM.
+            */
       function applyConfig() {
         applyTextBindings();
         applyImageToIds(
@@ -5220,6 +5641,11 @@
       const prizeText = document.getElementById("prizeText");
       const resetScratchBtn = document.getElementById("resetScratchBtn");
 
+      /*
+              Служебные флаги scratch-блока:
+              рисует ли пользователь сейчас, открыт ли бонус,
+              была ли уже инициализация и есть ли наблюдатель видимости.
+            */
       let scratchIsDrawing = false;
       let scratchOpened = false;
       let scratchInitialized = false;
@@ -5478,6 +5904,11 @@
         document.querySelectorAll("[data-content-card]"),
       );
 
+      /*
+              Глобальное состояние слайдеров и видеоленты:
+              здесь хранятся активные индексы, свайпы, интервалы,
+              observer-объекты и логика очереди роликов со звуком.
+            */
       let heroSlideIndex = 0;
       let swipeStartX = null;
       let swipeDeltaX = 0;
@@ -5506,7 +5937,11 @@
       /* Возвращает только те карточки контента, в которых реально есть видео */
       function getConfiguredContentCards() {
         return contentCards.filter((cardNode) =>
-          Boolean(String(getContentCardVideoNode(cardNode)?.dataset.videoBaseSrc || "").trim()),
+          Boolean(
+            String(
+              getContentCardVideoNode(cardNode)?.dataset.videoBaseSrc || "",
+            ).trim(),
+          ),
         );
       }
 
@@ -5526,14 +5961,15 @@
       function normalizeContentSequenceIndex(nextIndex) {
         const total = getConfiguredContentCards().length;
         if (!total) return 0;
-        return (nextIndex % total + total) % total;
+        return ((nextIndex % total) + total) % total;
       }
 
       /* Возвращает карточку, которая сейчас считается главной в очереди */
       function getActiveContentSequenceCard() {
         const cards = getConfiguredContentCards();
         if (!cards.length) return null;
-        contentSequenceIndex = normalizeContentSequenceIndex(contentSequenceIndex);
+        contentSequenceIndex =
+          normalizeContentSequenceIndex(contentSequenceIndex);
         return cards[contentSequenceIndex];
       }
 
@@ -5672,9 +6108,9 @@
       }
 
       /*
-        Подготавливает соседний ролик заранее, но не запускает его.
-        Это убирает паузу между первым и вторым роликом на экране.
-      */
+              Подготавливает соседний ролик заранее, но не запускает его.
+              Это убирает паузу между первым и вторым роликом на экране.
+            */
       function prepareContentCardVideo(cardNode) {
         const videoNode = getContentCardVideoNode(cardNode);
         if (!videoNode) return;
@@ -5742,7 +6178,9 @@
 
         const activeCard = getActiveContentSequenceCard();
         const shouldBeAudible =
-          contentAudioUnlocked && Boolean(activeCard) && activeCard === cardNode;
+          contentAudioUnlocked &&
+          Boolean(activeCard) &&
+          activeCard === cardNode;
 
         const revealAndPlay = () => {
           cardNode.classList.add("content-card--ready");
@@ -5863,9 +6301,7 @@
           sortedVisibleCards.length &&
           Date.now() > contentPendingPageAdvanceUntil &&
           (!activeCard ||
-            !sortedVisibleCards.some(
-              ({ cardNode }) => cardNode === activeCard,
-            ))
+            !sortedVisibleCards.some(({ cardNode }) => cardNode === activeCard))
         ) {
           const fallbackCard = sortedVisibleCards[0].cardNode;
           const fallbackIndex = getConfiguredContentCardIndex(fallbackCard);
@@ -5906,7 +6342,8 @@
 
       /* Обновляет список активных роликов не чаще одного кадра */
       function scheduleContentVideoSync() {
-        if (!contentTrack || !contentTrackIsActive || contentVideoSyncFrame) return;
+        if (!contentTrack || !contentTrackIsActive || contentVideoSyncFrame)
+          return;
         contentVideoSyncFrame = window.requestAnimationFrame(() => {
           contentVideoSyncFrame = 0;
           syncVisibleContentVideos();
@@ -5925,7 +6362,9 @@
         }
 
         clearScheduledContentVideoLoads();
-        contentCards.forEach((cardNode) => deactivateContentCardVideo(cardNode));
+        contentCards.forEach((cardNode) =>
+          deactivateContentCardVideo(cardNode),
+        );
       }
 
       /* Автопрокрутка блока моделей активна только пока секция в зоне просмотра */
@@ -5941,6 +6380,11 @@
         window.clearInterval(worksSliderTimer);
       }
 
+      /*
+              Отдельный список фотографий моделей.
+              У каждого слайда есть alt-текст и очередь возможных путей:
+              сначала Cloudinary, затем локальный резерв.
+            */
       const WORKS_SLIDES = [
         {
           sources: buildImageCandidateList(
@@ -6016,6 +6460,7 @@
         setHeroSlide(heroSlideIndex + direction);
       }
 
+      /* Рисует точки навигации под слайдером моделей */
       function renderWorksSliderDots() {
         if (!worksSliderDots) return;
 
@@ -6050,6 +6495,7 @@
         renderWorksSliderDots();
       }
 
+      /* Переключает слайдер моделей на шаг вперёд или назад */
       function moveWorksSlide(direction) {
         setWorksSlide(worksSlideIndex + direction);
       }
@@ -6330,18 +6776,18 @@
       const backToTopBtn = document.getElementById("backToTopBtn");
       const mobileMenuMedia = window.matchMedia("(max-width: 1080px)");
       /*
-        Админка вынесена в отдельный файл и подключается только в режиме ?admin=1.
-        Так обычная версия сайта не скачивает и не парсит лишний JS.
-      */
+              Админка вынесена в отдельный файл и подключается только в режиме ?admin=1.
+              Так обычная версия сайта не скачивает и не парсит лишний JS.
+            */
       window.__glaireAdminApi = window.__glaireAdminApi || {
         closeAdmin() {},
       };
 
       /*
-        Это "мост" между основной страницей и отдельным файлом админки.
-        Сюда передаются только те функции и данные, которые нужны панели:
-        текущий config, дефолтные значения, функция перерисовки и доступ к localStorage-ключу.
-      */
+              Это "мост" между основной страницей и отдельным файлом админки.
+              Сюда передаются только те функции и данные, которые нужны панели:
+              текущий config, дефолтные значения, функция перерисовки и доступ к localStorage-ключу.
+            */
       window.__glaireRuntime = {
         isAdminMode,
         runWhenIdle,
