@@ -51,12 +51,12 @@
     <!-- Канонический адрес и языковая версия страницы -->
     <link
       rel="canonical"
-      href="https://fatihchan.github.io/glaire-haircare-perm/"
+      href="https://glaire.ru/"
     />
     <link
       rel="alternate"
       hreflang="ru-RU"
-      href="https://fatihchan.github.io/glaire-haircare-perm/"
+      href="https://glaire.ru/"
     />
 
     <!-- Превью для соцсетей и мессенджеров -->
@@ -73,7 +73,7 @@
     />
     <meta
       property="og:url"
-      content="https://fatihchan.github.io/glaire-haircare-perm/"
+      content="https://glaire.ru/"
     />
     <meta
       property="og:image"
@@ -166,16 +166,16 @@
         "@graph": [
           {
             "@type": "WebSite",
-            "@id": "https://fatihchan.github.io/glaire-haircare-perm/#website",
-            "url": "https://fatihchan.github.io/glaire-haircare-perm/",
+            "@id": "https://glaire.ru/#website",
+            "url": "https://glaire.ru/",
             "name": "GLAIRE Haircare Studio",
             "inLanguage": "ru-RU"
           },
           {
             "@type": "HairSalon",
-            "@id": "https://fatihchan.github.io/glaire-haircare-perm/#business",
+            "@id": "https://glaire.ru/#business",
             "name": "GLAIRE Haircare Studio",
-            "url": "https://fatihchan.github.io/glaire-haircare-perm/",
+            "url": "https://glaire.ru/",
             "image": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg",
             "logo": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_512,h_512/v1775644952/Group_17_gwygic.png",
             "description": "Студия ухода и окрашивания в Перми с консультацией перед записью, бонусом, актуальными предложениями и спокойным сервисом.",
@@ -6894,15 +6894,32 @@
         },
       };
 
+      /*
+              Открывает админку автоматически, если страница запущена в режиме ?admin=1.
+              Это помогает и на телефоне, и на GitHub Pages: не нужно искать кнопку
+              "Админ" в шапке или внутри бургер-меню.
+            */
+      function openAdminPanelFromQuery() {
+        if (!isAdminMode) return;
+
+        window.requestAnimationFrame(() => {
+          window.__glaireAdminApi?.openAdmin?.();
+        });
+      }
+
       /* Подключает файл admin-panel.js только когда страница открыта с ?admin=1 */
       function loadAdminScript() {
         if (!isAdminMode) return;
-        if (document.querySelector("script[data-glaire-admin]")) return;
+        if (document.querySelector("script[data-glaire-admin]")) {
+          openAdminPanelFromQuery();
+          return;
+        }
 
         const adminScript = document.createElement("script");
         adminScript.src = "admin-panel.js";
         adminScript.defer = true;
         adminScript.dataset.glaireAdmin = "1";
+        adminScript.onload = openAdminPanelFromQuery;
         document.body.appendChild(adminScript);
       }
 
