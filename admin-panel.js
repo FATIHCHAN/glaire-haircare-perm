@@ -130,6 +130,10 @@
       title: "Блок мастера и соцсети",
       hint: "Секция нужна, чтобы клиент понимал, к кому он идёт, и мог перейти в нужную соцсеть или канал связи.",
       fields: [
+        { key: "socialVkUrl", label: "Ссылка студии — VK" },
+        { key: "socialInstagramUrl", label: "Ссылка студии — Instagram" },
+        { key: "socialTelegramUrl", label: "Ссылка студии — Telegram" },
+        { key: "socialTiktokUrl", label: "Ссылка студии — TikTok" },
         { key: "masterSectionEyebrow", label: "Подзаголовок секции" },
         { key: "masterTitle", label: "Заголовок секции", type: "textarea" },
         { key: "masterText", label: "Описание секции", type: "textarea" },
