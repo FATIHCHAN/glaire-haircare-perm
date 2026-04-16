@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru-RU" class="fonts-loading">
+<html lang="ru-RU">
   <head>
     <!-- Базовые технические метаданные страницы -->
     <meta charset="UTF-8" />
@@ -121,8 +121,8 @@
 
     <!-- Служебные ресурсы и ранний приоритет для первого главного фото -->
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="dns-prefetch" href="//res.cloudinary.com" />
-    <link rel="dns-prefetch" href="//dikidi.net" />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+    <link rel="dns-prefetch" href="https://dikidi.net" />
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link
       rel="preload"
@@ -250,7 +250,7 @@
         font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
-        font-display: block;
+        font-display: swap;
         src: url("assets/fonts/manrope-cyrillic.woff2") format("woff2");
         unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
       }
@@ -259,7 +259,7 @@
         font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
-        font-display: block;
+        font-display: swap;
         src: url("assets/fonts/manrope-latin.woff2") format("woff2");
         unicode-range:
           U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -271,7 +271,7 @@
         font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
-        font-display: block;
+        font-display: swap;
         src: url("assets/fonts/cormorant-garamond-cyrillic.woff2")
           format("woff2");
         unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -281,7 +281,7 @@
         font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
-        font-display: block;
+        font-display: swap;
         src: url("assets/fonts/cormorant-garamond-latin.woff2") format("woff2");
         unicode-range:
           U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -341,13 +341,8 @@
         color-scheme: dark;
       }
 
-      html.fonts-loading body {
-        opacity: 0;
-      }
-
       html.fonts-ready body {
         opacity: 1;
-        transition: opacity 0.16s ease;
       }
 
       body {
@@ -2689,6 +2684,37 @@
           order: -1;
         }
 
+        /*
+          На мобильных браузерах content-visibility иногда неверно резервирует
+          высоту сложной карточки мастера и даёт большой пустой хвост снизу.
+          Поэтому для этой секции отключаем резервирование только на адаптиве.
+        */
+        #master {
+          content-visibility: visible;
+          contain-intrinsic-size: auto;
+        }
+
+        .master-card {
+          align-items: start;
+        }
+
+        .master-card__content {
+          min-height: auto;
+        }
+
+        .master-socials {
+          align-self: start;
+        }
+
+        .master-socials__copy {
+          justify-items: center;
+          text-align: center;
+        }
+
+        .master-socials__copy strong {
+          margin-inline: auto;
+        }
+
         .hero__content {
           order: 1;
         }
@@ -2995,41 +3021,12 @@
     </style>
     <script>
       /*
-        Раннее открытие страницы после подхвата локальных шрифтов.
-        Смысл этого мини-скрипта: не показывать сначала запасной тяжёлый шрифт,
-        а затем менять его на фирменный. Если шрифты не успели загрузиться быстро,
-        через 1200 мс страница всё равно откроется, чтобы не было зависания.
+        Безопасная загрузка шрифтов для обычного хостинга.
+        Страница не скрывается целиком, поэтому даже если шрифты загрузятся
+        медленно или сервер отдаст их с ошибкой, пользователь всё равно сразу
+        увидит сайт, а не белый экран.
       */
-      (() => {
-        const rootNode = document.documentElement;
-
-        const revealPage = () => {
-          rootNode.classList.remove("fonts-loading");
-          rootNode.classList.add("fonts-ready");
-        };
-
-        const revealTimeout = window.setTimeout(revealPage, 1200);
-
-        if (!("fonts" in document)) {
-          window.setTimeout(() => {
-            window.clearTimeout(revealTimeout);
-            revealPage();
-          }, 40);
-          return;
-        }
-
-        Promise.race([
-          Promise.allSettled([
-            document.fonts.load('400 1em "Manrope"'),
-            document.fonts.load('600 1em "Manrope"'),
-            document.fonts.load('600 1em "Cormorant Garamond"'),
-          ]),
-          new Promise((resolve) => window.setTimeout(resolve, 1200)),
-        ]).finally(() => {
-          window.clearTimeout(revealTimeout);
-          revealPage();
-        });
-      })();
+      document.documentElement.classList.add("fonts-ready");
     </script>
   </head>
   <body id="top">
