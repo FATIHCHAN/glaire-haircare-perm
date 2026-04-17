@@ -78,7 +78,7 @@
     <meta property="og:url" content="https://glaire.ru/" />
     <meta
       property="og:image"
-      content="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg"
+      content="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -107,7 +107,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg"
+      content="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
     />
 
     <!-- Иконки сайта для браузеров, телефона и установки на главный экран -->
@@ -137,11 +137,6 @@
 
     <!-- Служебные ресурсы и ранний приоритет для первого главного фото -->
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-    <link rel="dns-prefetch" href="https://yandex.com" />
-    <link rel="dns-prefetch" href="https://yastatic.net" />
-    <link rel="dns-prefetch" href="https://dikidi.net" />
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link
       rel="preload"
       as="image"
@@ -179,7 +174,7 @@
     <link
       rel="preload"
       as="image"
-      href="assets/studio/studio-1.jpg"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
     />
 
@@ -219,7 +214,7 @@
             },
             "primaryImageOfPage": {
               "@type": "ImageObject",
-              "url": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg"
+              "url": "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
             },
             "inLanguage": "ru-RU",
             "keywords": [
@@ -245,8 +240,8 @@
               "Glaire Haircare Perm"
             ],
             "url": "https://glaire.ru/",
-            "image": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_1200,h_630/v1775644872/IMG_1407_vuas5m.jpg",
-            "logo": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto,c_fill,w_512,h_512/v1775644952/Group_17_gwygic.png",
+            "image": "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+            "logo": "https://glaire.ru/assets/logo/group-17.png",
             "description": "GLAIRE Haircare Studio - студия волос в Перми: окрашивание, уход, реконструкции, модификации, консультация перед записью и спокойный сервис.",
             "telephone": "+7-992-213-82-59",
             "priceRange": "$$",
@@ -403,7 +398,7 @@
         font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
-        font-display: optional;
+        font-display: swap;
         src: url("assets/fonts/manrope-cyrillic.woff2") format("woff2");
         unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
       }
@@ -412,7 +407,7 @@
         font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
-        font-display: optional;
+        font-display: swap;
         src: url("assets/fonts/manrope-latin.woff2") format("woff2");
         unicode-range:
           U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -424,7 +419,7 @@
         font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
-        font-display: optional;
+        font-display: swap;
         src: url("assets/fonts/cormorant-garamond-cyrillic.woff2")
           format("woff2");
         unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -434,7 +429,7 @@
         font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
-        font-display: optional;
+        font-display: swap;
         src: url("assets/fonts/cormorant-garamond-latin.woff2") format("woff2");
         unicode-range:
           U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -1347,9 +1342,9 @@
       }
 
       /* ------------------------------------------------------------------ */
-      /* 5. Карта и её заглушка                                              */
-      /* Если ссылка на embed пустая, вместо карты остаётся аккуратная       */
-      /* заглушка с поясняющим текстом.                                      */
+      /* 5. Карта                                                            */
+      /* Карта сразу показывает путь до студии: внутри блока стоит iframe     */
+      /* Яндекс.Карт, а оформление подгоняет его под тёмный стиль сайта.      */
       /* ------------------------------------------------------------------ */
       .map-embed {
         position: relative;
@@ -1357,7 +1352,16 @@
         min-height: 280px;
         border-radius: 20px;
         border: 1px solid rgba(222, 214, 205, 0.08);
-        background: linear-gradient(180deg, #151d28, #1b2733);
+        background:
+          linear-gradient(rgba(222, 214, 205, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(222, 214, 205, 0.04) 1px, transparent 1px),
+          radial-gradient(circle at 64% 42%, rgba(214, 126, 68, 0.22), transparent 18%),
+          linear-gradient(180deg, #151d28, #1b2733);
+        background-size:
+          38px 38px,
+          38px 38px,
+          auto,
+          auto;
       }
 
       .map-embed iframe {
@@ -1407,22 +1411,52 @@
         position: absolute;
         inset: 0;
         display: grid;
-        align-content: end;
-        gap: 12px;
-        padding: 22px;
+        align-content: center;
+        justify-items: center;
+        gap: 14px;
+        padding: 24px;
         background:
-          radial-gradient(
-            circle at 20% 18%,
-            rgba(212, 204, 196, 0.1),
-            transparent 20%
-          ),
+          radial-gradient(circle at 50% 42%, rgba(214, 126, 68, 0.2), transparent 16%),
+          radial-gradient(circle at 78% 68%, rgba(212, 204, 196, 0.08), transparent 18%),
           linear-gradient(
-            180deg,
+            135deg,
             rgba(255, 255, 255, 0.03),
             rgba(255, 255, 255, 0.015)
           ),
-          linear-gradient(180deg, #121a24 0%, #0d141d 100%);
+          linear-gradient(rgba(222, 214, 205, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(222, 214, 205, 0.04) 1px, transparent 1px);
+        background-size:
+          auto,
+          auto,
+          auto,
+          38px 38px,
+          38px 38px;
         color: var(--text-main);
+        text-align: center;
+      }
+
+      .map-placeholder::before {
+        content: "";
+        width: 44px;
+        height: 44px;
+        border-radius: 50% 50% 50% 8px;
+        transform: rotate(-45deg);
+        background: rgba(214, 126, 68, 0.9);
+        box-shadow:
+          0 16px 34px rgba(0, 0, 0, 0.32),
+          inset 0 0 0 10px rgba(245, 240, 234, 0.16);
+      }
+
+      .map-placeholder::after {
+        content: "Пермь · Петропавловская 40";
+        padding: 8px 13px;
+        border-radius: 999px;
+        color: rgba(245, 240, 234, 0.86);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px solid rgba(222, 214, 205, 0.14);
+        background: rgba(11, 17, 24, 0.54);
       }
 
       .map-placeholder strong {
@@ -1437,7 +1471,7 @@
       }
 
       .map-placeholder__actions {
-        display: flex;
+        display: none;
         flex-wrap: wrap;
         gap: 10px;
       }
@@ -1448,7 +1482,7 @@
         font-size: 12px;
       }
 
-      .map-embed:not(.is-placeholder) .map-placeholder {
+      .map-embed:not(.is-placeholder):not(.is-loading) .map-placeholder {
         opacity: 0;
         pointer-events: none;
       }
@@ -3617,7 +3651,7 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="assets/studio/studio-1.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
                   alt="Интерьер студии GLAIRE"
                   fetchpriority="high"
                   decoding="async"
@@ -3659,7 +3693,7 @@
                   В этот блок подставляется карта из config.mapEmbedUrl.
                   Если ссылка пустая, остаётся заглушка с поясняющим текстом.
                 -->
-                <div class="map-embed is-loading" id="mapEmbed">
+                <div class="map-embed" id="mapEmbed">
                   <div class="map-embed__attribution">
                     <a
                       href="https://yandex.com/maps/org/krasivo/90046938757/?utm_medium=mapframe&utm_source=maps"
@@ -3679,17 +3713,16 @@
                   <iframe
                     id="mapFrame"
                     title="Карта студии GLAIRE"
-                    src="about:blank"
+                    src="https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14"
                     loading="lazy"
                     fetchpriority="low"
                     allowfullscreen="true"
                   ></iframe>
                   <div class="map-placeholder" id="mapPlaceholder">
-                    <strong>Карта студии</strong>
+                    <strong>Карта GLAIRE</strong>
                     <p>
-                      Интерактивная карта загружается автоматически. Если
-                      соединение медленное, маршрут всё равно можно открыть
-                      отдельно в Яндекс Картах.
+                      Коснитесь карты, чтобы открыть интерактивный маршрут до
+                      салона Krasivo.
                     </p>
                     <div class="map-placeholder__actions">
                       <button
@@ -3870,7 +3903,7 @@
               <div class="master-photo-shell" id="masterPhotoShell">
                 <img
                   id="masterPhoto"
-                  src="assets/master/master-photo.jpg"
+                  src="assets/master/master-photo.webp"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -4277,7 +4310,7 @@
                 <div class="works-slider__viewport" id="worksSliderViewport">
                   <img
                     id="worksSlideImage"
-                    src="assets/models/model-1.jpg"
+                    src="assets/models/model-1.webp"
                     alt="Фото модели GLAIRE"
                     loading="lazy"
                     fetchpriority="low"
@@ -4724,9 +4757,11 @@
           "https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14",
         brandImage: "assets/logo/group-17.png",
         brandSub: "haircare studio | Perm",
-        heroSlide1: "assets/studio/studio-1.jpg",
-        heroSlide2: "assets/studio/studio-2.jpg",
-        masterPhoto: "assets/master/master-photo.jpg",
+        heroSlide1:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+        heroSlide2:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+        masterPhoto: "assets/master/master-photo.webp",
         consultQr: "assets/qr/consult-chat.png",
         telegramQr: "assets/qr/telegram-qr.png",
         vkQr: "assets/qr/vk-qr.png",
@@ -4916,16 +4951,16 @@
         newsTitle1: "WINTER RESET",
         newsText1:
           "Реконструкция длины с диагностикой состояния волос и кожи головы.",
-        newsImage1: "assets/news/promo-1.jpg",
+        newsImage1: "assets/news/promo-1.webp",
         newsBadge2: "Уход",
         newsTitle2: "SIGNATURE LOOK",
         newsText2: "Окрашивание, форма и уход собираются в единый результат.",
-        newsImage2: "assets/news/promo-2.jpg",
+        newsImage2: "assets/news/promo-2.webp",
         newsBadge3: "Окрашивание",
         newsTitle3: "COLOR ARCHITECT",
         newsText3:
           "При окрашивании добавляем уход и этап стабилизации цвета в подарок.",
-        newsImage3: "assets/news/promo-3.jpg",
+        newsImage3: "assets/news/promo-3.webp",
 
         /* Блок консультации перед записью */
         consultEyebrow: "Если хочется сначала уточнить",
@@ -5131,13 +5166,39 @@
         "assets/logo/group-17.png": ["лого/Group 17.png"],
         "лого/Group 17.png": ["assets/logo/group-17.png"],
 
-        "assets/studio/studio-1.jpg": ["фото помещения/IMG_1407.jpg"],
-        "фото помещения/IMG_1407.jpg": ["assets/studio/studio-1.jpg"],
-        "assets/studio/studio-2.jpg": ["фото помещения/IMG_1415.jpg"],
-        "фото помещения/IMG_1415.jpg": ["assets/studio/studio-2.jpg"],
+        "assets/studio/studio-1.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+          "assets/studio/studio-1.jpg",
+        ],
+        "assets/studio/studio-1.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+          "assets/studio/studio-1.webp",
+          "фото помещения/IMG_1407.jpg",
+        ],
+        "фото помещения/IMG_1407.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+          "assets/studio/studio-1.jpg",
+        ],
+        "assets/studio/studio-2.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+          "assets/studio/studio-2.jpg",
+        ],
+        "assets/studio/studio-2.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+          "assets/studio/studio-2.webp",
+          "фото помещения/IMG_1415.jpg",
+        ],
+        "фото помещения/IMG_1415.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+          "assets/studio/studio-2.jpg",
+        ],
 
-        "assets/master/master-photo.jpg": ["фото мастера/IMG_0228.jpg"],
-        "фото мастера/IMG_0228.jpg": ["assets/master/master-photo.jpg"],
+        "assets/master/master-photo.webp": ["assets/master/master-photo.jpg"],
+        "assets/master/master-photo.jpg": [
+          "assets/master/master-photo.webp",
+          "фото мастера/IMG_0228.jpg",
+        ],
+        "фото мастера/IMG_0228.jpg": ["assets/master/master-photo.webp"],
 
         "assets/qr/consult-chat.png": [
           "qr/qr консультация чат.png",
@@ -5157,49 +5218,64 @@
         "qr/vk qr.png": ["assets/qr/vk-qr.png"],
         "qr - код/vk qr.png": ["assets/qr/vk-qr.png"],
 
-        "assets/models/model-1.jpg": ["фото моделей/IMG_2860.jpg"],
-        "фото моделей/IMG_2860.jpg": ["assets/models/model-1.jpg"],
-        "assets/models/model-2.jpg": ["фото моделей/IMG_2858.jpg"],
-        "фото моделей/IMG_2858.jpg": ["assets/models/model-2.jpg"],
-        "assets/models/model-3.jpg": ["фото моделей/IMG_2861.jpg"],
-        "фото моделей/IMG_2861.jpg": ["assets/models/model-3.jpg"],
+        "assets/models/model-1.webp": ["assets/models/model-1.jpg"],
+        "assets/models/model-1.jpg": [
+          "assets/models/model-1.webp",
+          "фото моделей/IMG_2860.jpg",
+        ],
+        "фото моделей/IMG_2860.jpg": ["assets/models/model-1.webp"],
+        "assets/models/model-2.webp": ["assets/models/model-2.jpg"],
+        "assets/models/model-2.jpg": [
+          "assets/models/model-2.webp",
+          "фото моделей/IMG_2858.jpg",
+        ],
+        "фото моделей/IMG_2858.jpg": ["assets/models/model-2.webp"],
+        "assets/models/model-3.webp": ["assets/models/model-3.jpg"],
+        "assets/models/model-3.jpg": [
+          "assets/models/model-3.webp",
+          "фото моделей/IMG_2861.jpg",
+        ],
+        "фото моделей/IMG_2861.jpg": ["assets/models/model-3.webp"],
 
-        "assets/news/promo-1.jpg": [
-          "assets/news/promo-1.png",
+        "assets/news/promo-1.webp": [
+          "assets/news/promo-1.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
           "фото акции /АКЦИЯ 1.png",
           "фото акции/АКЦИЯ 1.png",
         ],
-        "assets/news/promo-1.png": ["assets/news/promo-1.jpg"],
+        "assets/news/promo-1.jpg": ["assets/news/promo-1.webp"],
+        "assets/news/promo-1.png": ["assets/news/promo-1.webp"],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png": [
-          "assets/news/promo-1.jpg",
+          "assets/news/promo-1.webp",
         ],
-        "фото акции /АКЦИЯ 1.png": ["assets/news/promo-1.jpg"],
-        "фото акции/АКЦИЯ 1.png": ["assets/news/promo-1.jpg"],
-        "assets/news/promo-2.jpg": [
-          "assets/news/promo-2.png",
+        "фото акции /АКЦИЯ 1.png": ["assets/news/promo-1.webp"],
+        "фото акции/АКЦИЯ 1.png": ["assets/news/promo-1.webp"],
+        "assets/news/promo-2.webp": [
+          "assets/news/promo-2.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
           "фото акции /АКЦИЯ 2.png",
           "фото акции/АКЦИЯ 2.png",
         ],
-        "assets/news/promo-2.png": ["assets/news/promo-2.jpg"],
+        "assets/news/promo-2.jpg": ["assets/news/promo-2.webp"],
+        "assets/news/promo-2.png": ["assets/news/promo-2.webp"],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png": [
-          "assets/news/promo-2.jpg",
+          "assets/news/promo-2.webp",
         ],
-        "фото акции /АКЦИЯ 2.png": ["assets/news/promo-2.jpg"],
-        "фото акции/АКЦИЯ 2.png": ["assets/news/promo-2.jpg"],
-        "assets/news/promo-3.jpg": [
-          "assets/news/promo-3.png",
+        "фото акции /АКЦИЯ 2.png": ["assets/news/promo-2.webp"],
+        "фото акции/АКЦИЯ 2.png": ["assets/news/promo-2.webp"],
+        "assets/news/promo-3.webp": [
+          "assets/news/promo-3.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
           "фото акции /АКЦИЯ 3.png",
           "фото акции/АКЦИЯ 3.png",
         ],
-        "assets/news/promo-3.png": ["assets/news/promo-3.jpg"],
+        "assets/news/promo-3.jpg": ["assets/news/promo-3.webp"],
+        "assets/news/promo-3.png": ["assets/news/promo-3.webp"],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png": [
-          "assets/news/promo-3.jpg",
+          "assets/news/promo-3.webp",
         ],
-        "фото акции /АКЦИЯ 3.png": ["assets/news/promo-3.jpg"],
-        "фото акции/АКЦИЯ 3.png": ["assets/news/promo-3.jpg"],
+        "фото акции /АКЦИЯ 3.png": ["assets/news/promo-3.webp"],
+        "фото акции/АКЦИЯ 3.png": ["assets/news/promo-3.webp"],
       };
 
       /*
@@ -5211,15 +5287,26 @@
             */
       const LOCAL_IMAGE_FALLBACKS = {
         brandImage: ["assets/logo/group-17.png"],
-        heroSlide1: ["assets/studio/studio-1.jpg"],
-        heroSlide2: ["assets/studio/studio-2.jpg"],
-        masterPhoto: ["assets/master/master-photo.jpg"],
+        heroSlide1: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+          "assets/studio/studio-1.jpg",
+          "assets/studio/studio-1.webp",
+        ],
+        heroSlide2: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+          "assets/studio/studio-2.jpg",
+          "assets/studio/studio-2.webp",
+        ],
+        masterPhoto: [
+          "assets/master/master-photo.webp",
+          "assets/master/master-photo.jpg",
+        ],
         consultQr: ["assets/qr/consult-chat.png"],
         telegramQr: ["assets/qr/telegram-qr.png"],
         vkQr: ["assets/qr/vk-qr.png"],
-        newsImage1: ["assets/news/promo-1.jpg", "assets/news/promo-1.png"],
-        newsImage2: ["assets/news/promo-2.jpg", "assets/news/promo-2.png"],
-        newsImage3: ["assets/news/promo-3.jpg", "assets/news/promo-3.png"],
+        newsImage1: ["assets/news/promo-1.webp", "assets/news/promo-1.jpg"],
+        newsImage2: ["assets/news/promo-2.webp", "assets/news/promo-2.jpg"],
+        newsImage3: ["assets/news/promo-3.webp", "assets/news/promo-3.jpg"],
       };
 
       /*
@@ -5254,11 +5341,13 @@
             "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644952/Group_17_gwygic.png":
               CONFIG_DEFAULT.brandImage,
             "фото помещения/IMG_1407.jpg": CONFIG_DEFAULT.heroSlide1,
+            "assets/studio/studio-1.webp": CONFIG_DEFAULT.heroSlide1,
             "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644872/IMG_1407_vuas5m.jpg":
               CONFIG_DEFAULT.heroSlide1,
             "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg":
               CONFIG_DEFAULT.heroSlide1,
             "фото помещения/IMG_1415.jpg": CONFIG_DEFAULT.heroSlide2,
+            "assets/studio/studio-2.webp": CONFIG_DEFAULT.heroSlide2,
             "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644826/IMG_1415_rwscxx.jpg":
               CONFIG_DEFAULT.heroSlide2,
             "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg":
@@ -5642,12 +5731,10 @@
 
       /* Состояние карты: какой URL уже подключён в iframe */
       let currentMapUrl = "";
-      let mapAutoloadTimer = 0;
-
       /*
         Подключает интерактивную Яндекс.Карту прямо в iframe.
-        Пользователь просил вернуть обычное поведение без плашки "открыть карту",
-        поэтому карта появляется автоматически, но после первого экрана.
+        Карта снова грузится сразу, без промежуточной плашки "открыть карту",
+        чтобы путь был виден человеку сразу при попадании в контактный блок.
       */
       function loadMapNow(mapUrl) {
         const mapEmbed = document.getElementById("mapEmbed");
@@ -5665,56 +5752,47 @@
 
         currentMapUrl = mapUrl;
         mapEmbed.classList.remove("is-placeholder");
-        mapEmbed.classList.add("is-loading");
+        mapEmbed.classList.remove("is-loading");
         mapFrame.loading = "lazy";
         mapFrame.setAttribute("fetchpriority", "low");
-        mapFrame.onload = () => {
-          mapEmbed.classList.remove("is-loading");
-          mapFrame.onload = null;
-        };
+        mapFrame.onload = null;
         mapFrame.src = mapUrl;
       }
 
       /*
-        Автоматически грузит карту без кнопки, но не мешает первому экрану.
-        Для пользователя карта остаётся на сайте, а для PageSpeed тяжёлый iframe
-        Яндекса не конкурирует с первым текстом и фото за LCP.
+        Готовит карту к открытию без ранней загрузки Яндекса.
+        Это ключевой компромисс: карта на странице есть сразу, но тяжёлый
+        внешний iframe появляется только когда человек реально дошёл до карты
+        и коснулся её.
       */
-      function scheduleMapAutoload(mapUrl) {
+      function prepareInteractiveMap(mapUrl) {
         const mapEmbed = document.getElementById("mapEmbed");
         if (!mapEmbed || !mapUrl) return;
 
-        window.clearTimeout(mapAutoloadTimer);
         mapEmbed.dataset.mapSrc = mapUrl;
-        mapEmbed.classList.remove("is-placeholder");
-        mapEmbed.classList.add("is-loading");
+        mapEmbed.classList.add("is-placeholder");
+        mapEmbed.classList.remove("is-loading");
 
         const startMapLoad = () => loadMapNow(mapEmbed.dataset.mapSrc || mapUrl);
+        const startMapLoadFromKeyboard = (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          startMapLoad();
+        };
 
         if (mapEmbed.dataset.mapLoaderBound !== "1") {
           mapEmbed.dataset.mapLoaderBound = "1";
-          ["pointerenter", "touchstart", "focusin"].forEach((eventName) => {
-            mapEmbed.addEventListener(eventName, startMapLoad, {
-              passive: true,
-            });
+          mapEmbed.addEventListener("click", startMapLoad);
+          mapEmbed.addEventListener("touchstart", startMapLoad, {
+            passive: true,
           });
+          mapEmbed.addEventListener("keydown", startMapLoadFromKeyboard);
         }
-
-        const delayMapLoad = () => {
-          mapAutoloadTimer = window.setTimeout(startMapLoad, 2200);
-        };
-
-        if (document.readyState === "complete") {
-          delayMapLoad();
-          return;
-        }
-
-        window.addEventListener("load", delayMapLoad, { once: true });
       }
 
       /*
         Включает карту или заглушку.
-        Если ссылка на карту заполнена, iframe загружается автоматически.
+        Если ссылка на карту заполнена, iframe получает рабочий адрес сразу.
         Если ссылка пустая, остаётся аккуратная заглушка, чтобы блок не ломался.
       */
       function applyMapState() {
@@ -5738,7 +5816,7 @@
 
         mapEmbed.removeAttribute("data-map-src");
         if (mapLoadBtn) mapLoadBtn.hidden = true;
-        scheduleMapAutoload(mapUrl);
+        loadMapNow(mapUrl);
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
@@ -5853,9 +5931,9 @@
               Пробует несколько путей к одной и той же картинке.
               Это полезно для GitHub Pages, если часть файлов уже лежит в assets,
               а часть ещё осталась в старых папках с русскими именами.
-            */
+      */
       function applyImageFallbacks(imageNode, sources, onReady, onEmpty) {
-        const queue = sources.filter(Boolean);
+        const queue = [...new Set(sources.filter(Boolean))];
         const requestId = `${++imageLoadRequestId}`;
 
         imageNode.dataset.imageRequestId = requestId;
@@ -5900,9 +5978,23 @@
           */
           if (imageNode.getAttribute("src") !== candidate) {
             imageNode.src = candidate;
-          } else if (imageNode.complete && imageNode.naturalWidth > 0) {
-            loadedImageSources.add(candidate);
-            onReady?.();
+            return;
+          }
+
+          /*
+            Если тот же самый src уже стоял на картинке, браузер может не вызвать
+            повторный onerror. Поэтому вручную проверяем состояние и двигаемся
+            дальше по запасным путям, если текущий файл уже оказался битым/пустым.
+          */
+          if (imageNode.complete) {
+            if (imageNode.naturalWidth > 0) {
+              loadedImageSources.add(candidate);
+              onReady?.();
+              return;
+            }
+
+            index += 1;
+            tryLoadCandidate();
           }
         }
 
@@ -6012,7 +6104,6 @@
         videoNode.onerror = null;
         videoNode.dataset.activeSrc = "";
         videoNode.pause();
-        videoNode.load();
         cardNode.classList.remove("content-card--ready");
       }
 
@@ -6082,12 +6173,9 @@
           с LCP-картинкой при первой загрузке страницы.
         */
         heroSlides.forEach((slide, index) => {
-          if (index === 0) {
-            preloadImageSources(slide.sources.slice(0, 1));
-            return;
+          if (index > 0) {
+            runWhenIdle(() => preloadImageSources(slide.sources), 1600);
           }
-
-          runWhenIdle(() => preloadImageSources(slide.sources), 1600);
         });
         if (heroSlideIndex >= heroSlides.length) heroSlideIndex = 0;
         setHeroSlide(heroSlideIndex);
@@ -7011,6 +7099,7 @@
           slides: [
             {
               sources: buildImageCandidateList(
+                "assets/models/model-1.webp",
                 "assets/models/model-1.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
@@ -7022,6 +7111,7 @@
             },
             {
               sources: buildImageCandidateList(
+                "assets/models/model-2.webp",
                 "assets/models/model-2.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
@@ -7033,6 +7123,7 @@
             },
             {
               sources: buildImageCandidateList(
+                "assets/models/model-3.webp",
                 "assets/models/model-3.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
