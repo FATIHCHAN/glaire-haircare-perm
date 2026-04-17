@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /*%D0%B1%D1%8D%D0%BA%D0%B0%D0%BF*
-Disallow: /compressed-images*
-Disallow: /iloveimg-compressed*
-Disallow: /%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE*
-
-Sitemap: https://glaire.ru/sitemap.xml
-Host: glaire.ru
