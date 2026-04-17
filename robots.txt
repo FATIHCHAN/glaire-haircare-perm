@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://glaire.ru/sitemap.xml
-Host: glaire.ru
