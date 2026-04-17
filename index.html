@@ -58,6 +58,10 @@
     <meta name="theme-color" content="#0b1118" />
     <meta name="msapplication-TileColor" content="#0b1118" />
     <meta name="msapplication-config" content="browserconfig.xml" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'"
+    />
 
     <!-- Канонический адрес и языковая версия страницы -->
     <link rel="canonical" href="https://glaire.ru/" />
@@ -140,17 +144,13 @@
 
     <!-- Служебные ресурсы и ранний приоритет для первого главного фото -->
     <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="preconnect" href="https://yandex.com" crossorigin />
     <link
       rel="preload"
       as="image"
       href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
       fetchpriority="high"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
     />
     <link
       rel="preload"
@@ -183,7 +183,7 @@
     <link
       rel="preload"
       as="image"
-      href="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644872/IMG_1407_vuas5m.jpg"
       fetchpriority="high"
     />
 
@@ -400,11 +400,11 @@
 
       /* ------------------------------------------------------------------ */
       /* 0. Фирменные шрифты                                                 */
-      /* Основной источник — Google Fonts, а локальные файлы ниже остаются   */
-      /* резервом на случай, если внешний CDN временно не откроется.          */
+      /* Шрифты лежат локально в assets/fonts, чтобы не создавать цепочку     */
+      /* критических запросов к Google Fonts и быстрее показывать текст.      */
       /* ------------------------------------------------------------------ */
       @font-face {
-        font-family: "Manrope Local";
+        font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
         font-display: swap;
@@ -413,7 +413,7 @@
       }
 
       @font-face {
-        font-family: "Manrope Local";
+        font-family: "Manrope";
         font-style: normal;
         font-weight: 400 800;
         font-display: swap;
@@ -425,7 +425,7 @@
       }
 
       @font-face {
-        font-family: "Cormorant Garamond Local";
+        font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
         font-display: swap;
@@ -435,7 +435,7 @@
       }
 
       @font-face {
-        font-family: "Cormorant Garamond Local";
+        font-family: "Cormorant Garamond";
         font-style: normal;
         font-weight: 500 700;
         font-display: swap;
@@ -479,10 +479,9 @@
         --container: 1180px;
         --section-space: clamp(18px, 3vw, 36px);
         --font-ui:
-          "Manrope", "Manrope Local", ui-sans-serif, system-ui, -apple-system,
-          BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-display:
-          "Cormorant Garamond", "Cormorant Garamond Local", Georgia, serif;
+          "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        --font-display: "Cormorant Garamond", Georgia, serif;
       }
 
       * {
@@ -3661,7 +3660,7 @@
               <div class="hero-slider__viewport" id="heroSliderViewport">
                 <img
                   id="heroSlideImage"
-                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644872/IMG_1407_vuas5m.jpg"
                   alt="Интерьер студии GLAIRE"
                   fetchpriority="high"
                   decoding="async"
@@ -5213,6 +5212,14 @@
           "фото помещения/IMG_1415.jpg",
         ],
         "фото помещения/IMG_1415.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
+          "assets/studio/studio-2.jpg",
+        ],
+        "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644872/IMG_1407_vuas5m.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
+          "assets/studio/studio-1.jpg",
+        ],
+        "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:eco,dpr_auto,c_limit,w_860/v1775644826/IMG_1415_rwscxx.jpg": [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
           "assets/studio/studio-2.jpg",
         ],
