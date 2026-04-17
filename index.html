@@ -116,20 +116,23 @@
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="assets/logo/group-17.png"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="192x192"
-      href="assets/logo/group-17.png"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
     />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="assets/logo/group-17.png"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
     />
-    <link rel="shortcut icon" href="assets/logo/group-17.png" />
+    <link
+      rel="shortcut icon"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
+    />
     <link rel="me" href="https://vk.com/glaire_haircare_perm" />
     <link rel="me" href="https://t.me/glaire_haircare_perm" />
     <link rel="me" href="https://www.instagram.com/glaire_haircare_perm" />
@@ -140,8 +143,14 @@
     <link
       rel="preload"
       as="image"
-      href="assets/logo/group-17.png"
+      href="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
       fetchpriority="high"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
     />
     <link
       rel="preload"
@@ -241,7 +250,7 @@
             ],
             "url": "https://glaire.ru/",
             "image": "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
-            "logo": "https://glaire.ru/assets/logo/group-17.png",
+            "logo": "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
             "description": "GLAIRE Haircare Studio - студия волос в Перми: окрашивание, уход, реконструкции, модификации, консультация перед записью и спокойный сервис.",
             "telephone": "+7-992-213-82-59",
             "priceRange": "$$",
@@ -390,12 +399,12 @@
     */
 
       /* ------------------------------------------------------------------ */
-      /* 0. Локальные фирменные шрифты                                      */
-      /* Здесь шрифты подключаются прямо из проекта, без поздней замены      */
-      /* через Google Fonts после первой отрисовки страницы.                 */
+      /* 0. Фирменные шрифты                                                 */
+      /* Основной источник — Google Fonts, а локальные файлы ниже остаются   */
+      /* резервом на случай, если внешний CDN временно не откроется.          */
       /* ------------------------------------------------------------------ */
       @font-face {
-        font-family: "Manrope";
+        font-family: "Manrope Local";
         font-style: normal;
         font-weight: 400 800;
         font-display: swap;
@@ -404,7 +413,7 @@
       }
 
       @font-face {
-        font-family: "Manrope";
+        font-family: "Manrope Local";
         font-style: normal;
         font-weight: 400 800;
         font-display: swap;
@@ -416,7 +425,7 @@
       }
 
       @font-face {
-        font-family: "Cormorant Garamond";
+        font-family: "Cormorant Garamond Local";
         font-style: normal;
         font-weight: 500 700;
         font-display: swap;
@@ -426,7 +435,7 @@
       }
 
       @font-face {
-        font-family: "Cormorant Garamond";
+        font-family: "Cormorant Garamond Local";
         font-style: normal;
         font-weight: 500 700;
         font-display: swap;
@@ -470,9 +479,10 @@
         --container: 1180px;
         --section-space: clamp(18px, 3vw, 36px);
         --font-ui:
-          "Manrope", ui-sans-serif, system-ui, -apple-system,
+          "Manrope", "Manrope Local", ui-sans-serif, system-ui, -apple-system,
           BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-display: "Cormorant Garamond", Georgia, serif;
+        --font-display:
+          "Cormorant Garamond", "Cormorant Garamond Local", Georgia, serif;
       }
 
       * {
@@ -3413,7 +3423,7 @@
           <img
             class="brand__icon"
             id="brandIcon"
-            src="assets/logo/group-17.png"
+            src="https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png"
             alt="Иконка GLAIRE"
             fetchpriority="high"
             decoding="async"
@@ -3757,7 +3767,7 @@
                   <strong data-edit="telegramQrTitle">Telegram</strong>
                   <img
                     id="telegramQr"
-                    src="assets/qr/telegram-qr.png"
+                    src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png"
                     alt="QR Telegram"
                     class="qr-code"
                     loading="lazy"
@@ -3782,7 +3792,7 @@
                   <strong data-edit="vkQrTitle">VK</strong>
                   <img
                     id="vkQr"
-                    src="assets/qr/vk-qr.png"
+                    src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png"
                     alt="QR VK"
                     class="qr-code"
                     loading="lazy"
@@ -3903,7 +3913,7 @@
               <div class="master-photo-shell" id="masterPhotoShell">
                 <img
                   id="masterPhoto"
-                  src="assets/master/master-photo.webp"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg"
                   alt="Фото мастера GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -4310,7 +4320,7 @@
                 <div class="works-slider__viewport" id="worksSliderViewport">
                   <img
                     id="worksSlideImage"
-                    src="assets/models/model-1.webp"
+                    src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg"
                     alt="Фото модели GLAIRE"
                     loading="lazy"
                     fetchpriority="low"
@@ -4597,7 +4607,7 @@
                 <img
                   class="consult-qr__image"
                   id="consultQr"
-                  src="assets/qr/consult-chat.png"
+                  src="https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png"
                   alt="QR для консультации GLAIRE"
                   loading="lazy"
                   fetchpriority="low"
@@ -4755,16 +4765,21 @@
         bookUrl: "https://dikidi.net/1954293?p=1.pi-ssm",
         mapEmbedUrl:
           "https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14",
-        brandImage: "assets/logo/group-17.png",
+        brandImage:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
         brandSub: "haircare studio | Perm",
         heroSlide1:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
         heroSlide2:
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
-        masterPhoto: "assets/master/master-photo.webp",
-        consultQr: "assets/qr/consult-chat.png",
-        telegramQr: "assets/qr/telegram-qr.png",
-        vkQr: "assets/qr/vk-qr.png",
+        masterPhoto:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
+        consultQr:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
+        telegramQr:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
+        vkQr:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
         consultQrLink: "https://t.me/glaire_haircare_perm_admin",
         telegramQrLink: "https://t.me/glaire_haircare_perm",
         vkQrLink: "https://vk.com/glaire_haircare_perm",
@@ -4951,16 +4966,19 @@
         newsTitle1: "WINTER RESET",
         newsText1:
           "Реконструкция длины с диагностикой состояния волос и кожи головы.",
-        newsImage1: "assets/news/promo-1.webp",
+        newsImage1:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
         newsBadge2: "Уход",
         newsTitle2: "SIGNATURE LOOK",
         newsText2: "Окрашивание, форма и уход собираются в единый результат.",
-        newsImage2: "assets/news/promo-2.webp",
+        newsImage2:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
         newsBadge3: "Окрашивание",
         newsTitle3: "COLOR ARCHITECT",
         newsText3:
           "При окрашивании добавляем уход и этап стабилизации цвета в подарок.",
-        newsImage3: "assets/news/promo-3.webp",
+        newsImage3:
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
 
         /* Блок консультации перед записью */
         consultEyebrow: "Если хочется сначала уточнить",
@@ -5008,7 +5026,7 @@
               STORAGE_KEY — имя сохранения в localStorage,
               ADMIN_QUERY_* — параметр, который открывает локальную админку.
             */
-      const STORAGE_KEY = "glaireScratchLandingFinalV2";
+      const STORAGE_KEY = "glaireScratchLandingFinalV3";
       const ADMIN_QUERY_PARAM = "admin";
       const ADMIN_QUERY_VALUE = "1";
       const isAdminMode =
@@ -5163,8 +5181,14 @@
               справа список запасных адресов того же файла.
             */
       const IMAGE_SOURCE_ALIASES = {
-        "assets/logo/group-17.png": ["лого/Group 17.png"],
-        "лого/Group 17.png": ["assets/logo/group-17.png"],
+        "assets/logo/group-17.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
+          "лого/Group 17.png",
+        ],
+        "лого/Group 17.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
+          "assets/logo/group-17.png",
+        ],
 
         "assets/studio/studio-1.webp": [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
@@ -5193,84 +5217,154 @@
           "assets/studio/studio-2.jpg",
         ],
 
-        "assets/master/master-photo.webp": ["assets/master/master-photo.jpg"],
+        "assets/master/master-photo.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
+          "assets/master/master-photo.jpg",
+        ],
         "assets/master/master-photo.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
           "assets/master/master-photo.webp",
           "фото мастера/IMG_0228.jpg",
         ],
-        "фото мастера/IMG_0228.jpg": ["assets/master/master-photo.webp"],
+        "фото мастера/IMG_0228.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
+          "assets/master/master-photo.webp",
+        ],
 
         "assets/qr/consult-chat.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
           "qr/qr консультация чат.png",
           "qr - код/qr консультация чат.png",
         ],
-        "qr/qr консультация чат.png": ["assets/qr/consult-chat.png"],
-        "qr - код/qr консультация чат.png": ["assets/qr/consult-chat.png"],
+        "qr/qr консультация чат.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
+          "assets/qr/consult-chat.png",
+        ],
+        "qr - код/qr консультация чат.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
+          "assets/qr/consult-chat.png",
+        ],
 
         "assets/qr/telegram-qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
           "qr/telegram qr.png",
           "qr - код/telegram qr.png",
         ],
-        "qr/telegram qr.png": ["assets/qr/telegram-qr.png"],
-        "qr - код/telegram qr.png": ["assets/qr/telegram-qr.png"],
+        "qr/telegram qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
+          "assets/qr/telegram-qr.png",
+        ],
+        "qr - код/telegram qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
+          "assets/qr/telegram-qr.png",
+        ],
 
-        "assets/qr/vk-qr.png": ["qr/vk qr.png", "qr - код/vk qr.png"],
-        "qr/vk qr.png": ["assets/qr/vk-qr.png"],
-        "qr - код/vk qr.png": ["assets/qr/vk-qr.png"],
+        "assets/qr/vk-qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+          "qr/vk qr.png",
+          "qr - код/vk qr.png",
+        ],
+        "qr/vk qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+          "assets/qr/vk-qr.png",
+        ],
+        "qr - код/vk qr.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+          "assets/qr/vk-qr.png",
+        ],
 
-        "assets/models/model-1.webp": ["assets/models/model-1.jpg"],
+        "assets/models/model-1.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
+          "assets/models/model-1.jpg",
+        ],
         "assets/models/model-1.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
           "assets/models/model-1.webp",
           "фото моделей/IMG_2860.jpg",
         ],
-        "фото моделей/IMG_2860.jpg": ["assets/models/model-1.webp"],
-        "assets/models/model-2.webp": ["assets/models/model-2.jpg"],
+        "фото моделей/IMG_2860.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
+          "assets/models/model-1.webp",
+        ],
+        "assets/models/model-2.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
+          "assets/models/model-2.jpg",
+        ],
         "assets/models/model-2.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
           "assets/models/model-2.webp",
           "фото моделей/IMG_2858.jpg",
         ],
-        "фото моделей/IMG_2858.jpg": ["assets/models/model-2.webp"],
-        "assets/models/model-3.webp": ["assets/models/model-3.jpg"],
+        "фото моделей/IMG_2858.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
+          "assets/models/model-2.webp",
+        ],
+        "assets/models/model-3.webp": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
+          "assets/models/model-3.jpg",
+        ],
         "assets/models/model-3.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
           "assets/models/model-3.webp",
           "фото моделей/IMG_2861.jpg",
         ],
-        "фото моделей/IMG_2861.jpg": ["assets/models/model-3.webp"],
+        "фото моделей/IMG_2861.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
+          "assets/models/model-3.webp",
+        ],
 
         "assets/news/promo-1.webp": [
-          "assets/news/promo-1.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
+          "assets/news/promo-1.jpg",
           "фото акции /АКЦИЯ 1.png",
           "фото акции/АКЦИЯ 1.png",
         ],
-        "assets/news/promo-1.jpg": ["assets/news/promo-1.webp"],
-        "assets/news/promo-1.png": ["assets/news/promo-1.webp"],
+        "assets/news/promo-1.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
+          "assets/news/promo-1.webp",
+        ],
+        "assets/news/promo-1.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
+          "assets/news/promo-1.webp",
+        ],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png": [
           "assets/news/promo-1.webp",
         ],
         "фото акции /АКЦИЯ 1.png": ["assets/news/promo-1.webp"],
         "фото акции/АКЦИЯ 1.png": ["assets/news/promo-1.webp"],
         "assets/news/promo-2.webp": [
-          "assets/news/promo-2.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
+          "assets/news/promo-2.jpg",
           "фото акции /АКЦИЯ 2.png",
           "фото акции/АКЦИЯ 2.png",
         ],
-        "assets/news/promo-2.jpg": ["assets/news/promo-2.webp"],
-        "assets/news/promo-2.png": ["assets/news/promo-2.webp"],
+        "assets/news/promo-2.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
+          "assets/news/promo-2.webp",
+        ],
+        "assets/news/promo-2.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
+          "assets/news/promo-2.webp",
+        ],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png": [
           "assets/news/promo-2.webp",
         ],
         "фото акции /АКЦИЯ 2.png": ["assets/news/promo-2.webp"],
         "фото акции/АКЦИЯ 2.png": ["assets/news/promo-2.webp"],
         "assets/news/promo-3.webp": [
-          "assets/news/promo-3.jpg",
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
+          "assets/news/promo-3.jpg",
           "фото акции /АКЦИЯ 3.png",
           "фото акции/АКЦИЯ 3.png",
         ],
-        "assets/news/promo-3.jpg": ["assets/news/promo-3.webp"],
-        "assets/news/promo-3.png": ["assets/news/promo-3.webp"],
+        "assets/news/promo-3.jpg": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
+          "assets/news/promo-3.webp",
+        ],
+        "assets/news/promo-3.png": [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
+          "assets/news/promo-3.webp",
+        ],
         "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png": [
           "assets/news/promo-3.webp",
         ],
@@ -5286,7 +5380,10 @@
               а репозиторий хранит безопасную локальную копию.
             */
       const LOCAL_IMAGE_FALLBACKS = {
-        brandImage: ["assets/logo/group-17.png"],
+        brandImage: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
+          "assets/logo/group-17.png",
+        ],
         heroSlide1: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
           "assets/studio/studio-1.jpg",
@@ -5298,15 +5395,37 @@
           "assets/studio/studio-2.webp",
         ],
         masterPhoto: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
           "assets/master/master-photo.webp",
           "assets/master/master-photo.jpg",
         ],
-        consultQr: ["assets/qr/consult-chat.png"],
-        telegramQr: ["assets/qr/telegram-qr.png"],
-        vkQr: ["assets/qr/vk-qr.png"],
-        newsImage1: ["assets/news/promo-1.webp", "assets/news/promo-1.jpg"],
-        newsImage2: ["assets/news/promo-2.webp", "assets/news/promo-2.jpg"],
-        newsImage3: ["assets/news/promo-3.webp", "assets/news/promo-3.jpg"],
+        consultQr: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
+          "assets/qr/consult-chat.png",
+        ],
+        telegramQr: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
+          "assets/qr/telegram-qr.png",
+        ],
+        vkQr: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
+          "assets/qr/vk-qr.png",
+        ],
+        newsImage1: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
+          "assets/news/promo-1.webp",
+          "assets/news/promo-1.jpg",
+        ],
+        newsImage2: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
+          "assets/news/promo-2.webp",
+          "assets/news/promo-2.jpg",
+        ],
+        newsImage3: [
+          "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
+          "assets/news/promo-3.webp",
+          "assets/news/promo-3.jpg",
+        ],
       };
 
       /*
@@ -7099,36 +7218,36 @@
           slides: [
             {
               sources: buildImageCandidateList(
-                "assets/models/model-1.webp",
-                "assets/models/model-1.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
                 ),
+                "assets/models/model-1.webp",
+                "assets/models/model-1.jpg",
                 "фото моделей/IMG_2860.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 1",
             },
             {
               sources: buildImageCandidateList(
-                "assets/models/model-2.webp",
-                "assets/models/model-2.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
                 ),
+                "assets/models/model-2.webp",
+                "assets/models/model-2.jpg",
                 "фото моделей/IMG_2858.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 2",
             },
             {
               sources: buildImageCandidateList(
-                "assets/models/model-3.webp",
-                "assets/models/model-3.jpg",
                 optimizeConfiguredImage(
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
                 ),
+                "assets/models/model-3.webp",
+                "assets/models/model-3.jpg",
                 "фото моделей/IMG_2861.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 3",
