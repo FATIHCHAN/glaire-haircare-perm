@@ -3723,6 +3723,8 @@
                     loading="lazy"
                     fetchpriority="low"
                     credentialless
+                    sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-presentation"
+                    allow="fullscreen"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen="true"
                   ></iframe>
@@ -3759,6 +3761,14 @@
                       addHint("dns-prefetch", "https://api-maps.yandex.ru");
                       addHint("dns-prefetch", "https://mc.yandex.ru");
 
+                      frame.setAttribute("credentialless", "");
+                      frame.setAttribute(
+                        "sandbox",
+                        "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-presentation",
+                      );
+                      if ("credentialless" in frame) {
+                        frame.credentialless = true;
+                      }
                       frame.loading = "eager";
                       frame.setAttribute("fetchpriority", "high");
                       frame.src = source;
@@ -5893,6 +5903,23 @@
       let currentMapUrl = "";
       let mapLazyObserver = null;
       let mapNetworkHintsReady = false;
+      const MAP_FRAME_SANDBOX =
+        "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-presentation";
+
+      /*
+        Усиливает приватность iframe карты без замены самой карты.
+        Важно: намеренно не добавляем allow-same-origin, чтобы Chrome меньше
+        привязывал cookies Яндекса к основному сайту в рекомендациях.
+      */
+      function hardenMapFramePrivacy(mapFrame) {
+        if (!mapFrame) return;
+        mapFrame.setAttribute("credentialless", "");
+        mapFrame.setAttribute("sandbox", MAP_FRAME_SANDBOX);
+        mapFrame.setAttribute("allow", "fullscreen");
+        if ("credentialless" in mapFrame) {
+          mapFrame.credentialless = true;
+        }
+      }
 
       /*
         Добавляет сетевые подсказки для Яндекс.Карт только в момент загрузки карты.
@@ -5948,15 +5975,7 @@
         currentMapUrl = mapUrl;
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
-        /*
-          Credentialless просит Chrome загрузить внешний iframe без передачи
-          пользовательских cookie. Карта остаётся той же, но браузер меньше
-          связывает её с личными данными посетителя.
-        */
-        mapFrame.setAttribute("credentialless", "");
-        if ("credentialless" in mapFrame) {
-          mapFrame.credentialless = true;
-        }
+        hardenMapFramePrivacy(mapFrame);
         mapFrame.loading = highPriority ? "eager" : "lazy";
         mapFrame.setAttribute("fetchpriority", highPriority ? "high" : "low");
         mapFrame.onload = null;
@@ -5977,10 +5996,7 @@
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
         mapFrame.removeAttribute("src");
-        mapFrame.setAttribute("credentialless", "");
-        if ("credentialless" in mapFrame) {
-          mapFrame.credentialless = true;
-        }
+        hardenMapFramePrivacy(mapFrame);
         mapFrame.loading = "lazy";
         mapFrame.setAttribute("fetchpriority", "low");
 
