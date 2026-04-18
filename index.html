@@ -5417,58 +5417,42 @@
       };
 
       /*
-              Локальные запасные пути по смысловым ключам.
-              Если в config будет стоять Cloudinary-ссылка или любой другой внешний URL,
-              сайт всё равно попробует эти локальные файлы как резервный вариант.
-              Это удобно для публикации: внешний CDN остаётся основным,
-              а репозиторий хранит безопасную локальную копию.
+              Резервные CDN-пути по смысловым ключам.
+              Раньше здесь были локальные файлы из assets и старых папок, но на
+              опубликованном сайте их нет, поэтому браузер ловил 404 в консоли.
+              Теперь в реальные загрузки попадают только рабочие Cloudinary URL,
+              а старые локальные названия ниже остаются только как ключи миграции.
             */
       const LOCAL_IMAGE_FALLBACKS = {
         brandImage: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/v1775644952/Group_17_gwygic.png",
-          "assets/logo/group-17.png",
         ],
         heroSlide1: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644872/IMG_1407_vuas5m.jpg",
-          "assets/studio/studio-1.jpg",
-          "assets/studio/studio-1.webp",
         ],
         heroSlide2: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644826/IMG_1415_rwscxx.jpg",
-          "assets/studio/studio-2.jpg",
-          "assets/studio/studio-2.webp",
         ],
         masterPhoto: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644909/IMG_0228_wncs1p.jpg",
-          "assets/master/master-photo.webp",
-          "assets/master/master-photo.jpg",
         ],
         consultQr: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png",
-          "assets/qr/consult-chat.png",
         ],
         telegramQr: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/telegram_qr_kczbjt.png",
-          "assets/qr/telegram-qr.png",
         ],
         vkQr: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775644812/vk_qr_lv3vds.png",
-          "assets/qr/vk-qr.png",
         ],
         newsImage1: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png",
-          "assets/news/promo-1.webp",
-          "assets/news/promo-1.jpg",
         ],
         newsImage2: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png",
-          "assets/news/promo-2.webp",
-          "assets/news/promo-2.jpg",
         ],
         newsImage3: [
           "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png",
-          "assets/news/promo-3.webp",
-          "assets/news/promo-3.jpg",
         ],
       };
 
@@ -5493,7 +5477,7 @@
                 */
 
           /*
-                  Подмена старых путей картинок на новые безопасные пути из assets.
+                  Подмена старых путей картинок на рабочие Cloudinary-ссылки.
                   Это помогает, если раньше в браузере уже сохранились значения
                   с русскими папками, пробелами или нестабильными именами.
                 */
@@ -5684,6 +5668,15 @@
           .filter(Boolean);
       }
 
+      /*
+        Проверяет, можно ли безопасно отдавать путь браузеру как src.
+        Локальные старые пути нужны только для распознавания сохранённых настроек,
+        но не должны реально скачиваться, иначе PageSpeed видит 404 в консоли.
+      */
+      function isBrowserLoadableImageSource(src) {
+        return /^(https?:|data:|blob:)/i.test(src);
+      }
+
       /* Собирает список путей к одному и тому же файлу с учётом запасных вариантов */
       function buildImageCandidateList(...values) {
         const queue = [];
@@ -5694,7 +5687,11 @@
           const src = String(value || "").trim();
           if (!src || seen.has(src)) return;
           seen.add(src);
-          queue.push(src);
+
+          if (isBrowserLoadableImageSource(src)) {
+            queue.push(src);
+          }
+
           (IMAGE_SOURCE_ALIASES[src] || []).forEach(add);
         }
 
@@ -5702,7 +5699,7 @@
         return queue;
       }
 
-      /* Собирает список источников для конкретного поля config с локальным резервом */
+      /* Собирает список источников для конкретного поля config без битых локальных 404 */
       function getImageCandidatesForKey(key, ...values) {
         return buildImageCandidateList(
           ...values.map((value) => optimizeConfiguredImage(key, value)),
@@ -5951,6 +5948,15 @@
         currentMapUrl = mapUrl;
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
+        /*
+          Credentialless просит Chrome загрузить внешний iframe без передачи
+          пользовательских cookie. Карта остаётся той же, но браузер меньше
+          связывает её с личными данными посетителя.
+        */
+        mapFrame.setAttribute("credentialless", "");
+        if ("credentialless" in mapFrame) {
+          mapFrame.credentialless = true;
+        }
         mapFrame.loading = highPriority ? "eager" : "lazy";
         mapFrame.setAttribute("fetchpriority", highPriority ? "high" : "low");
         mapFrame.onload = null;
@@ -5971,6 +5977,10 @@
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
         mapFrame.removeAttribute("src");
+        mapFrame.setAttribute("credentialless", "");
+        if ("credentialless" in mapFrame) {
+          mapFrame.credentialless = true;
+        }
         mapFrame.loading = "lazy";
         mapFrame.setAttribute("fetchpriority", "low");
 
@@ -6011,7 +6021,7 @@
               }
             },
             {
-              rootMargin: "80px 0px",
+              rootMargin: "0px 0px",
               threshold: 0.01,
             },
           );
@@ -7352,9 +7362,6 @@
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
                 ),
-                "assets/models/model-1.webp",
-                "assets/models/model-1.jpg",
-                "фото моделей/IMG_2860.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 1",
             },
@@ -7364,9 +7371,6 @@
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
                 ),
-                "assets/models/model-2.webp",
-                "assets/models/model-2.jpg",
-                "фото моделей/IMG_2858.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 2",
             },
@@ -7376,9 +7380,6 @@
                   "worksSlide",
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
                 ),
-                "assets/models/model-3.webp",
-                "assets/models/model-3.jpg",
-                "фото моделей/IMG_2861.jpg",
               ),
               alt: "Фото первой процедуры GLAIRE 3",
             },
