@@ -32,10 +32,6 @@
 
     <!-- Подсказки браузерам и мобильным webview, как вести себя со страницей -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="upgrade-insecure-requests"
-    />
     <meta name="application-name" content="GLAIRE" />
     <meta name="apple-mobile-web-app-title" content="GLAIRE" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -7336,7 +7332,12 @@
         },
       ];
 
-      applyConfig();
+      /*
+        Первичная синхронизация запускается после первого кадра.
+        Первый экран уже содержит нужные тексты и основные src в HTML,
+        а такой перенос снимает часть нагрузки с критического пути загрузки.
+      */
+      window.requestAnimationFrame(applyConfig);
 
       /* Рисует точки навигации под слайдером студии */
       function renderSliderDots() {
