@@ -141,10 +141,6 @@
     <!-- Служебные ресурсы и ранний приоритет для первого главного фото -->
     <link rel="manifest" href="site.webmanifest" />
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
-    <link rel="preconnect" href="https://yandex.com" crossorigin />
-    <link rel="preconnect" href="https://yastatic.net" crossorigin />
-    <link rel="dns-prefetch" href="https://api-maps.yandex.ru" />
-    <link rel="dns-prefetch" href="https://mc.yandex.ru" />
     <link
       rel="preload"
       as="image"
@@ -1382,6 +1378,7 @@
         height: 100%;
         display: block;
         border: 0;
+        background: transparent;
         transition: opacity 0.35s ease;
         /*
           Для карты применён CSS-фильтр, чтобы она лучше совпадала
@@ -3722,13 +3719,51 @@
                   <iframe
                     id="mapFrame"
                     title="Карта студии GLAIRE"
-                    src="https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14"
-                    loading="eager"
-                    fetchpriority="high"
+                    data-map-src="https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14"
+                    loading="lazy"
+                    fetchpriority="low"
                     credentialless
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen="true"
                   ></iframe>
+                  <script nonce="glaire-static">
+                    /*
+                      На компьютере карта находится в первом экране, поэтому
+                      запускаем Яндекс сразу. На телефоне src не ставим здесь:
+                      карта ниже первого экрана и подключится ближе к просмотру.
+                    */
+                    (() => {
+                      const frame = document.getElementById("mapFrame");
+                      const source = frame?.dataset.mapSrc;
+                      if (
+                        !frame ||
+                        !source ||
+                        !window.matchMedia("(min-width: 1081px)").matches
+                      ) {
+                        return;
+                      }
+
+                      const addHint = (rel, href) => {
+                        if (document.head.querySelector(`link[href="${href}"]`)) {
+                          return;
+                        }
+                        const link = document.createElement("link");
+                        link.rel = rel;
+                        link.href = href;
+                        if (rel === "preconnect") link.crossOrigin = "";
+                        document.head.appendChild(link);
+                      };
+
+                      addHint("preconnect", "https://yandex.com");
+                      addHint("preconnect", "https://yastatic.net");
+                      addHint("dns-prefetch", "https://api-maps.yandex.ru");
+                      addHint("dns-prefetch", "https://mc.yandex.ru");
+
+                      frame.loading = "eager";
+                      frame.setAttribute("fetchpriority", "high");
+                      frame.src = source;
+                    })();
+                  </script>
                   <div class="map-placeholder" id="mapPlaceholder">
                     <strong>Карта GLAIRE</strong>
                     <p>
@@ -5859,12 +5894,40 @@
 
       /* Состояние карты: какой URL уже подключён в iframe */
       let currentMapUrl = "";
+      let mapLazyObserver = null;
+      let mapNetworkHintsReady = false;
+
+      /*
+        Добавляет сетевые подсказки для Яндекс.Карт только в момент загрузки карты.
+        Так мобильный первый экран не тратит ресурсы на карту раньше времени.
+      */
+      function prepareMapNetworkHints() {
+        if (mapNetworkHintsReady) return;
+        mapNetworkHintsReady = true;
+
+        const hints = [
+          ["preconnect", "https://yandex.com"],
+          ["preconnect", "https://yastatic.net"],
+          ["dns-prefetch", "https://api-maps.yandex.ru"],
+          ["dns-prefetch", "https://mc.yandex.ru"],
+        ];
+
+        hints.forEach(([rel, href]) => {
+          if (document.head.querySelector(`link[href="${href}"]`)) return;
+          const link = document.createElement("link");
+          link.rel = rel;
+          link.href = href;
+          if (rel === "preconnect") link.crossOrigin = "";
+          document.head.appendChild(link);
+        });
+      }
+
       /*
         Подключает интерактивную Яндекс.Карту прямо в iframe.
-        Карта снова грузится сразу, без промежуточной плашки "открыть карту",
-        чтобы путь был виден человеку сразу при попадании в контактный блок.
+        На ПК вызывается сразу, на мобильных — когда блок карты близко к экрану.
       */
-      function loadMapNow(mapUrl) {
+      function loadMapNow(mapUrl, options = {}) {
+        const { highPriority = false } = options;
         const mapEmbed = document.getElementById("mapEmbed");
         const mapFrame = document.getElementById("mapFrame");
         if (!mapEmbed || !mapFrame || !mapUrl) return;
@@ -5881,30 +5944,40 @@
           return;
         }
 
+        prepareMapNetworkHints();
+        mapLazyObserver?.disconnect();
+        mapLazyObserver = null;
+
         currentMapUrl = mapUrl;
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
-        mapFrame.loading = "eager";
-        mapFrame.setAttribute("fetchpriority", "high");
+        mapFrame.loading = highPriority ? "eager" : "lazy";
+        mapFrame.setAttribute("fetchpriority", highPriority ? "high" : "low");
         mapFrame.onload = null;
         mapFrame.src = mapUrl;
       }
 
       /*
-        Готовит карту к открытию без ранней загрузки Яндекса.
-        Это ключевой компромисс: карта на странице есть сразу, но тяжёлый
-        внешний iframe появляется только когда человек реально дошёл до карты
-        и коснулся её.
+        На мобильных карта стоит в разметке, но внешний виджет Яндекса
+        подключается только при приближении блока к экрану или при касании.
+        Это убирает cookies/скрипты карты из критического пути первого экрана.
       */
-      function prepareInteractiveMap(mapUrl) {
+      function prepareMobileMapLoad(mapUrl) {
         const mapEmbed = document.getElementById("mapEmbed");
-        if (!mapEmbed || !mapUrl) return;
+        const mapFrame = document.getElementById("mapFrame");
+        if (!mapEmbed || !mapFrame || !mapUrl) return;
 
         mapEmbed.dataset.mapSrc = mapUrl;
-        mapEmbed.classList.add("is-placeholder");
+        mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
+        mapFrame.removeAttribute("src");
+        mapFrame.loading = "lazy";
+        mapFrame.setAttribute("fetchpriority", "low");
 
-        const startMapLoad = () => loadMapNow(mapEmbed.dataset.mapSrc || mapUrl);
+        const startMapLoad = () =>
+          loadMapNow(mapEmbed.dataset.mapSrc || mapUrl, {
+            highPriority: false,
+          });
         const startMapLoadFromKeyboard = (event) => {
           if (event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
@@ -5919,11 +5992,40 @@
           });
           mapEmbed.addEventListener("keydown", startMapLoadFromKeyboard);
         }
+
+        if (mapLazyObserver) {
+          mapLazyObserver.disconnect();
+          mapLazyObserver = null;
+        }
+
+        if ("IntersectionObserver" in window) {
+          mapLazyObserver = new IntersectionObserver(
+            (entries) => {
+              if (
+                entries.some(
+                  (entry) =>
+                    entry.isIntersecting || entry.intersectionRatio > 0,
+                )
+              ) {
+                startMapLoad();
+              }
+            },
+            {
+              rootMargin: "80px 0px",
+              threshold: 0.01,
+            },
+          );
+          mapLazyObserver.observe(mapEmbed);
+          return;
+        }
+
+        runWhenIdle(startMapLoad, 2400);
       }
 
       /*
         Включает карту или заглушку.
-        Если ссылка на карту заполнена, iframe получает рабочий адрес сразу.
+        На десктопе iframe получает рабочий адрес сразу.
+        На мобильных адрес откладывается до приближения карты к экрану.
         Если ссылка пустая, остаётся аккуратная заглушка, чтобы блок не ломался.
       */
       function applyMapState() {
@@ -5947,7 +6049,16 @@
 
         mapEmbed.removeAttribute("data-map-src");
         if (mapLoadBtn) mapLoadBtn.hidden = true;
-        loadMapNow(mapUrl);
+        const shouldLoadImmediately = window.matchMedia(
+          "(min-width: 1081px)",
+        ).matches;
+
+        if (shouldLoadImmediately) {
+          loadMapNow(mapUrl, { highPriority: true });
+          return;
+        }
+
+        prepareMobileMapLoad(mapUrl);
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
