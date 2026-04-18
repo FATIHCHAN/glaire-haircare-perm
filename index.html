@@ -56,7 +56,7 @@
     <meta name="msapplication-config" content="browserconfig.xml" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="upgrade-insecure-requests; object-src 'none'; base-uri 'self'"
+      content="default-src 'self'; script-src 'self' 'nonce-glaire-static'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net; font-src 'self'; media-src https://res.cloudinary.com; frame-src https://yandex.com https://yandex.ru https://*.yandex.ru; connect-src 'self' https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net https://mc.yandex.ru; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests"
     />
 
     <!-- Канонический адрес и языковая версия страницы -->
@@ -142,6 +142,9 @@
     <link rel="manifest" href="site.webmanifest" />
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link rel="preconnect" href="https://yandex.com" crossorigin />
+    <link rel="preconnect" href="https://yastatic.net" crossorigin />
+    <link rel="dns-prefetch" href="https://api-maps.yandex.ru" />
+    <link rel="dns-prefetch" href="https://mc.yandex.ru" />
     <link
       rel="preload"
       as="image"
@@ -193,7 +196,7 @@
       помогают поисковикам понять, что это студия волос в Перми,
       где она находится, какие услуги оказывает и где находятся соцсети.
     -->
-    <script type="application/ld+json">
+    <script nonce="glaire-static" type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
@@ -3399,15 +3402,6 @@
         }
       }
     </style>
-    <script>
-      /*
-        Безопасная загрузка шрифтов для обычного хостинга.
-        Страница не скрывается целиком, поэтому даже если шрифты загрузятся
-        медленно или сервер отдаст их с ошибкой, пользователь всё равно сразу
-        увидит сайт, а не белый экран.
-      */
-      document.documentElement.classList.add("fonts-ready");
-    </script>
   </head>
   <body id="top">
     <!--
@@ -3729,8 +3723,10 @@
                     id="mapFrame"
                     title="Карта студии GLAIRE"
                     src="https://yandex.com/map-widget/v1/?ll=56.239854%2C58.013116&mode=poi&poi%5Bpoint%5D=56.239864%2C58.013316&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D90046938757&tab=prices&z=18.14"
-                    loading="lazy"
-                    fetchpriority="low"
+                    loading="eager"
+                    fetchpriority="high"
+                    credentialless
+                    referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen="true"
                   ></iframe>
                   <div class="map-placeholder" id="mapPlaceholder">
@@ -4746,7 +4742,7 @@
       </div>
     </div>
 
-    <script>
+    <script nonce="glaire-static">
       /*
             ======================================================================
             JavaScript страницы
@@ -5888,8 +5884,8 @@
         currentMapUrl = mapUrl;
         mapEmbed.classList.remove("is-placeholder");
         mapEmbed.classList.remove("is-loading");
-        mapFrame.loading = "lazy";
-        mapFrame.setAttribute("fetchpriority", "low");
+        mapFrame.loading = "eager";
+        mapFrame.setAttribute("fetchpriority", "high");
         mapFrame.onload = null;
         mapFrame.src = mapUrl;
       }
