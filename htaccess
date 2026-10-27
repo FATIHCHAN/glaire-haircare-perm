@@ -10,6 +10,9 @@ Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Let’s Encrypt должен читать проверочный файл по HTTP без перенаправления.
+  RewriteRule ^\.well-known/acme-challenge/ - [L]
+
   # Переводим на HTTPS только основной домен.
   # Технический адрес SpaceWeb остаётся доступен по HTTP для проверки до DNS.
   RewriteCond %{HTTP_HOST} ^(www\.)?glaire\.ru$ [NC]
