@@ -10,9 +10,12 @@ Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Если сайт открыли через http://, переводим на https://.
+  # Переводим на HTTPS только основной домен.
+  # Технический адрес SpaceWeb остаётся доступен по HTTP для проверки до DNS.
+  RewriteCond %{HTTP_HOST} ^(www\.)?glaire\.ru$ [NC]
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+  RewriteRule ^ https://glaire.ru%{REQUEST_URI} [R=301,L]
 
   # Если открыли www.glaire.ru, аккуратно переводим на основной домен glaire.ru.
   RewriteCond %{HTTP_HOST} ^www\.glaire\.ru$ [NC]
