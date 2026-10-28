@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------
 # Настройки Apache-хостинга для GLAIRE
 # ----------------------------------------------------------------------
-# GitHub Pages этот файл не использует, но на REG.RU и похожем Apache-хостинге
+# GitHub Pages этот файл не использует, но на SpaceWeb и похожем Apache-хостинге
 # он помогает держать сайт быстрым и безопасным: HTTPS, кеш, сжатие и заголовки.
 
 # Не даём серверу показывать список файлов папки, если случайно нет index.html.
@@ -64,25 +64,30 @@ FileETag None
 
   # HTML должен обновляться быстро после правок.
   <FilesMatch "\.(html)$">
-    Header set Cache-Control "public, max-age=1800, must-revalidate"
+    Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
 
   # Статические ресурсы можно хранить дольше: это помогает PageSpeed и браузерам.
-  <FilesMatch "\.(css|js|woff2|png|jpg|jpeg|webp|gif|svg|ico|xml|webmanifest)$">
+  <FilesMatch "\.(woff2|png|jpg|jpeg|webp|gif|svg|ico)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Код и служебные документы перепроверяются, чтобы обновления не застревали на год.
+  <FilesMatch "\.(css|js|xml|webmanifest)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
   </FilesMatch>
 </IfModule>
 
 <IfModule mod_expires.c>
   # Дублируем политику кеширования через Expires для старых связок Apache/CDN.
   ExpiresActive On
-  ExpiresByType text/html "access plus 30 minutes"
-  ExpiresByType text/css "access plus 1 year"
-  ExpiresByType application/javascript "access plus 1 year"
-  ExpiresByType application/json "access plus 1 year"
-  ExpiresByType application/xml "access plus 1 year"
-  ExpiresByType text/xml "access plus 1 year"
-  ExpiresByType application/manifest+json "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 hour"
+  ExpiresByType application/javascript "access plus 1 hour"
+  ExpiresByType application/json "access plus 1 hour"
+  ExpiresByType application/xml "access plus 1 hour"
+  ExpiresByType text/xml "access plus 1 hour"
+  ExpiresByType application/manifest+json "access plus 1 hour"
   ExpiresByType image/x-icon "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
