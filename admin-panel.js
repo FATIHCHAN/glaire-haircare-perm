@@ -52,9 +52,8 @@
         { key: "bookUrl", label: "Ссылка на запись в DIKIDI", placeholder: "https://dikidi.net/..." },
         { key: "mapEmbedUrl", label: "Ссылка на embed карты", placeholder: "https://yandex.com/map-widget/..." },
         { key: "brandImage", label: "Логотип / иконка бренда", placeholder: "https://res.cloudinary.com/..." },
-        { key: "heroSlide1", label: "Hero-слайд 1", placeholder: "https://res.cloudinary.com/..." },
-        { key: "heroSlide2", label: "Hero-слайд 2", placeholder: "https://res.cloudinary.com/..." },
-        { key: "masterPhoto", label: "Фото мастера", placeholder: "https://res.cloudinary.com/..." },
+        ...Array.from({ length: 12 }, (_, index) => ({ key: `heroSlide${index + 1}`, label: `Фото студии ${index + 1}`, placeholder: "https://res.cloudinary.com/..." })),
+        ...Array.from({ length: 14 }, (_, index) => ({ key: index ? `masterPhoto${index + 1}` : "masterPhoto", label: `Фото мастера ${index + 1}`, placeholder: "https://res.cloudinary.com/..." })),
         { key: "consultQr", label: "QR для консультации", placeholder: "https://res.cloudinary.com/..." },
         { key: "consultQrLink", label: "Ссылка по QR консультации", placeholder: "https://t.me/..." },
         { key: "telegramQr", label: "QR Telegram", placeholder: "https://res.cloudinary.com/..." },
@@ -191,6 +190,12 @@
         { key: "worksItemText4", label: "Карточка 4 — текст", type: "textarea" },
         { key: "worksItemTitle5", label: "Карточка 5 — заголовок" },
         { key: "worksItemText5", label: "Карточка 5 — текст", type: "textarea" },
+        ...Array.from({ length: 5 }, (_, index) => index + 1).flatMap((index) => [
+          { key: `newWork${index}Title`, label: `Новая работа ${index} — название` },
+          { key: `newWork${index}Note`, label: `Новая работа ${index} — описание`, type: "textarea" },
+          { key: `newWork${index}Photo1`, label: `Новая работа ${index} — фото 1`, placeholder: "https://res.cloudinary.com/..." },
+          { key: `newWork${index}Photo2`, label: `Новая работа ${index} — фото 2`, placeholder: "https://res.cloudinary.com/..." },
+        ]),
       ],
     },
     {
@@ -213,6 +218,12 @@
         { key: "newsTitle3", label: "Карточка 3 — заголовок" },
         { key: "newsText3", label: "Карточка 3 — текст", type: "textarea" },
         { key: "newsImage3", label: "Карточка 3 — фото" },
+        ...[4, 5].flatMap((index) => [
+          { key: `newsBadge${index}`, label: `Карточка ${index} — бейдж` },
+          { key: `newsTitle${index}`, label: `Карточка ${index} — заголовок` },
+          { key: `newsText${index}`, label: `Карточка ${index} — текст`, type: "textarea" },
+          { key: `newsImage${index}`, label: `Карточка ${index} — фото` },
+        ]),
       ],
     },
     {
