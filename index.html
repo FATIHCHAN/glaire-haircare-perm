@@ -208,6 +208,10 @@
             },
             "primaryImageOfPage": {
               "@type": "ImageObject",
+              "@id": "https://glaire.ru/#image-studio-1",
+              "name": "Фото помещения студии GLAIRE 1 — Пионерская, 15, студия 2F",
+              "caption": "Фото помещения студии GLAIRE 1 — Пионерская, 15, студия 2F",
+              "creator": { "@id": "https://glaire.ru/#valeriy" },
               "url": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1793126750/IMG_3907_h6ghr5.heic"
             },
             "inLanguage": "ru-RU",
@@ -596,6 +600,7 @@
         width: 640px;
         height: 640px;
         border-radius: 999px;
+        filter: blur(14px);
         background: radial-gradient(
           circle,
           rgba(131, 145, 160, 0.08),
@@ -700,8 +705,8 @@
           ),
           var(--bg-card);
         box-shadow: var(--shadow-xl);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+        backdrop-filter: blur(18px) saturate(118%);
+        -webkit-backdrop-filter: blur(18px) saturate(118%);
       }
 
       .glass-card::before {
@@ -872,7 +877,7 @@
         width: 48px;
         height: 48px;
         flex-shrink: 0;
-        object-fit: contain;
+        object-fit: cover;
         border-radius: 14px;
         border: 1px solid rgba(240, 233, 224, 0.1);
         box-shadow: 0 8px 24px rgba(8, 14, 22, 0.28);
@@ -1270,8 +1275,6 @@
 
       /* Слайдер с фотографиями пространства студии. */
       .hero-slider {
-        display: grid;
-        grid-template-columns: 58px minmax(0, 1fr) 58px;
         position: relative;
         overflow: hidden;
         border-radius: 28px;
@@ -1281,10 +1284,8 @@
       }
 
       .hero-slider__viewport {
-        grid-column: 1 / -1;
-        grid-row: 1;
         width: 100%;
-        aspect-ratio: var(--image-aspect, 3 / 4);
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         touch-action: pan-y;
       }
@@ -1292,13 +1293,12 @@
       .hero-slider__viewport img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
 
       .hero-slider__btn {
-        position: static;
-        grid-row: 2;
-        margin: 8px;
+        position: absolute;
+        top: 50%;
         z-index: 2;
         width: 42px;
         height: 42px;
@@ -1306,26 +1306,16 @@
         border: 1px solid rgba(222, 214, 205, 0.16);
         background: rgba(11, 17, 24, 0.78);
         color: var(--text-main);
-        transform: none;
+        transform: translateY(-50%);
         cursor: pointer;
       }
 
       .hero-slider__btn--prev {
-        grid-column: 1;
+        left: 12px;
       }
 
       .hero-slider__btn--next {
-        grid-column: 3;
-      }
-
-      .photo-counter {
-        grid-column: 2;
-        grid-row: 2;
-        align-self: center;
-        text-align: center;
-        color: var(--text-soft);
-        font-variant-numeric: tabular-nums;
-        font-size: 13px;
+        right: 12px;
       }
 
       .hero-slider__footer {
@@ -1333,7 +1323,6 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        flex-wrap: wrap;
       }
 
       .slider__caption {
@@ -1350,13 +1339,12 @@
       }
 
       .slider__dot {
-        width: 24px;
-        height: 24px;
+        width: 10px;
+        height: 10px;
         padding: 0;
         border-radius: 999px;
-        border: 7px solid transparent;
-        background: rgba(222, 214, 205, 0.28);
-        background-clip: padding-box;
+        border: 1px solid rgba(222, 214, 205, 0.22);
+        background: rgba(222, 214, 205, 0.12);
         cursor: pointer;
         transition:
           transform 0.18s ease,
@@ -1367,7 +1355,7 @@
       .slider__dot.is-active {
         transform: scale(1.08);
         background: rgba(245, 240, 234, 0.74);
-        border-color: transparent;
+        border-color: rgba(245, 240, 234, 0.78);
       }
 
       /* Ниже фото собраны карта и QR-коды для быстрых переходов. */
@@ -1437,8 +1425,6 @@
       }
 
       .map-embed iframe {
-        position: absolute;
-        inset: 0;
         width: 100%;
         height: 100%;
         display: block;
@@ -1488,8 +1474,8 @@
         display: grid;
         align-content: center;
         justify-items: center;
-        gap: 10px;
-        padding: 16px;
+        gap: 14px;
+        padding: 24px;
         background:
           radial-gradient(
             circle at 50% 42%,
@@ -1520,8 +1506,8 @@
 
       .map-placeholder::before {
         content: "";
-        width: 32px;
-        height: 32px;
+        width: 44px;
+        height: 44px;
         border-radius: 50% 50% 50% 8px;
         transform: rotate(-45deg);
         background: rgba(214, 126, 68, 0.9);
@@ -1531,7 +1517,6 @@
       }
 
       .map-placeholder::after {
-        display: none;
         content: "г. Пермь · ул. Пионерская, 15, студия 2F";
         padding: 8px 13px;
         border-radius: 999px;
@@ -1551,13 +1536,11 @@
       .map-placeholder p {
         max-width: 34ch;
         color: var(--text-soft);
-        font-size: 13px;
-        line-height: 1.5;
+        line-height: 1.68;
       }
 
       .map-placeholder__actions {
-        display: flex;
-        justify-content: center;
+        display: none;
         flex-wrap: wrap;
         gap: 10px;
       }
@@ -1912,8 +1895,6 @@
         gap: 16px;
       }
 
-      .master-card__media { align-content: start; }
-
       .master-card__content {
         display: flex;
         flex-direction: column;
@@ -1923,7 +1904,7 @@
 
       .master-photo-shell {
         position: relative;
-        min-height: 0;
+        min-height: 388px;
         overflow: hidden;
         border-radius: 30px;
         border: 1px solid rgba(222, 214, 205, 0.08);
@@ -1939,37 +1920,17 @@
       .master-photo-shell img {
         width: 100%;
         height: 100%;
-        min-height: 0;
-        object-fit: contain;
+        min-height: 388px;
+        object-fit: cover;
       }
 
       #masterPhoto {
-        object-position: center;
-      }
-
-      .master-slider__viewport {
-        width: 100%;
-        aspect-ratio: var(--image-aspect, 3 / 4);
-        touch-action: pan-y;
-      }
-
-      .master-slider__controls {
-        display: grid;
-        grid-template-columns: 58px minmax(0, 1fr) 58px;
-      }
-
-      .master-slider__controls > * {
-        grid-row: 1;
-      }
-
-      #masterSliderDots {
-        justify-content: center;
-        padding: 0 16px 16px;
+        object-position: 68% 34%;
       }
 
       .master-photo__empty {
         position: absolute;
-        inset: 0 0 92px;
+        inset: 0;
         display: grid;
         align-content: end;
         gap: 10px;
@@ -2340,7 +2301,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         opacity: 0;
         background: #0f161f;
         transition: opacity 0.24s ease;
@@ -2520,8 +2481,6 @@
       }
 
       .works-image {
-        display: grid;
-        grid-template-columns: 58px minmax(0, 1fr) 58px;
         position: relative;
         overflow: hidden;
         border-radius: 28px;
@@ -2530,11 +2489,9 @@
       }
 
       .works-slider__viewport {
-        grid-column: 1 / -1;
-        grid-row: 1;
         position: relative;
         width: 100%;
-        aspect-ratio: var(--image-aspect, 3 / 4);
+        aspect-ratio: 4 / 5;
         overflow: hidden;
         touch-action: pan-y;
       }
@@ -2544,7 +2501,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center center;
         transition:
           opacity 0.22s ease,
@@ -2604,7 +2561,7 @@
       }
 
       .works-image:not(.is-placeholder):hover img {
-        transform: none;
+        transform: scale(1.015);
       }
 
       .works-image.is-contain:not(.is-placeholder):hover img {
@@ -2842,8 +2799,7 @@
         border-radius: 22px;
         border: 1px solid rgba(222, 214, 205, 0.1);
         background: linear-gradient(180deg, #171f2a, #101720);
-        aspect-ratio: var(--image-aspect, 9 / 16);
-        align-self: start;
+        aspect-ratio: 2 / 3;
       }
 
       .story-card__media::after {
@@ -2863,7 +2819,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         opacity: 0;
         transition:
           opacity 0.24s ease,
@@ -2932,7 +2888,7 @@
       .story-card:hover .story-card__image,
       .story-card--link:hover .story-card__image,
       .story-card--link:focus-visible .story-card__image {
-        transform: none;
+        transform: scale(1.02);
       }
 
       .story-card--link:hover,
@@ -3546,7 +3502,9 @@
         }
 
         .master-photo-shell,
-        .master-photo-shell img { min-height: 0; }
+        .master-photo-shell img {
+          min-height: 340px;
+        }
 
         .master-points {
           grid-template-columns: 1fr;
@@ -3661,7 +3619,15 @@
           font-size: 12px;
         }
       }
-    </style>
+    
+      /* Галереи используют прежние постоянные рамки и стрелки поверх снимка. */
+      #heroSliderDots, #masterSliderDots, .photo-counter { display: none; }
+      .master-photo-shell { min-height: 0; align-self: start; }
+      .master-slider__viewport { position: relative; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; touch-action: pan-y; }
+      .master-photo-shell img { position: absolute; inset: 0; min-height: 0; object-fit: cover; }
+      .master-slider__controls { display: contents; }
+      .works-image.is-contain img { object-fit: cover; }
+</style>
   </head>
   <body id="top">
     <!--
@@ -3678,7 +3644,8 @@
             class="brand__icon"
             id="brandIcon"
             src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_96/v1775644952/Group_17_gwygic.png"
-            alt="Иконка GLAIRE"
+            alt="Логотип студии GLAIRE — мастер Валерий, Пермь"
+            title="Логотип студии GLAIRE — мастер Валерий, Пермь"
             fetchpriority="high"
             decoding="async">
           <div class="brand__text">
@@ -3925,7 +3892,8 @@
                     assets/images/IMG_3907_h6ghr5.heic-1280-v1793126750.webp 1280w
                   "
                   sizes="(max-width: 760px) calc(100vw - 68px), (max-width: 800px) calc(100vw - 84px), (max-width: 1080px) calc(94vw - 36px), (max-width: 1200px) calc(38vw - 28.64px), (max-width: 1212px) calc(44vw - 100.64px), 433px"
-                  alt="Интерьер студии GLAIRE"
+                  alt="Фото помещения студии GLAIRE 1 — Пионерская, 15, студия 2F"
+                  title="Фото помещения студии GLAIRE 1 — Пионерская, 15, студия 2F"
                   fetchpriority="high"
                   decoding="async">
               </div>
@@ -3989,8 +3957,8 @@
                   <iframe
                     id="mapFrame"
                     title="Карта студии GLAIRE"
-                    data-map-src="https://yandex.com/map-widget/v1/?ll=56.248626%2C57.996496&mode=search&oid=208558029908&ol=biz&z=18"
-                    loading="lazy"
+                    src="https://yandex.com/map-widget/v1/?ll=56.248626%2C57.996496&mode=search&oid=208558029908&ol=biz&z=18"
+                    loading="eager"
                     allow="fullscreen"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen
@@ -4034,7 +4002,8 @@
                   <img
                     id="telegramQr"
                     src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_256/v1775644812/telegram_qr_kczbjt.png"
-                    alt="QR Telegram"
+                    alt="QR-код Telegram студии GLAIRE — мастер Валерий"
+                    title="QR-код Telegram студии GLAIRE — мастер Валерий"
                     class="qr-code"
                     loading="lazy"
                     fetchpriority="low"
@@ -4057,7 +4026,8 @@
                   <img
                     id="vkQr"
                     src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_256/v1775644812/vk_qr_lv3vds.png"
-                    alt="QR VK"
+                    alt="QR-код сообщества GLAIRE во ВКонтакте — мастер Валерий"
+                    title="QR-код сообщества GLAIRE во ВКонтакте — мастер Валерий"
                     class="qr-code"
                     loading="lazy"
                     fetchpriority="low"
@@ -4178,7 +4148,8 @@
                 <img
                   id="masterPhoto"
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_960/v1793128864/IMG_3814_gzes63.jpg"
-                  alt="Фото мастера GLAIRE"
+                  alt="Фото мастера Валерия 1 — GLAIRE, Пермь"
+                  title="Фото мастера Валерия 1 — GLAIRE, Пермь"
                   loading="lazy"
                   fetchpriority="low"
                   decoding="async">
@@ -4725,7 +4696,8 @@
                   <img
                     id="worksSlideImage"
                     src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,dpr_auto,c_limit,w_960/v1775647544/IMG_2860_aeyldt.jpg"
-                    alt="Фото модели GLAIRE"
+                    alt="Фото модели и пример работы мастера Валерия — Окрашивание и уход, работа 1, фото 1 из 3"
+                    title="Фото модели и пример работы мастера Валерия — Окрашивание и уход, работа 1, фото 1 из 3"
                     loading="lazy"
                     fetchpriority="low"
                     decoding="async">
@@ -4882,8 +4854,32 @@
             <span id="newsCounter" role="status" aria-live="polite">1–3 / 5</span>
             <button id="newsNextBtn" type="button" aria-label="Следующие акции" aria-controls="newsTrack">›</button>
           </div>
-          <!-- Пять карточек акций: порядок первых трёх сохранён. -->
+          <!-- Новые акции идут первыми; три прежние сохранены следом. -->
           <div class="news-track" id="newsTrack" tabindex="0" role="region" aria-label="Акции GLAIRE — листайте в сторону">
+            <a class="glass-card story-card story-card--link" data-story-card="4" href="https://t.me/glaire_haircare_perm_admin" target="_blank" rel="noopener noreferrer">
+              <div class="story-card__media">
+                <img class="story-card__image" id="newsImage4" src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1793129267/018F7EA8-53AF-4867-9DBA-2FF6CCFAA51F_jmrpaw.jpg" alt="Акция GLAIRE 4 — Добавьте уход к стрижке и окрашиванию" title="Акция GLAIRE 4 — Добавьте уход к стрижке и окрашиванию" loading="lazy" decoding="async">
+                <div class="story-card__placeholder"><div><strong>Уход в комплексе</strong></div></div>
+              </div>
+              <div class="story-card__content">
+                <span class="badge" id="newsBadge4">Уход в комплексе</span>
+                <h3 id="newsTitle4">Добавьте уход к стрижке и окрашиванию</h3>
+                <p id="newsText4">Скидка на уход: 10% со стрижкой, 20% с окрашиванием, 25% со стрижкой и окрашиванием. За один визит; скидки не суммируются.</p>
+              </div>
+            </a>
+
+            <a class="glass-card story-card story-card--link" data-story-card="5" href="https://t.me/glaire_haircare_perm_admin" target="_blank" rel="noopener noreferrer">
+              <div class="story-card__media">
+                <img class="story-card__image" id="newsImage5" src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1793129267/E67CCF94-D69A-4801-BB23-736748BDB90D_kbmdud.png" alt="Акция GLAIRE 5 — Кератиновое выпрямление / ботокс для волос" title="Акция GLAIRE 5 — Кератиновое выпрямление / ботокс для волос" loading="lazy" decoding="async">
+                <div class="story-card__placeholder"><div><strong>Разглаживание волос</strong></div></div>
+              </div>
+              <div class="story-card__content">
+                <span class="badge" id="newsBadge5">Разглаживание</span>
+                <h3 id="newsTitle5">Кератиновое выпрямление / ботокс для волос</h3>
+                <p id="newsText5">До плеч — 4 000 ₽, ниже плеч — 6 000 ₽. Подбор процедуры — после консультации.</p>
+              </div>
+            </a>
+
             <a
               class="glass-card story-card story-card--link"
               data-story-card="1"
@@ -4896,7 +4892,8 @@
                   class="story-card__image"
                   id="newsImage1"
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png"
-                  alt="Акция 1"
+                  alt="Акция GLAIRE 1 — WINTER RESET"
+                  title="Акция GLAIRE 1 — WINTER RESET"
                   loading="lazy"
                   fetchpriority="low"
                   decoding="async">
@@ -4930,7 +4927,8 @@
                   class="story-card__image"
                   id="newsImage2"
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png"
-                  alt="Акция 2"
+                  alt="Акция GLAIRE 2 — SIGNATURE LOOK"
+                  title="Акция GLAIRE 2 — SIGNATURE LOOK"
                   loading="lazy"
                   fetchpriority="low"
                   decoding="async">
@@ -4964,7 +4962,8 @@
                   class="story-card__image"
                   id="newsImage3"
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png"
-                  alt="Акция 3"
+                  alt="Акция GLAIRE 3 — COLOR ARCHITECT"
+                  title="Акция GLAIRE 3 — COLOR ARCHITECT"
                   loading="lazy"
                   fetchpriority="low"
                   decoding="async">
@@ -4983,28 +4982,6 @@
                   Если есть сомнения по оттенку, длине, уходу или прошлым
                   окрашиваниям, сначала можно просто написать и уточнить детали.
                 </p>
-              </div>
-            </a>
-            <a class="glass-card story-card story-card--link" data-story-card="4" href="https://t.me/glaire_haircare_perm_admin" target="_blank" rel="noopener noreferrer">
-              <div class="story-card__media">
-                <img class="story-card__image" id="newsImage4" src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1793129267/018F7EA8-53AF-4867-9DBA-2FF6CCFAA51F_jmrpaw.jpg" alt="Добавьте уход: скидки на уход в составе комплекса" loading="lazy" decoding="async">
-                <div class="story-card__placeholder"><div><strong>Уход в комплексе</strong></div></div>
-              </div>
-              <div class="story-card__content">
-                <span class="badge" id="newsBadge4">Уход в комплексе</span>
-                <h3 id="newsTitle4">Добавьте уход к стрижке и окрашиванию</h3>
-                <p id="newsText4">Скидка на уход: 10% со стрижкой, 20% с окрашиванием, 25% со стрижкой и окрашиванием. За один визит; скидки не суммируются.</p>
-              </div>
-            </a>
-            <a class="glass-card story-card story-card--link" data-story-card="5" href="https://t.me/glaire_haircare_perm_admin" target="_blank" rel="noopener noreferrer">
-              <div class="story-card__media">
-                <img class="story-card__image" id="newsImage5" src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_640/v1793129267/E67CCF94-D69A-4801-BB23-736748BDB90D_kbmdud.png" alt="Кератиновое выпрямление и ботокс: до плеч 4 000 ₽, ниже плеч 6 000 ₽" loading="lazy" decoding="async">
-                <div class="story-card__placeholder"><div><strong>Разглаживание волос</strong></div></div>
-              </div>
-              <div class="story-card__content">
-                <span class="badge" id="newsBadge5">Разглаживание</span>
-                <h3 id="newsTitle5">Кератиновое выпрямление / ботокс для волос</h3>
-                <p id="newsText5">До плеч — 4 000 ₽, ниже плеч — 6 000 ₽. Подбор процедуры — после консультации.</p>
               </div>
             </a>
           </div>
@@ -5045,7 +5022,8 @@
                   class="consult-qr__image"
                   id="consultQr"
                   src="https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_limit,w_256/v1775644812/qr_%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F_%D1%87%D0%B0%D1%82_xbo5br.png"
-                  alt="QR для консультации GLAIRE"
+                  alt="QR-код для консультации с мастером Валерием в Telegram"
+                  title="QR-код для консультации с мастером Валерием в Telegram"
                   loading="lazy"
                   fetchpriority="low"
                   decoding="async">
@@ -6229,19 +6207,487 @@
         "vk_qr_lv3vds.png": [300, 303],
       };
 
+      function describeImage(image, description) {
+        if (!image) return;
+        image.alt = description;
+        if (description) image.title = description;
+        else image.removeAttribute("title");
+      }
+
+      function studioPhotoDescription(index) {
+        return `Фото помещения студии GLAIRE ${index + 1} — Пионерская, 15, студия 2F`;
+      }
+
+      function masterPhotoDescription(index) {
+        return `Фото мастера Валерия ${index + 1} — GLAIRE, Пермь`;
+      }
+
+      function workPhotoDescription(procedure, workIndex, photoIndex) {
+        return `Фото модели и пример работы мастера Валерия — ${procedure.title}, работа ${workIndex + 1}, фото ${photoIndex + 1} из ${procedure.slides.length}`;
+      }
+
+      /* Метаданные перечисляют фото, но не запускают их загрузку. */
+      function updatePhotoMetadata() {
+        const author = { "@id": "https://glaire.ru/#valeriy" };
+        const images = [];
+        function addImage(id, source, caption, keywords, about) {
+          if (!source || !/^https?:\/\//i.test(source)) return;
+          images.push({
+            "@type": "ImageObject",
+            "@id": `https://glaire.ru/#image-${id}`,
+            contentUrl: source,
+            url: source,
+            name: caption,
+            caption,
+            description: caption,
+            inLanguage: "ru-RU",
+            author,
+            creator: author,
+            copyrightHolder: author,
+            creditText: "Валерий — GLAIRE",
+            keywords,
+            ...(about ? { about } : {}),
+            isPartOf: { "@id": "https://glaire.ru/#webpage" },
+          });
+        }
+        STUDIO_PHOTOS.forEach((_, index) => {
+          const key = `heroSlide${index + 1}`;
+          addImage(`studio-${index + 1}`, getImageCandidatesForKey(key, config[key], CONFIG_DEFAULT[key])[0], studioPhotoDescription(index), ["помещение студии", "GLAIRE", "Пионерская 15"], { "@id": "https://glaire.ru/#business" });
+        });
+        MASTER_PHOTOS.forEach((_, index) => {
+          const key = index ? `masterPhoto${index + 1}` : "masterPhoto";
+          addImage(`master-${index + 1}`, getImageCandidatesForKey(key, config[key], CONFIG_DEFAULT[key])[0], masterPhotoDescription(index), ["фото мастера Валерия", "GLAIRE"], author);
+        });
+        WORKS_PROCEDURES.forEach((procedure, workIndex) => {
+          procedure.slides.forEach((slide, photoIndex) => {
+            if (slide.placeholder) return;
+            addImage(`work-${workIndex + 1}-${photoIndex + 1}`, slide.sources[0], workPhotoDescription(procedure, workIndex, photoIndex), ["фото модели", "пример работы мастера Валерия", procedure.title, "GLAIRE"]);
+          });
+        });
+        for (let index = 1; index <= 5; index++) {
+          const key = `newsImage${index}`;
+          if (String(config[key] || "").trim()) {
+            addImage(`offer-${index}`, getImageCandidatesForKey(key, config[key], CONFIG_DEFAULT[key])[0], `Акция GLAIRE ${index} — ${config[`newsTitle${index}`]}`, ["акция GLAIRE", config[`newsTitle${index}`]]);
+          }
+        }
+        for (const [id, key] of [["brandIcon", "brandImage"], ["consultQr", "consultQr"], ["telegramQr", "telegramQr"], ["vkQr", "vkQr"]]) {
+          addImage(id, getImageCandidatesForKey(key, config[key], CONFIG_DEFAULT[key])[0], document.getElementById(id)?.alt || "GLAIRE", ["GLAIRE"]);
+        }
+        let metadata = document.getElementById("photoMetadata");
+        if (!metadata) {
+          metadata = document.createElement("script");
+          metadata.id = "photoMetadata";
+          metadata.type = "application/ld+json";
+          metadata.setAttribute("nonce", "glaire-static");
+          document.head.append(metadata);
+        }
+        metadata.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            { "@type": "Person", "@id": author["@id"], name: config.masterName || "Валерий", url: "https://glaire.ru/#master", worksFor: { "@id": "https://glaire.ru/#business" } },
+            { "@type": "WebPage", "@id": "https://glaire.ru/#webpage", image: images.map(image => ({ "@id": image["@id"] })) },
+            ...images,
+          ],
+        });
+      }
+
       function syncImageFrame(image, width, height) {
         if (!width || !height) return;
         image.width = width;
         image.height = height;
-        const frame = image.closest(".hero-slider__viewport, .master-slider__viewport, .works-slider__viewport, .story-card__media");
-        frame?.style.setProperty("--image-aspect", `${width} / ${height}`);
       }
+
+      const LOCAL_PHOTO_VARIANTS = {
+        "v1793126773/IMG_3901_odph7p.heic": {
+          "base": "photo-studio-2-1b1d128015",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126768/IMG_3866_ibtcbl.heic": {
+          "base": "photo-studio-3-d4579584e3",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126785/IMG_3912_qyhcwi.heic": {
+          "base": "photo-studio-4-c390751e26",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126876/IMG_3911_fjmsnd.heic": {
+          "base": "photo-studio-5-d54607c38a",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126753/IMG_3876_j72chp.heic": {
+          "base": "photo-studio-8-3fa62073d4",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126751/IMG_3898_ffpt2z.heic": {
+          "base": "photo-studio-6-60d47a06b1",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126754/IMG_8681_tk6vh1.heic": {
+          "base": "photo-studio-7-da893e58e3",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126752/IMG_3885_rdlvhk.heic": {
+          "base": "photo-studio-10-75123a5f5e",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126775/IMG_3896_lwohfs.heic": {
+          "base": "photo-studio-12-29b0da551f",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126751/IMG_3908_bw4va2.heic": {
+          "base": "photo-studio-9-b250e1692e",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793126768/IMG_3862_qh1avn.heic": {
+          "base": "photo-studio-11-80fceb8498",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128857/2026-04-21_17-27-30_rie6h8.jpg": {
+          "base": "photo-master-4-5a617732e7",
+          "widths": [
+            320,
+            640,
+            960
+          ]
+        },
+        "v1793128855/2026-04-29_11-21-38_ffodjc.jpg": {
+          "base": "photo-master-3-30be32c03b",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128864/IMG_3814_gzes63.jpg": {
+          "base": "photo-master-1-0d8b330c56",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128859/IMG_2737_hjlmbx.jpg": {
+          "base": "photo-master-2-3e3d83d842",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128852/IMG_1285_xozjzc.jpg": {
+          "base": "photo-master-6-c44e1dcd27",
+          "widths": [
+            320,
+            640
+          ]
+        },
+        "v1793128853/c5cd10d5466937056ee7392c56e2baea_ujv7v5.jpg": {
+          "base": "photo-master-5-d99fcb4719",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128859/IMG_2715_xxkvmj.jpg": {
+          "base": "photo-master-7-32167bf218",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128856/2026-02-20_14-52-05_lykvs5.jpg": {
+          "base": "photo-master-8-dae655d036",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128852/IMG_1279_mmamop.jpg": {
+          "base": "photo-master-11-6ccffaa740",
+          "widths": [
+            320,
+            640,
+            960
+          ]
+        },
+        "v1793128856/2026-05-22_15-16-56_hbe5ix.jpg": {
+          "base": "photo-master-9-02f4179c91",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128862/2026-02-20_14-52-13_vqlojd.jpg": {
+          "base": "photo-master-12-aaf397e71d",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128854/IMG_2739_hvgg5b.jpg": {
+          "base": "photo-master-10-388df39fbc",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128854/2026-04-29_11-24-21_aezhib.jpg": {
+          "base": "photo-master-14-f4a3211f4a",
+          "widths": [
+            320,
+            640,
+            960
+          ]
+        },
+        "v1775647544/IMG_2858_qlp3y2.jpg": {
+          "base": "photo-work-1-2-a329e5fc4d",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793128858/IMG_3799_scxqwf.jpg": {
+          "base": "photo-master-13-0200195984",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1775647544/IMG_2860_aeyldt.jpg": {
+          "base": "photo-work-1-1-69d4080106",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1782891483/2026-05-22_19-55-44_1779487086534_lq9moj.heic": {
+          "base": "photo-work-2-2-4dfde29fd4",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425441/IMG_1832_x7d07f.jpg": {
+          "base": "photo-work-3-1-a59cb19c01",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1782891485/2026-05-22_20-03-54_1779487085916_nakc0f.heic": {
+          "base": "photo-work-2-1-118e78680b",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1775647546/IMG_2861_lvzm2u.jpg": {
+          "base": "photo-work-1-3-4b62f19164",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425440/IMG_1810_texurd.jpg": {
+          "base": "photo-work-4-1-d121452170",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425441/IMG_1803_tujqmt.jpg": {
+          "base": "photo-work-4-2-76d3c3ca65",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425441/IMG_1824_gpqsax.jpg": {
+          "base": "photo-work-3-2-8925153f94",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425440/IMG_1836_prvxzv.jpg": {
+          "base": "photo-work-3-3-c7cdb08531",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776425440/IMG_1813_qq1p7f.jpg": {
+          "base": "photo-work-4-3-01d0c267f2",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1776415989/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_1_pbznet.png": {
+          "base": "photo-offer-1-ecef75c079",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1775671465/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_2_sfqwvh.png": {
+          "base": "photo-offer-2-1820ec8a5d",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1782891485/2026-06-06_20-01-40_1780792175168_ucos5d.heic": {
+          "base": "photo-work-5-1-535abd6ffd",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1775671458/%D0%90%D0%9A%D0%A6%D0%98%D0%AF_3_kxybn7.png": {
+          "base": "photo-offer-3-51175803d6",
+          "widths": [
+            320,
+            640,
+            960,
+            1280
+          ]
+        },
+        "v1793129267/018F7EA8-53AF-4867-9DBA-2FF6CCFAA51F_jmrpaw.jpg": {
+          "base": "photo-offer-4-6ceb87b80e",
+          "widths": [
+            320,
+            640,
+            960
+          ]
+        },
+        "v1793129267/E67CCF94-D69A-4801-BB23-736748BDB90D_kbmdud.png": {
+          "base": "photo-offer-5-4c236113f4",
+          "widths": [
+            320,
+            640
+          ]
+        }
+      };
 
       function assignResponsiveImage(image, candidate, preferLocal = true) {
         const key = String(candidate).match(/\/v\d+\/([^?#]+)/)?.[1];
         const dimensions = IMAGE_DIMENSIONS[key];
         if (dimensions) syncImageFrame(image, ...dimensions);
         delete image.dataset.localImage;
+        const revision = String(candidate).match(/\/(v\d+\/[^?#]+)/)?.[1];
+        const localPhoto = preferLocal && LOCAL_PHOTO_VARIANTS[revision];
+        if (localPhoto) {
+          const frame = image.parentElement;
+          const ratio = dimensions ? dimensions[0] / dimensions[1] : 1;
+          const renderedWidth = Math.max(160, Math.ceil(frame?.clientWidth || image.clientWidth || 360), Math.ceil((frame?.clientHeight || 0) * ratio));
+          const source = width => new URL(`assets/images/${localPhoto.base}-${width}.webp`, document.baseURI).href;
+          image.dataset.localImage = "1";
+          image.sizes = `${renderedWidth}px`;
+          image.srcset = localPhoto.widths.map(width => `${source(width)} ${width}w`).join(", ");
+          image.src = source(localPhoto.widths.find(width => width >= renderedWidth) || localPhoto.widths.at(-1));
+          return;
+        }
         if (preferLocal && candidate.includes("/v1793126750/IMG_3907_h6ghr5.heic")) {
           const widths = [320, 480, 640, 960, 1280];
           const renderedWidth = Math.max(160, Math.ceil(image.parentElement?.clientWidth || image.clientWidth || 360));
@@ -6454,10 +6900,7 @@
               config[key],
               CONFIG_DEFAULT[key],
             ),
-            alt:
-              index === 0
-                ? "Интерьер студии GLAIRE"
-                : "Пространство студии GLAIRE",
+            alt: studioPhotoDescription(index),
           }))
           .filter((slide) => slide.sources.length);
 
@@ -6466,7 +6909,7 @@
           : [
               {
                 sources: getImageCandidatesForKey("heroSlide1"),
-                alt: "Интерьер студии GLAIRE",
+                alt: studioPhotoDescription(0),
               },
             ];
       }
@@ -6531,7 +6974,7 @@
       }
 
       /*
-        Подключает интерактивную Яндекс.Карту после нажатия «Показать карту».
+        Подключает интерактивную карту сразу и не перезагружает тот же адрес.
       */
       function loadMapNow(mapUrl, options = {}) {
         const { highPriority = false } = options;
@@ -6566,31 +7009,7 @@
       }
 
       /*
-        Карта подключается по запросу на любом экране.
-        До нажатия кнопки внешние скрипты карты не загружаются.
-      */
-      function prepareMapOnDemand(mapUrl) {
-        const embed = document.getElementById("mapEmbed");
-        const frame = document.getElementById("mapFrame");
-        const button = document.getElementById("mapLoadBtn");
-        embed.dataset.mapSrc = mapUrl;
-        embed.classList.add("is-placeholder");
-        embed.classList.remove("is-loading");
-        frame.removeAttribute("src");
-        if (button) {
-          button.hidden = false;
-          if (button.dataset.mapLoaderBound !== "1") {
-            button.dataset.mapLoaderBound = "1";
-            button.addEventListener("click", () => {
-              loadMapNow(embed.dataset.mapSrc, { highPriority: false });
-              button.hidden = true;
-            });
-          }
-        }
-      }
-
-      /*
-        Подготавливает кнопку карты и сохраняет уже открытый виджет при правках.
+        Карта начинает загружаться сразу; одинаковый адрес повторно не назначается.
       */
       function applyMapState() {
         const embed = document.getElementById("mapEmbed");
@@ -6598,8 +7017,7 @@
         if (!embed || !frame) return;
         const mapUrl = String(config.mapEmbedUrl || "").trim();
         if (!/^https:\/\/(?:yandex\.com|yandex\.ru)\/map-widget\/v1\//.test(mapUrl)) return;
-        if (frame.getAttribute("src") === mapUrl) return;
-        prepareMapOnDemand(mapUrl);
+        loadMapNow(mapUrl, { highPriority: true });
       }
 
       /* Создаёт список элементов из текста и вставляет его в нужный контейнер */
@@ -6681,7 +7099,7 @@
         applySocialGroup("master", MASTER_SOCIAL_LINKS, "socialLinksEmpty");
       }
 
-      /* Фотографии мастера: порядок, навигация и показ без обрезки. */
+      /* Фотографии мастера: порядок и переключение в постоянной рамке. */
       let masterSlideIndex = 0;
       function applyMasterPhotoState(nextIndex = masterSlideIndex) {
         const shell = document.getElementById("masterPhotoShell");
@@ -6692,14 +7110,14 @@
         const candidates = getImageCandidatesForKey(
           key, config[key], CONFIG_DEFAULT[key],
         );
-        image.alt = `Валерий, мастер GLAIRE — фото ${masterSlideIndex + 1} из ${MASTER_PHOTOS.length}`;
+        describeImage(image, masterPhotoDescription(masterSlideIndex));
         document.getElementById("masterSliderCounter").textContent = `${masterSlideIndex + 1} / ${MASTER_PHOTOS.length}`;
         const dots = document.getElementById("masterSliderDots");
         dots.replaceChildren(...MASTER_PHOTOS.map((_, index) => {
           const button = document.createElement("button");
           button.type = "button";
           button.className = `slider__dot${index === masterSlideIndex ? " is-active" : ""}`;
-          button.setAttribute("aria-label", `Фото мастера ${index + 1}`);
+          button.setAttribute("aria-label", masterPhotoDescription(index));
           button.setAttribute("aria-current", String(index === masterSlideIndex));
           button.addEventListener("click", () => applyMasterPhotoState(index));
           return button;
@@ -6824,6 +7242,7 @@
         badgeNode.textContent = config[`newsBadge${index}`];
         titleNode.textContent = config[`newsTitle${index}`];
         textNode.textContent = config[`newsText${index}`];
+        describeImage(imageNode, `Акция GLAIRE ${index} — ${config[`newsTitle${index}`]}`);
 
         if (cardNode instanceof HTMLAnchorElement) {
           const storyCardLink = (
@@ -6937,6 +7356,10 @@
           "telegramQr",
         );
         applyImageToIds(["vkQr"], config.vkQr, CONFIG_DEFAULT.vkQr, "vkQr");
+        describeImage(document.getElementById("brandIcon"), "Логотип студии GLAIRE — мастер Валерий, Пермь");
+        describeImage(document.getElementById("consultQr"), "QR-код для консультации с мастером Валерием в Telegram");
+        describeImage(document.getElementById("telegramQr"), "QR-код Telegram студии GLAIRE — мастер Валерий");
+        describeImage(document.getElementById("vkQr"), "QR-код сообщества GLAIRE во ВКонтакте — мастер Валерий");
 
         applyLinks(
           ["infoBtnTop", "infoBtnHero"],
@@ -7004,6 +7427,7 @@
           contentAudioNeedsInteraction = false;
           contentPendingPageAdvanceUntil = 0;
           ["1", "2", "3", "4", "5"].forEach(applyNewsCard);
+          updatePhotoMetadata();
 
           window.requestAnimationFrame(() => {
             applyContentSequenceState();
@@ -7849,7 +8273,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2860_aeyldt.jpg",
                 ),
               ),
-              alt: "Фото первой процедуры GLAIRE 1",
             },
             {
               sources: buildImageCandidateList(
@@ -7858,7 +8281,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647544/IMG_2858_qlp3y2.jpg",
                 ),
               ),
-              alt: "Фото первой процедуры GLAIRE 2",
             },
             {
               sources: buildImageCandidateList(
@@ -7867,7 +8289,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1775647546/IMG_2861_lvzm2u.jpg",
                 ),
               ),
-              alt: "Фото первой процедуры GLAIRE 3",
             },
           ],
         },
@@ -7885,7 +8306,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/v1782891485/2026-05-22_20-03-54_1779487085916_nakc0f.heic",
                 ),
               ),
-              alt: "Фото четвёртой процедуры GLAIRE 1",
             },
             {
               sources: buildImageCandidateList(
@@ -7894,7 +8314,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/v1782891483/2026-05-22_19-55-44_1779487086534_lq9moj.heic",
                 ),
               ),
-              alt: "Фото четвёртой процедуры GLAIRE 2",
             },
           ],
         },
@@ -7912,7 +8331,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776425441/IMG_1832_x7d07f.jpg",
                 ),
               ),
-              alt: "Фото второй процедуры GLAIRE 1",
             },
             {
               sources: buildImageCandidateList(
@@ -7921,7 +8339,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776425441/IMG_1824_gpqsax.jpg",
                 ),
               ),
-              alt: "Фото второй процедуры GLAIRE 2",
             },
             {
               sources: buildImageCandidateList(
@@ -7930,7 +8347,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776425440/IMG_1836_prvxzv.jpg",
                 ),
               ),
-              alt: "Фото второй процедуры GLAIRE 3",
             },
           ],
         },
@@ -7948,7 +8364,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776425440/IMG_1810_texurd.jpg",
                 ),
               ),
-              alt: "Фото третьей процедуры GLAIRE 1",
             },
             {
               sources: buildImageCandidateList(
@@ -7957,7 +8372,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/q_auto/f_auto/v1776425441/IMG_1803_tujqmt.jpg",
                 ),
               ),
-              alt: "Фото третьей процедуры GLAIRE 2",
             },
             {
               sources: buildImageCandidateList(
@@ -7967,7 +8381,6 @@
                 ),
               ),
               position: "center top",
-              alt: "Фото третьей процедуры GLAIRE 3",
             },
           ],
         },
@@ -7985,7 +8398,6 @@
                   "https://res.cloudinary.com/dhb13tygy/image/upload/v1782891485/2026-06-06_20-01-40_1780792175168_ucos5d.heic",
                 ),
               ),
-              alt: "Фото пятой процедуры GLAIRE",
             },
           ],
         },
@@ -8004,7 +8416,6 @@
                   sources: source ? buildImageCandidateList(optimizeConfiguredImage("worksSlide", source)) : [],
                   placeholder: !source,
                   fit: "contain",
-                  alt: `Новая работа ${number}, фото ${photo}`,
                   label: `Фото ${photo} из 2`,
                   text: "Фотография этой работы скоро появится.",
                 };
@@ -8031,7 +8442,7 @@
           const dot = document.createElement("button");
           dot.type = "button";
           dot.className = "slider__dot";
-          dot.setAttribute("aria-label", `Перейти к фото ${index + 1}`);
+          dot.setAttribute("aria-label", slide.alt);
           if (index === heroSlideIndex) dot.classList.add("is-active");
           dot.setAttribute("aria-current", String(index === heroSlideIndex));
           dot.addEventListener("click", () => setHeroSlide(index));
@@ -8048,7 +8459,7 @@
         document.getElementById("heroSliderCounter").textContent = `${heroSlideIndex + 1} / ${total}`;
 
         if (heroSlideImage) {
-          heroSlideImage.alt = slide.alt;
+          describeImage(heroSlideImage, slide.alt);
           applyImageFallbacks(heroSlideImage, slide.sources);
         }
 
@@ -8142,7 +8553,7 @@
           dot.className = "slider__dot";
           dot.setAttribute(
             "aria-label",
-            `Перейти к фото ${index + 1} выбранной процедуры`,
+            workPhotoDescription(getActiveWorksProcedure(), worksProcedureIndex, index),
           );
           if (index === worksSlideIndex) dot.classList.add("is-active");
           dot.addEventListener("click", () => {
@@ -8171,7 +8582,7 @@
         );
 
         if (worksSlideImage) {
-          worksSlideImage.alt = slide.alt;
+          describeImage(worksSlideImage, slide.placeholder ? "" : workPhotoDescription(getActiveWorksProcedure(), worksProcedureIndex, worksSlideIndex));
           worksSlideImage.style.objectPosition =
             slide.position || "center center";
           if (slide.placeholder) {
