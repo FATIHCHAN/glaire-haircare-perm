@@ -122,7 +122,7 @@
   let scrollFrame = 0;
   const params = new URLSearchParams(location.search);
   const isAdmin = params.get("admin") === "1";
-  const directEntry = location.pathname.replace(/\/+$/, "") === "/halloween-surprise" || ["1", "halloween", config.campaignId].includes(String(params.get("wheel") || "").toLowerCase());
+  const directEntry = ["/halloween-bonus", "/halloween-surprise"].includes(location.pathname.replace(/\/+$/, "")) || ["1", "halloween", config.campaignId].includes(String(params.get("wheel") || "").toLowerCase());
   const masterTrigger = document.getElementById("masterPhotoShell");
   const autoOpen = () => {
     if (shownThisVisit || isAdmin || document.hidden || root.dataset.event !== "halloween" || !wheel.isActive()) return;
