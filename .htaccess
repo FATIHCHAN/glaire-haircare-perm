@@ -13,6 +13,11 @@ Options -Indexes
   # Let’s Encrypt должен читать проверочный файл по HTTP без перенаправления.
   RewriteRule ^\.well-known/acme-challenge/ - [L]
 
+  # Убираем дубли /index.html и /услуга/index.html только при прямом запросе.
+  RewriteCond %{HTTP_HOST} ^(www\.)?glaire\.ru$ [NC]
+  RewriteCond %{THE_REQUEST} \s/+[^\s?]*index\.html(?:[?\s]) [NC]
+  RewriteRule ^(.*\/)?index\.html$ https://glaire.ru/$1 [R=301,L]
+
   # Переводим на HTTPS только основной домен.
   # Технический адрес SpaceWeb остаётся доступен по HTTP для проверки до DNS.
   RewriteCond %{HTTP_HOST} ^(www\.)?glaire\.ru$ [NC]
@@ -35,6 +40,7 @@ Options -Indexes
 <IfModule mod_mime.c>
   # Явно говорим старым Apache-хостингам, что WebP — это изображение.
   AddType image/webp .webp
+  AddType audio/mp4 .m4a
 </IfModule>
 
 # ETag часто заставляет браузер лишний раз перепроверять статические файлы.
@@ -54,7 +60,7 @@ FileETag None
   Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
   Header set Cross-Origin-Opener-Policy "same-origin"
   Header set X-Frame-Options "SAMEORIGIN"
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-glaire-static'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net; font-src 'self'; media-src https://res.cloudinary.com; frame-src https://yandex.com https://yandex.ru https://*.yandex.ru; connect-src 'self' https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net https://mc.yandex.ru; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-glaire-static'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net; font-src 'self'; media-src 'self' https://res.cloudinary.com; frame-src https://yandex.com https://yandex.ru https://*.yandex.ru; connect-src 'self' https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net https://mc.yandex.ru; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set Permissions-Policy "camera=(), microphone=(), geolocation=(self)"
   Header append Vary "Accept-Encoding"
@@ -68,7 +74,7 @@ FileETag None
   </FilesMatch>
 
   # Статические ресурсы можно хранить дольше: это помогает PageSpeed и браузерам.
-  <FilesMatch "\.(woff2|png|jpg|jpeg|webp|gif|svg|ico)$">
+  <FilesMatch "\.(woff2|png|jpg|jpeg|webp|gif|svg|ico|m4a)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 
@@ -92,6 +98,7 @@ FileETag None
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType audio/mp4 "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>

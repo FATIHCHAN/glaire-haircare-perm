@@ -1,7 +1,7 @@
 {
   "name": "GLAIRE Haircare Studio",
   "short_name": "GLAIRE",
-  "description": "GLAIRE Haircare в Перми, ул. Пионерская, 15, студия 2F: студия GLAIRE, окрашивание, стрижки, уход, реконструкции и модификации.",
+  "description": "GLAIRE Haircare в Перми, ул. Пионерская, 15: студия GLAIRE, окрашивание, стрижки, уход, реконструкции и модификации.",
   "lang": "ru-RU",
   "dir": "ltr",
   "start_url": "/",
@@ -13,16 +13,16 @@
   "categories": ["beauty", "lifestyle"],
   "icons": [
     {
-      "src": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_scale,w_192/v1775644952/Group_17_gwygic.png",
+      "src": "assets/images/icon-glaire-e9ed38d8e4-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "https://res.cloudinary.com/dhb13tygy/image/upload/f_auto,q_auto:good,c_scale,w_512/v1775644952/Group_17_gwygic.png",
+      "src": "assets/images/icon-glaire-e9ed38d8e4-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

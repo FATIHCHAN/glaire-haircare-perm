@@ -190,12 +190,15 @@
         { key: "worksItemText4", label: "Карточка 4 — текст", type: "textarea" },
         { key: "worksItemTitle5", label: "Карточка 5 — заголовок" },
         { key: "worksItemText5", label: "Карточка 5 — текст", type: "textarea" },
-        ...Array.from({ length: 5 }, (_, index) => index + 1).flatMap((index) => [
-          { key: `newWork${index}Title`, label: `Новая работа ${index} — название` },
-          { key: `newWork${index}Note`, label: `Новая работа ${index} — описание`, type: "textarea" },
-          { key: `newWork${index}Photo1`, label: `Новая работа ${index} — фото 1`, placeholder: "https://res.cloudinary.com/..." },
-          { key: `newWork${index}Photo2`, label: `Новая работа ${index} — фото 2`, placeholder: "https://res.cloudinary.com/..." },
-        ]),
+        ...Array.from({ length: 4 }, (_, index) => index + 1).flatMap((index) => {
+          const title = runtime.CONFIG_DEFAULT[`newWork${index}Title`];
+          return [
+            { key: `newWork${index}Title`, label: `${title} — название` },
+            { key: `newWork${index}Note`, label: `${title} — описание`, type: "textarea" },
+            { key: `newWork${index}Photo1`, label: `${title} — фото 1`, placeholder: "https://res.cloudinary.com/..." },
+            { key: `newWork${index}Photo2`, label: `${title} — фото 2`, placeholder: "https://res.cloudinary.com/..." },
+          ];
+        }),
       ],
     },
     {
@@ -261,6 +264,7 @@
     Так список полей не дублируется вручную в HTML и проще поддерживается.
   */
   function renderAdminForm() {
+    if (adminGrid.children.length) return;
     adminGrid.innerHTML = "";
 
     ADMIN_SECTIONS.forEach((section) => {
