@@ -28,6 +28,12 @@ Options -Indexes
   # Если открыли www.glaire.ru, аккуратно переводим на основной домен glaire.ru.
   RewriteCond %{HTTP_HOST} ^www\.glaire\.ru$ [NC]
   RewriteRule ^ https://glaire.ru%{REQUEST_URI} [R=301,L]
+
+  # Старые ссылки на колесо должны отдавать его карточку ещё до JavaScript.
+  # Сохраняем параметры перехода, включая UTM; правило действует только на главной.
+  RewriteCond %{HTTP_HOST} ^glaire\.ru$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)wheel=(1|halloween|halloween-2026)(&|$) [NC]
+  RewriteRule ^$ https://glaire.ru/halloween-bonus/ [R=302,L]
 </IfModule>
 
 <IfModule mod_deflate.c>

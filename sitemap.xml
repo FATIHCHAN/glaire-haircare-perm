@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
->
+<?xml version='1.0' encoding='utf-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://glaire.ru/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -266,22 +263,44 @@
   </url>
   <url>
     <loc>https://glaire.ru/okrashivanie-volos-perm/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <image:image><image:loc>https://glaire.ru/assets/images/photo-new-red-1-92c13e407b-1280.webp</image:loc><image:title>Окрашивание в глубокий красный оттенок с уходом — работа мастера Валерия.</image:title></image:image>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-new-red-1-92c13e407b-1280.webp</image:loc>
+      <image:title>Окрашивание в глубокий красный оттенок с уходом — работа мастера Валерия.</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://glaire.ru/keratinovoe-vypryamlenie-perm/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <image:image><image:loc>https://glaire.ru/assets/images/photo-new-keratin-1-cfe4e339d5-1280.webp</image:loc><image:title>Кератиновое выпрямление — два кадра одной работы мастера Валерия.</image:title></image:image>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-new-keratin-1-cfe4e339d5-1280.webp</image:loc>
+      <image:title>Кератиновое выпрямление — два кадра одной работы мастера Валерия.</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://glaire.ru/botoks-dlya-volos-perm/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <image:image><image:loc>https://glaire.ru/assets/images/photo-new-botox-1-51150cb96b-1280.webp</image:loc><image:title>Ботокс для волос — пример работы мастера Валерия в GLAIRE.</image:title></image:image>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-new-botox-1-51150cb96b-1280.webp</image:loc>
+      <image:title>Ботокс для волос — пример работы мастера Валерия в GLAIRE.</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://glaire.ru/vosstanovlenie-volos-perm/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <image:image><image:loc>https://glaire.ru/assets/images/photo-new-restore-1-979919c37a-1280.webp</image:loc><image:title>Системное восстановление волос — работа мастера Валерия.</image:title></image:image>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-new-restore-1-979919c37a-1280.webp</image:loc>
+      <image:title>Системное восстановление волос — работа мастера Валерия.</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://glaire.ru/strizhki-perm/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-work-2-1-118e78680b-1280.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://glaire.ru/assets/images/photo-work-2-2-4dfde29fd4-1280.webp</image:loc>
+    </image:image>
   </url>
 </urlset>
