@@ -4,19 +4,47 @@
   "use strict";
   if (!window.GlaireSeason) return;
   const root = document.documentElement;
-  const source = new URL("halloween-atmosphere-v1.m4a", document.currentScript.src).href;
-  const effectSource = new URL("bat-flight-v1.m4a", document.currentScript.src).href;
+  const source = new URL(
+    "halloween-atmosphere-v1.m4a",
+    document.currentScript.src,
+  ).href;
+  const effectSource = new URL("bat-flight-v1.m4a", document.currentScript.src)
+    .href;
   const effectTimes = [8.1, 28.6, 47.2, 69.3];
-  const effectLevel = .65;
+  const effectLevel = 0.65;
   const prefix = "glaire:halloween:audio:";
-  const read = key => { try { return localStorage.getItem(prefix + key); } catch { return null; } };
-  const save = (key, value) => { try { localStorage.setItem(prefix + key, String(value)); } catch {} };
+  const read = (key) => {
+    try {
+      return localStorage.getItem(prefix + key);
+    } catch {
+      return null;
+    }
+  };
+  const save = (key, value) => {
+    try {
+      localStorage.setItem(prefix + key, String(value));
+    } catch {}
+  };
   const savedVolume = read("volume");
-  let volume = savedVolume === null ? .2 : Math.max(0, Math.min(100, Number(savedVolume) || 0)) / 100;
+  let volume =
+    savedVolume === null
+      ? 0.2
+      : Math.max(0, Math.min(100, Number(savedVolume) || 0)) / 100;
   let enabled = read("muted") !== "true";
-  let starting = false, failed = false, attempt = 0, pauseTimer = 0, fadeFrame = 0;
-  let context = null, gain = null, mediaSource = null;
-  let effectAudio = null, effectLoad = null, nextEffect = 0, lastEffectTime = 0, effectEpoch = 0, effectsPlayed = 0;
+  let starting = false,
+    failed = false,
+    attempt = 0,
+    pauseTimer = 0,
+    fadeFrame = 0;
+  let context = null,
+    gain = null,
+    mediaSource = null;
+  let effectAudio = null,
+    effectLoad = null,
+    nextEffect = 0,
+    lastEffectTime = 0,
+    effectEpoch = 0,
+    effectsPlayed = 0;
   const activeEffects = new Set();
 
   const dock = document.createElement("div");
@@ -28,7 +56,8 @@
   opener.className = "halloween-sound__badge";
   opener.setAttribute("aria-controls", "halloweenSoundPanel");
   opener.setAttribute("aria-expanded", "false");
-  opener.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5 5.5 9H2v6h3.5l4.5 4V5Z"/><g class="halloween-sound__waves"><path d="M14 8a5 5 0 0 1 0 8M17 5a9 9 0 0 1 0 14"/></g><path class="halloween-sound__slash" d="m15 9 6 6m0-6-6 6"/></svg>';
+  opener.innerHTML =
+    '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5 5.5 9H2v6h3.5l4.5 4V5Z"/><g class="halloween-sound__waves"><path d="M14 8a5 5 0 0 1 0 8M17 5a9 9 0 0 1 0 14"/></g><path class="halloween-sound__slash" d="m15 9 6 6m0-6-6 6"/></svg>';
   const panel = document.createElement("div");
   panel.id = "halloweenSoundPanel";
   panel.className = "halloween-sound__panel";
@@ -57,7 +86,9 @@
   volumeValue.className = "halloween-sound__value";
   const slider = document.createElement("input");
   slider.type = "range";
-  slider.min = "0"; slider.max = "100"; slider.step = "1";
+  slider.min = "0";
+  slider.max = "100";
+  slider.step = "1";
   slider.value = String(Math.round(volume * 100));
   slider.setAttribute("aria-label", "Громкость фонового звука");
   volumeLabel.append(volumeName, volumeValue, slider);
@@ -86,31 +117,64 @@
   document.querySelector(".fortune-dialog__actions")?.append(dialogMute);
 
   const seasonal = () => root.dataset.event === "halloween";
-  const audibleVideo = () => [...document.querySelectorAll("video")].some(video => !video.paused && !video.ended && !video.muted && video.volume > 0);
-  const playing = () => enabled && !audio.paused && !document.hidden && (!context || context.state === "running");
-  const targetGain = () => enabled && seasonal() && !document.hidden ? volume * (audibleVideo() ? .12 : 1) : 0;
+  const audibleVideo = () =>
+    [...document.querySelectorAll("video")].some(
+      (video) =>
+        !video.paused && !video.ended && !video.muted && video.volume > 0,
+    );
+  const playing = () =>
+    enabled &&
+    !audio.paused &&
+    !document.hidden &&
+    (!context || context.state === "running");
+  const targetGain = () =>
+    enabled && seasonal() && !document.hidden
+      ? volume * (audibleVideo() ? 0.12 : 1)
+      : 0;
 
   function setPanel(open, restoreFocus = false) {
     panel.hidden = !open;
     opener.setAttribute("aria-expanded", String(open));
-    if (open) toggle.focus({preventScroll:true});
-    else if (restoreFocus) opener.focus({preventScroll:true});
+    if (open) toggle.focus({ preventScroll: true });
+    else if (restoreFocus) opener.focus({ preventScroll: true });
   }
 
   function updateUI() {
     const on = playing();
-    dock.dataset.state = on ? "playing" : !enabled ? "off" : failed ? "error" : starting ? "loading" : "waiting";
+    dock.dataset.state = on
+      ? "playing"
+      : !enabled
+        ? "off"
+        : failed
+          ? "error"
+          : starting
+            ? "loading"
+            : "waiting";
     dock.dataset.ducked = String(on && audibleVideo());
     toggle.setAttribute("aria-pressed", String(on));
     toggle.setAttribute("aria-busy", String(starting));
-    const label = on ? "Выключить звуки Хэллоуина" : starting ? "Отменить запуск звука" : "Включить звуки Хэллоуина";
+    const label = on
+      ? "Выключить звуки Хэллоуина"
+      : starting
+        ? "Отменить запуск звука"
+        : "Включить звуки Хэллоуина";
     toggle.setAttribute("aria-label", label);
     toggle.title = label;
-    toggle.textContent = on ? "Выключить звук" : starting ? "Отменить запуск" : "Включить звук";
-    opener.setAttribute("aria-label", `${on ? "Звук включён" : "Звук выключен"}. Открыть настройки звука`);
+    toggle.textContent = on
+      ? "Выключить звук"
+      : starting
+        ? "Отменить запуск"
+        : "Включить звук";
+    opener.setAttribute(
+      "aria-label",
+      `${on ? "Звук включён" : "Звук выключен"}. Открыть настройки звука`,
+    );
     opener.title = `${on ? "Звук включён" : "Звук выключен"} · настройки`;
     volumeValue.value = `${Math.round(volume * 100)}%`;
-    slider.setAttribute("aria-valuetext", `${Math.round(volume * 100)} процентов`);
+    slider.setAttribute(
+      "aria-valuetext",
+      `${Math.round(volume * 100)} процентов`,
+    );
     dialogMute.hidden = !on;
   }
 
@@ -122,15 +186,19 @@
       gain.gain.cancelScheduledValues(time);
       gain.gain.setValueAtTime(gain.gain.value, time);
       if (immediate) gain.gain.setValueAtTime(target, time);
-      else gain.gain.setTargetAtTime(target, time, .16);
+      else gain.gain.setTargetAtTime(target, time, 0.16);
     } else if (immediate || document.hidden) {
       audio.volume = target;
       if (effectAudio) effectAudio.volume = target * effectLevel;
     } else {
-      const from = audio.volume, start = performance.now();
-      const fade = now => {
+      const from = audio.volume,
+        start = performance.now();
+      const fade = (now) => {
         const progress = Math.min(1, (now - start) / 450);
-        audio.volume = Math.max(0, Math.min(1, from + (target - from) * progress));
+        audio.volume = Math.max(
+          0,
+          Math.min(1, from + (target - from) * progress),
+        );
         if (effectAudio) effectAudio.volume = audio.volume * effectLevel;
         if (progress < 1) fadeFrame = requestAnimationFrame(fade);
       };
@@ -141,7 +209,11 @@
 
   function stopEffects() {
     ++effectEpoch;
-    activeEffects.forEach(node => { try { node.stop(); } catch {} });
+    activeEffects.forEach((node) => {
+      try {
+        node.stop();
+      } catch {}
+    });
     activeEffects.clear();
     effectAudio?.pause();
   }
@@ -152,20 +224,38 @@
     if (context && gain) {
       if (!effectLoad) {
         effectLoad = fetch(effectSource)
-          .then(response => { if (!response.ok) throw new Error("Sound unavailable"); return response.arrayBuffer(); })
-          .then(data => context.decodeAudioData(data))
-          .catch(() => { effectLoad = null; return null; });
+          .then((response) => {
+            if (!response.ok) throw new Error("Sound unavailable");
+            return response.arrayBuffer();
+          })
+          .then((data) => context.decodeAudioData(data))
+          .catch(() => {
+            effectLoad = null;
+            return null;
+          });
       }
       const buffer = await effectLoad;
-      if (!buffer || epoch !== effectEpoch || !playing() || Math.abs(audio.currentTime - cue) > 1.5) return;
+      if (
+        !buffer ||
+        epoch !== effectEpoch ||
+        !playing() ||
+        Math.abs(audio.currentTime - cue) > 1.5
+      )
+        return;
       const node = context.createBufferSource();
       const trim = context.createGain();
       trim.gain.value = effectLevel;
       node.buffer = buffer;
-      node.connect(trim); trim.connect(gain);
+      node.connect(trim);
+      trim.connect(gain);
       activeEffects.add(node);
-      node.onended = () => { activeEffects.delete(node); node.disconnect(); trim.disconnect(); };
-      node.start(); ++effectsPlayed;
+      node.onended = () => {
+        activeEffects.delete(node);
+        node.disconnect();
+        trim.disconnect();
+      };
+      node.start();
+      ++effectsPlayed;
     } else {
       if (!effectAudio) {
         effectAudio = document.createElement("audio");
@@ -177,24 +267,27 @@
       }
       effectAudio.volume = audio.volume * effectLevel;
       effectAudio.currentTime = 0;
-      try { await effectAudio.play(); ++effectsPlayed; } catch {}
+      try {
+        await effectAudio.play();
+        ++effectsPlayed;
+      } catch {}
     }
   }
 
   audio.addEventListener("timeupdate", () => {
     const time = audio.currentTime;
-    if (time < lastEffectTime - .5) nextEffect = 0;
+    if (time < lastEffectTime - 0.5) nextEffect = 0;
     lastEffectTime = time;
     if (!playing() || audio.seeking) return;
     while (nextEffect < effectTimes.length && effectTimes[nextEffect] <= time) {
       const cue = effectTimes[nextEffect++];
-      if (time - cue < .6) playEffect(cue);
+      if (time - cue < 0.6) playEffect(cue);
     }
   });
   audio.addEventListener("seeking", () => {
     stopEffects();
     const time = audio.currentTime;
-    nextEffect = effectTimes.findIndex(cue => cue >= time - .4);
+    nextEffect = effectTimes.findIndex((cue) => cue >= time - 0.4);
     if (nextEffect < 0) nextEffect = effectTimes.length;
     lastEffectTime = time;
   });
@@ -217,7 +310,9 @@
         context.addEventListener("statechange", updateUI);
       } catch {
         context?.close().catch(() => {});
-        context = null; gain = null; mediaSource = null;
+        context = null;
+        gain = null;
+        mediaSource = null;
       }
     }
     context?.resume().catch(() => {});
@@ -231,7 +326,8 @@
     if (starting && !fromGesture) return;
     clearTimeout(pauseTimer);
     const token = ++attempt;
-    starting = true; failed = false;
+    starting = true;
+    failed = false;
     prepare();
     updateUI();
     try {
@@ -246,18 +342,28 @@
     } catch (error) {
       if (token !== attempt) return;
       failed = error.name !== "NotAllowedError" && error.name !== "AbortError";
-      status.textContent = failed ? "Не удалось загрузить звук. Нажмите, чтобы попробовать ещё раз." : "Звук включится после первого нажатия на странице.";
+      status.textContent = failed
+        ? "Не удалось загрузить звук. Нажмите, чтобы попробовать ещё раз."
+        : "Звук включится после первого нажатия на странице.";
     } finally {
-      if (token === attempt) { starting = false; updateUI(); }
+      if (token === attempt) {
+        starting = false;
+        updateUI();
+      }
     }
   }
 
   function stop(remember = true, immediate = false) {
-    enabled = false; starting = false; ++attempt;
+    enabled = false;
+    starting = false;
+    ++attempt;
     if (remember) save("muted", true);
     clearTimeout(pauseTimer);
     adjustGain(immediate);
-    const pause = () => { audio.pause(); context?.suspend().catch(() => {}); };
+    const pause = () => {
+      audio.pause();
+      context?.suspend().catch(() => {});
+    };
     if (immediate) pause();
     else pauseTimer = setTimeout(pause, 500);
     status.textContent = "Звуки Хэллоуина выключены";
@@ -266,7 +372,12 @@
 
   toggle.addEventListener("click", () => {
     if (enabled && (playing() || starting)) stop();
-    else { enabled = true; failed = false; save("muted", false); start(true); }
+    else {
+      enabled = true;
+      failed = false;
+      save("muted", false);
+      start(true);
+    }
   });
   opener.addEventListener("click", () => {
     const opening = panel.hidden;
@@ -274,22 +385,28 @@
     if (opening && enabled && !playing()) start(true);
   });
   closePanel.addEventListener("click", () => setPanel(false, true));
-  document.addEventListener("pointerdown", event => {
-    if (!dock.contains(event.target)) setPanel(false);
-  }, {passive:true,capture:true});
-  document.addEventListener("keydown", event => {
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (!dock.contains(event.target)) setPanel(false);
+    },
+    { passive: true, capture: true },
+  );
+  document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) {
-      event.preventDefault(); event.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
       setPanel(false, true);
     }
   });
-  document.addEventListener("focusin", event => {
+  document.addEventListener("focusin", (event) => {
     if (!panel.hidden && !dock.contains(event.target)) setPanel(false);
   });
   const wheelDialog = document.querySelector(".fortune-dialog");
-  if (wheelDialog) new MutationObserver(() => {
-    if (wheelDialog.open) setPanel(false);
-  }).observe(wheelDialog, {attributes:true,attributeFilter:["open"]});
+  if (wheelDialog)
+    new MutationObserver(() => {
+      if (wheelDialog.open) setPanel(false);
+    }).observe(wheelDialog, { attributes: true, attributeFilter: ["open"] });
   dialogMute.addEventListener("click", () => stop());
   slider.addEventListener("input", () => {
     volume = Number(slider.value) / 100;
@@ -299,43 +416,97 @@
   });
 
   // This is a genuine visitor gesture, never a simulated click or policy bypass.
-  const unlock = event => {
+  const unlock = (event) => {
     if (!event.isTrusted) return;
-    if (dock.contains(event.target) || dialogMute.contains(event.target)) return;
-    if (event.type === "keydown" && (event.key === "Escape" || event.ctrlKey || event.metaKey || event.altKey || ["Shift", "Control", "Alt", "Meta", "CapsLock", "NumLock", "ScrollLock"].includes(event.key))) return;
+    if (dock.contains(event.target) || dialogMute.contains(event.target))
+      return;
+    if (
+      event.type === "keydown" &&
+      (event.key === "Escape" ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        [
+          "Shift",
+          "Control",
+          "Alt",
+          "Meta",
+          "CapsLock",
+          "NumLock",
+          "ScrollLock",
+        ].includes(event.key))
+    )
+      return;
     if (enabled && !playing()) start(true);
   };
   // Touch/pen activation may arrive at pointerup; some browsers require click.
   // Capture also covers gallery arrows and controls that stop event bubbling.
-  ["pointerdown", "pointerup", "click", "touchend", "keydown"].forEach(name => {
-    document.addEventListener(name, unlock, {passive:true,capture:true});
-  });
-  if (!window.PointerEvent) document.addEventListener("mousedown", unlock, {passive:true,capture:true});
+  ["pointerdown", "pointerup", "click", "touchend", "keydown"].forEach(
+    (name) => {
+      document.addEventListener(name, unlock, { passive: true, capture: true });
+    },
+  );
+  if (!window.PointerEvent)
+    document.addEventListener("mousedown", unlock, {
+      passive: true,
+      capture: true,
+    });
 
-  ["play", "pause", "ended", "volumechange"].forEach(name => document.addEventListener(name, event => {
-    if (event.target instanceof HTMLVideoElement) adjustGain();
-  }, true));
-  ["playing", "pause", "waiting", "ended"].forEach(name => audio.addEventListener(name, updateUI));
+  ["play", "pause", "ended", "volumechange"].forEach((name) =>
+    document.addEventListener(
+      name,
+      (event) => {
+        if (event.target instanceof HTMLVideoElement) adjustGain();
+      },
+      true,
+    ),
+  );
+  ["playing", "pause", "waiting", "ended"].forEach((name) =>
+    audio.addEventListener(name, updateUI),
+  );
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      ++attempt; starting = false;
-      adjustGain(true); audio.pause(); context?.suspend().catch(() => {});
+      ++attempt;
+      starting = false;
+      adjustGain(true);
+      audio.pause();
+      context?.suspend().catch(() => {});
       updateUI();
     } else if (enabled) start();
   });
-  window.addEventListener("pagehide", () => { audio.pause(); context?.suspend().catch(() => {}); });
-  window.addEventListener("pageshow", () => { if (enabled) start(); });
+  window.addEventListener("pagehide", () => {
+    audio.pause();
+    context?.suspend().catch(() => {});
+  });
+  window.addEventListener("pageshow", () => {
+    if (enabled) start();
+  });
   new MutationObserver(() => {
-    if (!seasonal()) { setPanel(false); stop(false, true); }
-  }).observe(root, {attributes:true,attributeFilter:["data-event"]});
+    if (!seasonal()) {
+      setPanel(false);
+      stop(false, true);
+    }
+  }).observe(root, { attributes: true, attributeFilter: ["data-event"] });
 
   window.GlaireSeason.sound = {
-    get enabled() { return enabled; },
-    get playing() { return playing(); },
-    get volume() { return volume; },
-    get gain() { return gain ? gain.gain.value : audio.volume; },
-    get ducked() { return audibleVideo(); },
-    get effectsPlayed() { return effectsPlayed; },
+    get enabled() {
+      return enabled;
+    },
+    get playing() {
+      return playing();
+    },
+    get volume() {
+      return volume;
+    },
+    get gain() {
+      return gain ? gain.gain.value : audio.volume;
+    },
+    get ducked() {
+      return audibleVideo();
+    },
+    get effectsPlayed() {
+      return effectsPlayed;
+    },
     stop: () => stop(),
   };
   updateUI();
