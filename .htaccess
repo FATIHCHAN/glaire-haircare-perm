@@ -6,12 +6,30 @@
 
 # Не даём серверу показывать список файлов папки, если случайно нет index.html.
 Options -Indexes
+ErrorDocument 404 /404.html
+
+# Исходники сборки и локальные резервы не входят в публичную поставку.
+# Эта страховка закрывает их, если папка была загружена целиком по ошибке.
+<FilesMatch "(?i)(?:^\\.|(?:backup|бэкап|до[ _-]+(?:евента|ивента)).*\\.html$|^README\\.md$)">
+  Require all denied
+</FilesMatch>
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
   # Let’s Encrypt должен читать проверочный файл по HTTP без перенаправления.
   RewriteRule ^\.well-known/acme-challenge/ - [L]
+
+  RewriteRule ^(?:scripts|content|docs)/ - [F,L]
+
+  # BEGIN SERVICE PAGE MIGRATION
+  # Прежние страницы заменены пятью направлениями GLAIRE.
+  RewriteRule ^okrashivanie-volos-perm(?:/index\.html|/)?$ https://glaire.ru/okrashivaniya-perm/ [R=301,L,NE]
+  RewriteRule ^strizhki-perm(?:/index\.html|/)?$ https://glaire.ru/strizhki-volos-perm/ [R=301,L,NE]
+  RewriteRule ^keratinovoe-vypryamlenie-perm(?:/index\.html|/)?$ https://glaire.ru/modifikatsii-volos-perm/ [R=301,L,NE]
+  RewriteRule ^botoks-dlya-volos-perm(?:/index\.html|/)?$ https://glaire.ru/modifikatsii-volos-perm/ [R=301,L,NE]
+  RewriteRule ^vosstanovlenie-volos-perm(?:/index\.html|/)?$ https://glaire.ru/rekonstruktsii-i-uhody-perm/ [R=301,L,NE]
+  # END SERVICE PAGE MIGRATION
 
   # Убираем дубли /index.html и /услуга/index.html только при прямом запросе.
   RewriteCond %{HTTP_HOST} ^(www\.)?glaire\.ru$ [NC]
@@ -39,7 +57,7 @@ Options -Indexes
 <IfModule mod_deflate.c>
   # Сжимаем текстовые файлы: HTML, CSS, JS, XML, JSON и SVG.
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
-  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/javascript text/javascript application/json
   AddOutputFilterByType DEFLATE application/xml image/svg+xml
 </IfModule>
 
@@ -56,7 +74,7 @@ FileETag None
 <IfModule mod_brotli.c>
   # Если на хостинге включён Brotli, он сожмёт текст ещё лучше, чем gzip.
   AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml
-  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript text/javascript application/json
   AddOutputFilterByType BROTLI_COMPRESS application/xml image/svg+xml
 </IfModule>
 
@@ -66,7 +84,7 @@ FileETag None
   Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
   Header set Cross-Origin-Opener-Policy "same-origin"
   Header set X-Frame-Options "SAMEORIGIN"
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-glaire-static'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net; font-src 'self'; media-src 'self' https://res.cloudinary.com; frame-src https://yandex.com https://yandex.ru https://*.yandex.ru; connect-src 'self' https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net https://mc.yandex.ru; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-glaire-static' https://dikidi.ru; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net; font-src 'self'; media-src 'self' https://res.cloudinary.com; frame-src https://dikidi.net https://yandex.com https://yandex.ru https://*.yandex.ru; connect-src 'self' https://res.cloudinary.com https://yandex.com https://yastatic.net https://*.yastatic.net https://*.yandex.ru https://*.yandex.net https://mc.yandex.ru; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set Permissions-Policy "camera=(), microphone=(), geolocation=(self)"
   Header append Vary "Accept-Encoding"

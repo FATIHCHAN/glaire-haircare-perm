@@ -15,8 +15,10 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 path = ROOT / "index.html"
 source = path.read_text()
-start = source.index("const STUDIO_PHOTOS =")
-end = source.index("const STUDIO_SOCIAL_LINKS =", start)
+# Общий runtime хранится отдельно; HTML получает те же тексты до JavaScript.
+runtime = (ROOT / "assets/site.js").read_text()
+start = runtime.index("const STUDIO_PHOTOS =")
+end = runtime.index("const STUDIO_SOCIAL_LINKS =", start)
 node = shutil.which("node") or "/usr/local/bin/node"
 program = """const vm = require('node:vm');
 const fs = require('node:fs');
@@ -26,10 +28,15 @@ process.stdout.write(vm.runInNewContext(
   {timeout: 1000}));
 """
 config = json.loads(subprocess.run(
-    [node, "-e", program], input=source[start:end], text=True,
+    [node, "-e", program], input=runtime[start:end], text=True,
     capture_output=True, check=True).stdout)
+# Таблица фото состоит только из данных; браузерный код здесь не исполняется.
+variant_source = runtime[runtime.index("const LOCAL_PHOTO_VARIANTS ="):runtime.index("function assignResponsiveImage(")]
+variant_program = "const vm=require('node:vm'),fs=require('node:fs');process.stdout.write(vm.runInNewContext(fs.readFileSync(0,'utf8')+';JSON.stringify(LOCAL_PHOTO_VARIANTS)',{}, {timeout:1000}));"
+variants = json.loads(subprocess.run([node, "-e", variant_program], input=variant_source,
+    text=True, capture_output=True, check=True).stdout)
 # The first work is rendered after the editable bindings at runtime.
-catalog = source[source.index("const WORKS_PROCEDURE_CATALOG ="):]
+catalog = runtime[runtime.index("const WORKS_PROCEDURE_CATALOG ="):]
 first_note = json.loads(re.search(r'\bnote:\s*("(?:[^"\\]|\\.)*")', catalog)[1])
 
 class Bindings(HTMLParser):
@@ -86,5 +93,32 @@ changed = 0
 for begin, end, replacement in sorted(parser.edits, reverse=True):
     if source[begin:end] != replacement: changed += 1
     updated = updated[:begin] + replacement + updated[end:]
+# Кнопки записи полезны и до запуска JS, а не ведут в пустой якорь #.
+for ident, key in {
+    "bookBtnTop": "bookUrl", "bookBtnHero": "bookUrl", "bookBtnBottom": "bookUrl",
+    "infoBtnTop": "infoUrl", "infoBtnHero": "infoUrl",
+}.items():
+    pattern = r'<a\b(?=[^>]*id="' + ident + r'")[^>]*>'
+    updated = re.sub(pattern, lambda m: re.sub(
+        r'href="[^"]*"', f'href="{escape(config[key], quote=True)}"', m[0], count=1), updated, count=1)
+# Сразу отдаём локальные responsive-фото. Иначе lazy-порог браузера может
+# начать Cloudinary-запрос до того, как runtime заменит src локальной копией.
+image_sources = {"masterPhoto": config["masterPhoto"]}
+image_sources.update({f"newsImage{i}": config[f"newsImage{i}"] for i in range(1, 6)})
+image_sources["worksSlideImage"] = re.search(r'https://res\.cloudinary\.com/[^"\s]+\.jpg', catalog)[0]
+for ident, candidate in image_sources.items():
+    revision = re.search(r'/(v\d+/[^?#]+)', candidate)
+    variant = variants.get(revision[1]) if revision else None
+    if not variant:
+        continue
+    widths = variant["widths"]
+    def local_image(match):
+        tag = re.sub(r'\s(?:src|srcset|sizes)="[^"]*"', '', match[0])
+        file = lambda width: f'/assets/images/{variant["base"]}-{width}.webp'
+        srcset = ", ".join(f'{file(width)} {width}w' for width in widths)
+        sizes = '(max-width: 640px) calc(100vw - 64px), (max-width: 980px) 80vw, 480px'
+        return tag[:-1] + f' src="{file(640 if 640 in widths else widths[-1])}" srcset="{srcset}" sizes="{sizes}">'
+    pattern = r'<img\b(?=[^>]*id="' + ident + r'")[^>]*>'
+    updated = re.sub(pattern, local_image, updated, count=1)
 if updated != source: path.write_text(updated)
 print(f"Static content: {len(parser.edits)} bindings checked; {changed} updated")

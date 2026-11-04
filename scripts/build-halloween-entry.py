@@ -2,12 +2,12 @@
 from pathlib import Path
 from html import escape
 import re
+from html_helpers import sync_webpage_graph
 
 root = Path(__file__).resolve().parents[1]
 from runpy import run_path
 run_path(str(root / "scripts/sync-static-content.py"))
 page = (root / "index.html").read_text()
-page = page.replace("<head>", '<head>\n    <base href="/">', 1)
 page = re.sub(r"<title>.*?</title>", "<title>GLAIRE Halloween бонус</title>", page, count=1)
 
 def meta(key, value):
@@ -38,6 +38,7 @@ meta("og:image:alt", "GLAIRE Halloween бонус — подарок к ваше
 meta("twitter:image:alt", "GLAIRE Halloween бонус — подарок к вашему визиту")
 page, count = re.subn(r'<link\b(?=[^>]*rel="image_src")[^>]*>', '<link rel="image_src" href="https://glaire.ru/assets/social/glaire-halloween-20261102.jpg">', page, count=1)
 assert count == 1, "image_src"
+page = sync_webpage_graph(page)
 for slug in ["halloween-bonus", "halloween-surprise"]:
     target = root / slug / "index.html"
     target.parent.mkdir(exist_ok=True)
