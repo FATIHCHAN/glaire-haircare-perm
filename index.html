@@ -2,7 +2,7 @@
 <!-- GLAIRE: мастер-макет главной. Общие стили/логика — /assets/site.css и /assets/site.js.
      Тексты направлений и SEO — content/. После правок: python3 scripts/build-site.py.
      HTML в папках направлений собирается автоматически; его вручную не редактировать. -->
-<html lang="ru-RU" data-event="halloween">
+<html lang="ru-RU" data-event="halloween" prefix="og: https://ogp.me/ns# place: https://ogp.me/ns/place# business: https://ogp.me/ns/business#">
   <head>
     <!-- Базовые технические метаданные страницы -->
     <meta charset="UTF-8">
@@ -250,7 +250,6 @@
         "@type": "City",
         "name": "Пермь"
       },
-      "keywords": "GLAIRE, парикмахерские услуги Пермь, парикмахер-колорист Пермь, окрашивание волос Пермь, стрижки Пермь, модификация волос Пермь, реконструкция волос Пермь, уход за кожей головы Пермь",
       "slogan": "Студия GLAIRE в Перми",
       "knowsAbout": [
         "парикмахерские услуги",
@@ -359,7 +358,6 @@
         "target": {
           "@type": "EntryPoint",
           "urlTemplate": "https://dikidi.net/#widget=221806",
-          "inLanguage": "ru-RU",
           "actionPlatform": [
             "https://schema.org/DesktopWebPlatform",
             "https://schema.org/MobileWebPlatform"
@@ -380,14 +378,14 @@
     }
   ]
 }</script>
-    <link rel="stylesheet" href="/assets/site.css?v=11f9320d44af">
+    <link rel="stylesheet" href="/assets/site.css?v=390ea858fa61">
     <link rel="stylesheet" href="/assets/services.css?v=8a0f1fee6610">
     <link rel="stylesheet" href="/assets/booking.css?v=6835690dc6ec">
     <!-- Optional local event layer. The base page is preserved separately. -->
     <link rel="stylesheet" href="/assets/events/fortune-wheel.css?v=b26c3cd4cc31">
     <link rel="stylesheet" href="/assets/events/halloween/halloween.css?v=d2b1a10686d2">
     <!-- Праздничный сценарий заранее скачивается; выполняется после основного кода. -->
-    <link rel="preload" href="/assets/events/halloween/event-layer.js?v=a7098cbb9905" as="script">
+    <link rel="preload" href="/assets/events/halloween/event-layer.js?v=a7b8d946d389" as="script">
       <meta name="twitter:image:alt" content="GLAIRE — студия и детали интерьера, Пионерская, 15">
     <link rel="image_src" href="https://glaire.ru/assets/social/glaire-home-20261103-v2.jpg">
 </head>
@@ -1823,6 +1821,6 @@
     <!-- Последовательное исполнение: подключение записи → основной код → праздничный сценарий. -->
     <script nonce="glaire-static" src="/assets/booking.js?v=d5491e26873a"></script>
     <script nonce="glaire-static" src="/assets/site.js?v=819b48a683bf"></script>
-    <script nonce="glaire-static" src="/assets/events/halloween/event-layer.js?v=a7098cbb9905"></script>
+    <script nonce="glaire-static" src="/assets/events/halloween/event-layer.js?v=a7b8d946d389"></script>
   </body>
 </html>
