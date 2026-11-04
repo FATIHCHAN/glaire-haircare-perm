@@ -34,7 +34,8 @@ for node in graph["@graph"]:
         node["primaryImageOfPage"]["url"] = "https://glaire.ru/assets/images/IMG_3907_h6ghr5.heic-1280-v1793126750.webp"
     if node.get("@id") == "https://glaire.ru/#business":
         node["description"] = site["description"]
-        node["keywords"] = ", ".join(site["keywords"])
+        # keywords относится к WebPage, а не к типу HairSalon/BeautySalon.
+        node.pop("keywords", None)
         node.pop("priceRange", None)
         node["hasOfferCatalog"]["itemListElement"] = [
             {"@type": "Offer", "itemOffered": {
@@ -43,6 +44,19 @@ for node in graph["@graph"]:
                 "url": f'https://glaire.ru/{service["slug"]}/',
             }} for service in services
         ]
+
+# Язык описан у сайта и WebPage. EntryPoint задаёт только способ онлайн-записи.
+def clean_entry_points(value):
+    if isinstance(value, dict):
+        if value.get("@type") == "EntryPoint":
+            value.pop("inLanguage", None)
+        for child in value.values():
+            clean_entry_points(child)
+    elif isinstance(value, list):
+        for child in value:
+            clean_entry_points(child)
+
+clean_entry_points(graph)
 page = page[:match.start(1)] + json.dumps(graph, ensure_ascii=False, indent=2) + page[match.end(1):]
 path.write_text(page)
 print("Главная: title, description, социальные метаданные и каталог услуг обновлены")
