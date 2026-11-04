@@ -57,5 +57,8 @@ a[aria-busy="true"] {
   border-radius: 4px;
 }
 @media (max-width: 640px) {
-  .booking-inline { gap: 12px; }
+  .booking-inline {
+    justify-content: center;
+    gap: 12px;
+  }
 }
