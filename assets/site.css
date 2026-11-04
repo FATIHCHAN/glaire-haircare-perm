@@ -636,7 +636,8 @@ h2 {
 
 @media (max-width: 760px) {
   .footer-pages {
-    padding-bottom: 64px;
+    /* Ссылки обходят плавающие кнопки по бокам, без пустого «этажа» снизу. */
+    padding-inline: 56px;
   }
 }
 
@@ -2643,8 +2644,8 @@ h2 {
 }
 
 footer {
-  /* Нижний запас оставляет ссылки выше плавающих кнопок колеса и звука. */
-  padding: 0 0 calc(180px + env(safe-area-inset-bottom, 0px));
+  /* Страница заканчивается сразу после навигации, с небольшим безопасным отступом. */
+  padding: 0 0 calc(24px + env(safe-area-inset-bottom, 0px));
   color: var(--text-muted);
   font-size: 14px;
 }
