@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /scripts/
+Disallow: /content/
+Disallow: /docs/
+Disallow: /*?admin=
+Disallow: /*&admin=
 Disallow: /*%D0%B1%D1%8D%D0%BA%D0%B0%D0%BF*
 Disallow: /compressed-images*
 Disallow: /iloveimg-compressed*
