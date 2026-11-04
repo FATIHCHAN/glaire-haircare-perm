@@ -923,7 +923,9 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
     failed = false,
     attempt = 0,
     pauseTimer = 0,
-    fadeFrame = 0;
+    fadeFrame = 0,
+    leaving = false,
+    gestureRetryAt = -Infinity;
   let context = null,
     gain = null,
     mediaSource = null;
@@ -994,6 +996,8 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
   audio.preload = "none";
   audio.hidden = true;
   audio.volume = 0;
+  // Аппаратное mute работает и в iOS. Снимаем его только после готовности графа.
+  audio.muted = true;
   document.body.append(audio);
 
   // A visitor can also stop music while the native wheel dialog is open.
@@ -1013,10 +1017,12 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
   const playing = () =>
     enabled &&
     !audio.paused &&
+    !audio.muted &&
+    !leaving &&
     !document.hidden &&
     (!context || context.state === "running");
   const targetGain = () =>
-    enabled && seasonal() && !document.hidden
+    enabled && seasonal() && !document.hidden && !leaving
       ? volume * (audibleVideo() ? 0.12 : 1)
       : 0;
 
@@ -1203,28 +1209,39 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
         mediaSource = null;
       }
     }
-    context?.resume().catch(() => {});
-    adjustGain();
+    // Не поднимаем gain до завершения resume/play: иначе восстановление страницы
+    // может вывести остаток аудиобуфера до начала плавного появления музыки.
+    return context ? context.resume() : Promise.resolve();
   }
 
   async function start(fromGesture = false) {
-    if (!enabled || !seasonal() || document.hidden || playing()) return;
+    if (!enabled || !seasonal() || document.hidden || leaving || playing()) return;
     // A pending autoplay request must not swallow a later real gesture.
     // Resume Web Audio and call play() together, before leaving that event.
     if (starting && !fromGesture) return;
+    if (fromGesture) {
+      const now = performance.now();
+      if (starting && now - gestureRetryAt < 250) return;
+      gestureRetryAt = now;
+    }
     clearTimeout(pauseTimer);
     const token = ++attempt;
     starting = true;
     failed = false;
-    prepare();
+    audio.muted = true;
     updateUI();
     try {
-      await audio.play();
+      // Оба запроса запускаются внутри настоящего пользовательского события.
+      // Ожидание одного перед другим лишило бы Safari права на автозапуск.
+      const resumed = prepare();
+      const played = audio.play();
+      await Promise.all([resumed, played]);
       if (token !== attempt) return;
-      if (!enabled || !seasonal() || document.hidden) {
+      if (!enabled || !seasonal() || document.hidden || leaving) {
         audio.pause();
         return;
       }
+      audio.muted = false;
       status.textContent = "Звуки Хэллоуина включены";
       adjustGain();
     } catch (error) {
@@ -1249,8 +1266,8 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
     clearTimeout(pauseTimer);
     adjustGain(immediate);
     const pause = () => {
+      audio.muted = true;
       audio.pause();
-      context?.suspend().catch(() => {});
     };
     if (immediate) pause();
     else pauseTimer = setTimeout(pause, 500);
@@ -1352,23 +1369,40 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
   ["playing", "pause", "waiting", "ended"].forEach((name) =>
     audio.addEventListener(name, updateUI),
   );
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      ++attempt;
-      starting = false;
-      adjustGain(true);
-      audio.pause();
-      context?.suspend().catch(() => {});
-      updateUI();
-    } else if (enabled) start();
-  });
-  window.addEventListener("pagehide", () => {
+  // Сначала заглушаем выход, затем останавливаем источники. Приложение не
+  // вызывает suspend() при уходе: его гонка с resume() на возврате в WebKit
+  // могла оставлять слышимый обрывок буфера. Состоянием скрытого контекста
+  // управляет сам браузер; при возврате play/resume завершаются до снятия mute.
+  function quietPage() {
+    leaving = true;
+    ++attempt;
+    starting = false;
+    clearTimeout(pauseTimer);
+    cancelAnimationFrame(fadeFrame);
+    audio.muted = true;
+    if (effectAudio) effectAudio.muted = true;
+    if (gain && context.state !== "closed") {
+      gain.gain.cancelScheduledValues(context.currentTime);
+      gain.gain.setValueAtTime(0, context.currentTime);
+    } else {
+      audio.volume = 0;
+    }
+    stopEffects();
     audio.pause();
-    context?.suspend().catch(() => {});
-  });
-  window.addEventListener("pageshow", () => {
+    updateUI();
+  }
+  function resumePage() {
+    if (document.hidden) return;
+    leaving = false;
+    if (effectAudio) effectAudio.muted = false;
     if (enabled) start();
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) quietPage();
+    else resumePage();
   });
+  window.addEventListener("pagehide", quietPage);
+  window.addEventListener("pageshow", resumePage);
   new MutationObserver(() => {
     if (!seasonal()) {
       setPanel(false);
