@@ -1,0 +1,68 @@
+/* DIKIDI: дополнительные точки записи используют существующие кнопки GLAIRE.
+   Сторонний виджет загружается только после выбора записи. */
+.booking-inline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: 26px;
+}
+.booking-inline__button {
+  gap: 18px;
+  min-height: 46px;
+  padding: 12px 20px;
+  font-size: 13px;
+}
+.booking-inline__note {
+  max-width: 210px;
+  color: var(--text-soft, #b7b7bb);
+  font-size: 11px;
+  line-height: 1.65;
+}
+.booking-inline--works {
+  padding-top: 22px;
+  border-top: 1px solid var(--line, #ffffff18);
+}
+a[aria-busy="true"] {
+  cursor: progress;
+}
+.booking-status {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10000;
+  max-width: min(360px, calc(100vw - 48px));
+  padding: 12px 18px;
+  border: 1px solid #ffffff26;
+  border-radius: 16px;
+  background: #18202cf5;
+  color: #eee9e2;
+  box-shadow: 0 12px 32px #0005;
+  font: 12px/1.6 var(--font-ui, Manrope, sans-serif);
+}
+.booking-focus-guard {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+.booking-external-link {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  left: 0;
+  color: #e5d8c8;
+  font: 12px/1.6 var(--font-ui, Manrope, sans-serif);
+  text-align: center;
+  text-underline-offset: 4px;
+}
+.booking-external-link:focus-visible {
+  outline: 2px solid #edc69b;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+@media (max-width: 640px) {
+  .booking-inline { gap: 12px; }
+  .booking-inline__note { max-width: none; }
+}
