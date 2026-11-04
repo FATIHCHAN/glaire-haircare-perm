@@ -21,6 +21,7 @@ ErrorDocument 404 /404.html
   RewriteRule ^\.well-known/acme-challenge/ - [L]
 
   RewriteRule ^(?:scripts|content|docs)/ - [F,L]
+  RewriteRule ^(?:README|HALLOWEEN)\.md$ - [F,L,NC]
 
   # BEGIN SERVICE PAGE MIGRATION
   # Прежние страницы заменены пятью направлениями GLAIRE.
