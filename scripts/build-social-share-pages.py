@@ -2,14 +2,15 @@
 from pathlib import Path
 from html import escape
 import re
+import json
+from html_helpers import sync_webpage_graph
 
 root = Path(__file__).resolve().parents[1]
 logo = "https://glaire.ru/assets/images/icon-glaire-e9ed38d8e4-512.png"
+site = json.loads((root / "content/site.json").read_text())
 
 for slug, source in [("glaire", "index.html"), ("halloween", "halloween-bonus/index.html")]:
     page = (root / source).read_text()
-    if '<base href="/">' not in page:
-        page = page.replace("<head>", '<head>\n    <base href="/">', 1)
     url = f"https://glaire.ru/{slug}/"
     def meta(key, value):
         global page
@@ -35,7 +36,8 @@ for slug, source in [("glaire", "index.html"), ("halloween", "halloween-bonus/in
     page, count = re.subn(r'<link\b(?=[^>]*rel="image_src")[^>]*>', f'<link rel="image_src" href="{logo}">', page, count=1)
     assert count == 1, "image_src"
     if slug == "glaire":
-        page = re.sub(r"<title>.*?</title>", "<title>Глэйр — пространство красоты</title>", page, count=1)
+        page = re.sub(r"<title>.*?</title>", f'<title>{escape(site["socialTitle"])}</title>', page, count=1)
+    page = sync_webpage_graph(page)
     target = root / slug / "index.html"
     target.parent.mkdir(exist_ok=True)
     target.write_text(page)
