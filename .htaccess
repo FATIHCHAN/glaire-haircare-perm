@@ -11,7 +11,13 @@ ErrorDocument 404 /404.html
 # Исходники сборки и локальные резервы не входят в публичную поставку.
 # Эта страховка закрывает их, если папка была загружена целиком по ошибке.
 <FilesMatch "(?i)(?:^\\.|(?:backup|бэкап|до[ _-]+(?:евента|ивента)).*\\.html$|^README\\.md$)">
-  Require all denied
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
 </FilesMatch>
 
 <IfModule mod_rewrite.c>
