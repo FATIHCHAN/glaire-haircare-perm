@@ -3297,7 +3297,8 @@ footer {
 
 /* Переходы галерей: предыдущий кадр закрывает загрузку нового.
    Одновременно остаётся не больше одного временного слоя на галерею. */
-.media-autoplay-host { position: relative; }
+/* Рамка не меняется при появлении предыдущего слоя. */
+.hero-slider__viewport { position: relative; }
 img.media-previous-frame {
   position: absolute !important;
   inset: 0;
@@ -3308,31 +3309,14 @@ img.media-previous-frame {
   transform: none !important;
   transition: none !important;
 }
-.media-autoplay-toggle {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 4;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid #eee6dd30;
-  border-radius: 50%;
-  background: #0b1118bb;
-  color: #eee6dd;
-  font: 15px/1 var(--font-ui);
-  cursor: pointer;
+/* Без дополнительного зума и сдвига между одинаковыми рамками кадров. */
+.works-image:not(.is-placeholder):hover img { transform: none; }
+.works-procedure-body.is-switching { transform: none; }
+.content-card > .photo-counter {
+  position: static;
+  justify-self: end;
+  margin-bottom: -4px;
 }
-.media-autoplay-toggle::before {
-  content: "";
-  position: absolute;
-  inset: -6px;
-}
-.media-autoplay-toggle:hover { background: #202b39ee; }
-.media-autoplay-toggle[aria-pressed="true"] { color: var(--accent-3); }
-.news-controls .media-autoplay-toggle { position: relative; inset: auto; order: -1; }
 @media (prefers-reduced-motion: reduce) {
-  .media-autoplay-toggle { display: none; }
   .news-track { scroll-behavior: auto; }
 }
