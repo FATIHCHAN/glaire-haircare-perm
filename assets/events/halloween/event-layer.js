@@ -319,6 +319,7 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
         this.closing = false;
         this.dialog.classList.remove("is-closing", "is-instant-entry");
         document.documentElement.classList.remove("fortune-modal-open");
+        document.dispatchEvent(new Event("glaire:modal-state"));
         if (this.spinning) this.finish();
         this.pausedVideos?.forEach((video) => {
           if (
@@ -360,14 +361,8 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
     }
 
     open({ immediate = false } = {}) {
-      if (this.dialog.open) {
-        if (this.closing) {
-          clearTimeout(this.closeTimer);
-          this.closing = false;
-          this.dialog.classList.remove("is-closing");
-        }
-        return;
-      }
+      // Не отменяем уже принятое закрытие поздним событием открытия.
+      if (this.dialog.open || this.closing) return;
       this.lastFocus = document.activeElement;
       this.pausedVideos = [...document.querySelectorAll("video")].filter(
         (video) => !video.paused,
@@ -376,6 +371,7 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
       this.dialog.classList.toggle("is-instant-entry", immediate);
       this.dialog.showModal();
       document.documentElement.classList.add("fortune-modal-open");
+      document.dispatchEvent(new Event("glaire:modal-state"));
       if (!this.isActive()) {
         this.spinButton.disabled = true;
         const beginsAt = Date.parse(
@@ -833,6 +829,13 @@ window.GLAIRE_EVENT_CONFIG = Object.freeze({
     open();
     if (wheel.dialog.open) autoShownThisVisit = true;
   };
+  // Если посетитель закрыл вручную открытое колесо уже у мастера,
+  // не показываем его тут же повторно из-за восстановления фокуса/прокрутки.
+  wheel.dialog.addEventListener("close", () => {
+    const rect = masterTrigger?.getBoundingClientRect();
+    if (rect && rect.top < innerHeight * .78 && rect.bottom > innerHeight * .12)
+      autoShownThisVisit = true;
+  });
   const updateScroll = () => {
     scrollFrame = 0;
     autoOpen();
