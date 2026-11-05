@@ -88,6 +88,91 @@
     });
   }
 
+  // Мастер и работы: текущий img не меняет источник во время загрузки.
+  // Готовый кадр проявляется отдельным слоем; затем источник переносится
+  // под полностью непрозрачный слой. Так нет скачка кропа или декодирования.
+  const stablePhotoStates = new WeakMap();
+  function stablePhoto(image, sources, load, onReady, onEmpty, options = {}) {
+    let state = stablePhotoStates.get(image);
+    if (!state) {
+      state = { generation: 0, layer: null, animation: null, queued: null };
+      stablePhotoStates.set(image, state);
+    }
+    // Быстрые команды учитываются сразу контроллером, но не обрывают
+    // уже начатое проявление. После него показывается последняя цель.
+    if (state.animation) {
+      state.queued = { sources, load, onReady, onEmpty, options };
+      return;
+    }
+    const generation = ++state.generation;
+    if (state.layer) {
+      state.layer.onload = state.layer.onerror = null;
+      state.layer.remove();
+    }
+    const layer = image.cloneNode(false);
+    ["id", "title", "src", "srcset", "sizes"].forEach((name) => layer.removeAttribute(name));
+    delete layer.dataset.imageCandidate;
+    layer.alt = "";
+    layer.setAttribute("aria-hidden", "true");
+    layer.classList.add("media-incoming-frame");
+    layer.loading = "eager";
+    layer.decoding = "async";
+    const style = getComputedStyle(image);
+    layer.style.objectFit = style.objectFit;
+    layer.style.objectPosition = options.position || style.objectPosition;
+    layer.style.opacity = "0";
+    image.after(layer);
+    state.layer = layer;
+    image.dataset.mediaPending = "1";
+    image.parentElement.setAttribute("aria-busy", "true");
+    const current = () => generation === state.generation && state.layer === layer;
+    const clean = () => {
+      layer.remove();
+      state.layer = state.animation = null;
+      delete image.dataset.mediaPending;
+      image.parentElement.removeAttribute("aria-busy");
+      const queued = state.queued;
+      state.queued = null;
+      if (queued) stablePhoto(image, queued.sources, queued.load, queued.onReady, queued.onEmpty, queued.options);
+    };
+    const commit = async () => {
+      if (!current()) return;
+      // Слой остаётся непрозрачным до декодирования основного img.
+      layer.style.opacity = "1";
+      image.onload = image.onerror = null;
+      image.style.objectPosition = layer.style.objectPosition;
+      for (const name of ["width", "height", "sizes", "srcset", "src"]) {
+        const value = layer.getAttribute(name);
+        if (value === null) image.removeAttribute(name);
+        else image.setAttribute(name, value);
+      }
+      image.dataset.imageCandidate = layer.dataset.imageCandidate || "";
+      if (layer.dataset.localImage) image.dataset.localImage = layer.dataset.localImage;
+      else delete image.dataset.localImage;
+      try { await image.decode?.(); } catch { /* Новый кадр уже виден в слое. */ }
+      if (!current()) return;
+      onReady?.();
+      clean();
+    };
+    load(layer, sources, async () => {
+      try { await layer.decode?.(); } catch { /* Fallback уже проверил загрузку. */ }
+      if (!current()) return;
+      if (reducedMotion.matches || !image.complete || !image.naturalWidth || typeof layer.animate !== "function") {
+        await commit();
+        return;
+      }
+      state.animation = layer.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 320, easing: "cubic-bezier(.22,.61,.36,1)", fill: "forwards",
+      });
+      state.animation.finished.then(commit, () => {});
+    }, () => {
+      if (!current()) return;
+      const empty = !image.complete || !image.naturalWidth;
+      clean();
+      if (empty) onEmpty?.();
+    });
+  }
+
   // Одна отменяемая анимация на ленту. Повторные стрелки суммируют шаги
   // относительно выбранной цели, а не промежуточного положения скролла.
   function scrollRail(track, direction, step, wrap = false) {
@@ -229,5 +314,5 @@
   reducedMotion.addEventListener("change", () => players.forEach((p) => p.schedule()));
   window.addEventListener("pagehide", () => players.forEach((p) => p.stop()));
   window.addEventListener("pageshow", () => players.forEach((p) => p.schedule()));
-  window.GlaireMediaMotion = { photo, scrollRail, cancelRail, swipe, autoplay };
+  window.GlaireMediaMotion = { photo, stablePhoto, scrollRail, cancelRail, swipe, autoplay };
 })();

@@ -106,6 +106,9 @@ def main():
             parsed = urlsplit(value)
             if value.startswith("/") and not value.startswith("//"):
                 assert (ROOT / parsed.path.lstrip("/")).is_file(), (name, value)
+                if parsed.path in {"/assets/site-runtime.js", "/assets/site.css"}:
+                    digest = hashlib.sha256((ROOT / parsed.path.lstrip("/")).read_bytes()).hexdigest()[:12]
+                    assert parsed.query == f"v={digest}", (name, "stale shared gallery resource", value)
                 local_assets += 1
         results.append({"file": name, "canonical": url, "title": title, "local_assets": local_assets, "map_unchanged": True})
     assert len(set(indexed_titles)) == 6 and len(set(indexed_descriptions)) == 6

@@ -2083,9 +2083,10 @@ function applySocialLinks() {
 /* Плавная смена кадра: исходные адаптивные изображения и fallback сохраняются. */
 const mediaMotion = window.GlaireMediaMotion;
 const photoWarmups = new Map();
-function showGalleryPhoto(image, sources, onReady, onEmpty) {
+function showGalleryPhoto(image, sources, onReady, onEmpty, options = {}) {
   if (!mediaMotion) return applyImageFallbacks(image, sources, onReady, onEmpty);
-  mediaMotion.photo(image, sources, applyImageFallbacks, onReady, onEmpty);
+  const transition = image.id === "heroSlideImage" ? mediaMotion.photo : mediaMotion.stablePhoto;
+  transition(image, sources, applyImageFallbacks, onReady, onEmpty, options);
 }
 
 /* Прогреваем только соседей видимой галереи, не весь альбом и не карту. */
@@ -2121,6 +2122,10 @@ function warmWorksNeighbors() {
   const slides = getActiveWorksSlides();
   if (!slides.length) return;
   warmGalleryPhoto(worksSlideImage, slides[(worksSlideIndex + 1) % slides.length]?.sources);
+  // Подготавливаем первый кадр следующей модели, а не весь каталог.
+  // Общий лимит прогрева и режим экономии трафика остаются в warmGalleryPhoto.
+  const nextWork = WORKS_PROCEDURES[(worksProcedureIndex + 1) % WORKS_PROCEDURES.length];
+  warmGalleryPhoto(worksSlideImage, nextWork?.slides?.[0]?.sources);
 }
 function noteManualSlide(root) {
   root?.dispatchEvent(new Event("glaire:manual-slide"));
@@ -2788,7 +2793,6 @@ let heroSlideIndex = 0;
 let worksProcedureIndex = 0;
 let worksProcedureTargetIndex = 0;
 let worksSlideIndex = 0;
-let worksProcedureSwitchTimer = null;
 let contentVideoSyncFrame = 0;
 let contentVideoLoadTimers = [];
 let contentTrackIsActive = false;
@@ -3486,6 +3490,38 @@ const WORKS_PROCEDURES = [0, 6, 2, 5, 8, 3, 7, 1, 4].map(
   (index) => WORKS_PROCEDURE_CATALOG[index],
 );
 
+/* Высота заголовка работ не меняется при переходе между моделями.
+   Измерение повторяет реальные шрифт и ширину; временный узел скрыт,
+   исключён из доступности и удаляется в том же кадре. */
+function reserveWorksTitleSpace() {
+  if (!worksProcedureTitle) return;
+  const width = worksProcedureTitle.getBoundingClientRect().width;
+  if (!width) return;
+  const measure = worksProcedureTitle.cloneNode(false);
+  measure.removeAttribute("id");
+  measure.setAttribute("aria-hidden", "true");
+  measure.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:${width}px;min-height:0;height:auto;inset:auto;`;
+  worksProcedureTitle.after(measure);
+  let height = 0;
+  for (const work of WORKS_PROCEDURES) {
+    measure.textContent = work.title;
+    height = Math.max(height, measure.getBoundingClientRect().height);
+  }
+  measure.remove();
+  worksProcedureTitle.style.minHeight = `${Math.ceil(height)}px`;
+}
+let worksTitleWidth = 0;
+if (typeof ResizeObserver === "function" && worksProcedureTitle) {
+  new ResizeObserver(([entry]) => {
+    const width = Math.round(entry.contentRect.width);
+    if (width === worksTitleWidth) return;
+    worksTitleWidth = width;
+    reserveWorksTitleSpace();
+  }).observe(worksProcedureTitle);
+}
+document.fonts?.ready.then(reserveWorksTitleSpace);
+window.requestAnimationFrame(reserveWorksTitleSpace);
+
 /*
   Первичная синхронизация запускается после первого кадра.
   Первый экран уже содержит нужные тексты и основные src в HTML,
@@ -3575,29 +3611,13 @@ function commitWorksProcedure(nextIndex, preserveSlide = false) {
   setWorksSlide(worksSlideIndex);
 }
 
-/* Переключает весь левый блок работ на другую процедуру */
+/* Переключает работу без затухания и сдвига всей карточки.
+   Фотография использует тот же устойчивый переход, что и ракурсы. */
 function setWorksProcedure(nextIndex, options = {}) {
-  const { animate = true, preserveSlide = false } = options;
   const total = WORKS_PROCEDURES.length;
   if (!total) return;
   worksProcedureTargetIndex = ((nextIndex % total) + total) % total;
-  nextIndex = worksProcedureTargetIndex;
-
-  window.clearTimeout(worksProcedureSwitchTimer);
-
-  if (!animate || !worksProcedureBody) {
-    commitWorksProcedure(nextIndex, preserveSlide);
-    worksProcedureBody?.classList.remove("is-switching");
-    return;
-  }
-
-  worksProcedureBody.classList.add("is-switching");
-  worksProcedureSwitchTimer = window.setTimeout(() => {
-    commitWorksProcedure(nextIndex, preserveSlide);
-    window.requestAnimationFrame(() => {
-      worksProcedureBody.classList.remove("is-switching");
-    });
-  }, 150);
+  commitWorksProcedure(worksProcedureTargetIndex, options.preserveSlide || false);
 }
 
 /* Переключает весь набор процедуры на шаг вперёд или назад */
@@ -3656,7 +3676,6 @@ function setWorksSlide(nextIndex) {
             worksSlideIndex,
           ),
     );
-    worksSlideImage.style.objectPosition = slide.position || "center center";
     if (slide.placeholder) {
       delete worksSlideImage.dataset.imageCandidate;
       worksSlideImage.onload = null;
@@ -3666,7 +3685,9 @@ function setWorksSlide(nextIndex) {
       worksSliderViewport.style.setProperty("--image-aspect", "3 / 4");
       worksSlideImage.src = EMPTY_IMAGE_SRC;
     } else {
-      showGalleryPhoto(worksSlideImage, slide.sources, warmWorksNeighbors);
+      showGalleryPhoto(worksSlideImage, slide.sources, warmWorksNeighbors, undefined, {
+        position: slide.position || "center center",
+      });
     }
   }
 
