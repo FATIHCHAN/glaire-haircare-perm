@@ -4098,9 +4098,9 @@ function updateBackToTopState() {
   backToTopBtn.classList.toggle("is-visible", window.scrollY > showAfter);
 }
 
-/* Одни и те же пункты доступны через бургер на любой ширине */
+/* Бургер управляет меню только на планшете и телефоне. */
 menuToggleBtn?.addEventListener("click", () => {
-  if (!siteNav) return;
+  if (!siteNav || !mobileMenuMedia.matches) return;
   setMobileMenuOpen(!siteNav.classList.contains("is-open"));
 });
 
