@@ -41,9 +41,9 @@ class Node {
   cloneNode() { const n = new Node(); n.src=this.src; return n; }
   before(n) { this.parentElement.append(n); }
   remove() { if (this.parentElement) this.parentElement.children = this.parentElement.children.filter(n=>n!==this); }
-  animate() {
+  animate(keyframes, options) {
     let resolve, reject; const finished = new Promise((r,j) => {resolve=r; reject=j;});
-    const id = setTimer(resolve, 620); return {finished, cancel(){timers.delete(id);reject(new Error('cancelled'));}};
+    const id = setTimer(resolve, options.duration); return {finished, cancel(){timers.delete(id);reject(new Error('cancelled'));}};
   }
   closest() { return null; }
   setPointerCapture() { this.captured = true; }
@@ -61,11 +61,57 @@ const context = {
   Event: class {constructor(type){this.type=type;}},
   setTimeout:setTimer, clearTimeout:(id)=>timers.delete(id),
   requestAnimationFrame:(fn)=>{let id=++serial;frames.set(id,fn);return id;}, cancelAnimationFrame:(id)=>frames.delete(id),
-  queueMicrotask, console,
+  queueMicrotask, console, getComputedStyle: () => ({objectFit:"contain",objectPosition:"center"}),
 };
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../assets/media-motion.js'),'utf8'), context);
 const motion = context.window.GlaireMediaMotion;
+// Исполняем настоящие правила плеера и настоящие обработчики событий сайта.
+// Браузерные события асинхронны: это важно для конфликта pause/play/volumechange.
+function checkVideoControls() {
+  const source = fs.readFileSync(path.join(__dirname,'../assets/site.js'),'utf8');
+  class Video extends Node {
+    constructor() { super(); this.paused=true;this.ended=false;this._muted=true;this._volume=1;this.plays=0; }
+    get muted(){return this._muted;}
+    set muted(value){if(this._muted===value)return;this._muted=value;setTimer(()=>this.emit('volumechange'));}
+    get volume(){return this._volume;}
+    set volume(value){if(this._volume===value)return;this._volume=value;setTimer(()=>this.emit('volumechange'));}
+    play(){this.plays++;if(this.paused){this.paused=false;setTimer(()=>this.emit('play'));}return Promise.resolve();}
+    pause(){if(this.paused)return;this.paused=true;setTimer(()=>this.emit('pause'));}
+  }
+  const videos=[new Video(),new Video()], cards=videos.map(video=>({video}));
+  const fixture={console, cards, videos,
+    getContentCardVideoNode:card=>card?.video,
+    getConfiguredContentCardIndex:card=>cards.indexOf(card),
+    applyContentSequenceState:()=>{},
+  };
+  const helpers=source.slice(source.indexOf('function getContentPlaybackPolicy('),source.indexOf('/* Обновляет, какой ролик'));
+  const bindingStart=source.indexOf('  contentCards.forEach((cardNode) => {',source.indexOf('if (contentTrack) {'));
+  const binding=source.slice(bindingStart,source.indexOf('  const resumeContentAudioFromInteraction',bindingStart));
+  vm.runInNewContext(`let contentUserMuted=false,contentVolumePreference=null,contentAudioUnlocked=false,contentAudioNeedsInteraction=false,contentSequenceIndex=0;
+    const contentCards=cards,contentPlaybackPolicies=new WeakMap();
+${helpers}
+${binding}
+    this.controls={playContentVideo,pauseContentVideo,setContentVideoAudibleState};`,fixture);
+  const c=fixture.controls, first=videos[0], next=videos[1];
+  c.setContentVideoAudibleState(first,true);c.playContentVideo(first);advance(0);
+  assert.equal(first.paused,false);assert.equal(first.muted,false);
+  first.pause();advance(0);const playCount=first.plays;
+  c.playContentVideo(first);advance(0);
+  assert.equal(first.paused,true,'Automatic sync must respect native pause');assert.equal(first.plays,playCount);
+  first.play();advance(0);assert.equal(first.paused,false);
+  first.muted=true;
+  // Даже если синхронизация произошла до volumechange, она не отменяет mute.
+  c.setContentVideoAudibleState(first,true);advance(0);assert.equal(first.muted,true);
+  c.setContentVideoAudibleState(next,true);advance(0);assert.equal(next.muted,true,'Mute follows the sequence');
+  first.muted=false;advance(0);c.setContentVideoAudibleState(first,true);advance(0);assert.equal(first.muted,false);
+  first.volume=.3;advance(0);c.setContentVideoAudibleState(next,true);advance(0);assert.equal(next.volume,.3);
+  c.pauseContentVideo(first);advance(0);c.playContentVideo(first);advance(0);
+  assert.equal(first.paused,false,'Leaving the screen must not become a manual pause');
+  assert(!source.includes('videoNode.addEventListener("click", () => unlockContentAudioForCard'), 'Native controls must not trigger forced play');
+  console.log('Video controls: native pause, explicit resume, mute before event, sequence mute/volume and programmatic pause passed.');
+}
 async function main() {
+  checkVideoControls();
   // Стрелки не перехватываются свайпом; вертикальный жест и pointercancel не листают.
   const surface = new Node(), button = new Node(), image = new Node(), moved = [];
   button.closest = () => button;
@@ -89,14 +135,14 @@ async function main() {
   track.scrollLeft=800;motion.scrollRail(track,1,200,true);animateFrames();assert.equal(track.scrollLeft,0);
 
   // Видимость, ручной приоритет, остановка в модальном окне и настройка reduced-motion.
-  let slides=0;const root=new Node();const player=motion.autoplay(root,{interval:9000,advance:()=>slides++});
+  let slides=0;const root=new Node();const player=motion.autoplay(root,{interval:6000,advance:()=>slides++});
   const observer=observers.at(-1);observer.fn([{isIntersecting:true,intersectionRatio:.5}]);
-  advance(8999);assert.equal(slides,0);advance(1);assert.equal(slides,1);
-  player.interaction();advance(11999);assert.equal(slides,1);advance(1);assert.equal(slides,2);
+  advance(5999);assert.equal(slides,0);advance(1);assert.equal(slides,1);
+  player.interaction();advance(7999);assert.equal(slides,1);advance(1);assert.equal(slides,2);
   modal=true;document.emit('glaire:modal-state');advance(30000);assert.equal(slides,2);
-  modal=false;document.emit('glaire:modal-state');advance(9000);assert.equal(slides,3);
-  root.children[0].emit('click');advance(30000);assert.equal(slides,3);assert.equal(root.children[0].attrs['aria-pressed'],'true');
-  root.children[0].emit('click');advance(9000);assert.equal(slides,4);
+  modal=false;document.emit('glaire:modal-state');advance(6000);assert.equal(slides,3);
+  assert.equal(root.children.length,0, 'Autoplay must not insert pause buttons');
+  advance(6000);assert.equal(slides,4);
   observer.fn([{isIntersecting:false,intersectionRatio:0}]);advance(30000);assert.equal(slides,4);
   reduced.matches=true;observer.fn([{isIntersecting:true,intersectionRatio:.8}]);advance(30000);assert.equal(slides,4);
   reduced.matches=false;document.hidden=true;player.schedule();advance(30000);assert.equal(slides,4);document.hidden=false;
@@ -111,7 +157,17 @@ async function main() {
   assert.equal(frame.children.length,2);
   await loads[1]();assert.equal(ready,1);assert.equal(photo.dataset.mediaPending,'1');
   await loads[2]();assert.equal(ready,2);assert.equal(photo.dataset.mediaPending,undefined);
-  advance(620);await Promise.resolve();assert.equal(frame.children.length,1);
-  console.log('Media motion: swipe/button priority, rapid rail steps, autoplay visibility/pause/modal/reduced-motion, stale image loads passed.');
+  advance(280);await Promise.resolve();assert.equal(frame.children.length,1);
+  // Следующий переход начинает с текущего кадра, а не с устаревшего слоя.
+  photo.src='third';
+  motion.photo(photo,['fourth'],load);await loads[3]();
+  photo.src='fourth';
+  motion.photo(photo,['fifth'],load);
+  assert.equal(frame.children.length,2);
+  assert.equal(frame.children[1].src,'fourth');
+  assert.equal(frame.children[1].style.objectFit,'contain');
+  await loads[4]();advance(280);await Promise.resolve();
+  assert.equal(frame.children.length,1);
+  console.log('Media motion: swipe/button priority, rapid rail steps, autoplay visibility/modal/reduced-motion without pause buttons, stale image loads passed.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1194,11 +1194,12 @@ function updatePhotoCounter(id, index, total) {
 function updateMediaCardCounters() {
   function setCardCounter(media, index, total) {
     if (!media) return;
-    let counter = media.querySelector(":scope > .photo-counter");
+    const host = media.closest(".content-card") || media;
+    let counter = host.querySelector(":scope > .photo-counter");
     if (!counter) {
       counter = document.createElement("span");
       counter.className = "photo-counter";
-      media.append(counter);
+      host.insertBefore(counter, media);
     }
     counter.textContent = `${index + 1}/${total}`;
   }
@@ -2788,8 +2789,6 @@ let worksProcedureIndex = 0;
 let worksProcedureTargetIndex = 0;
 let worksSlideIndex = 0;
 let worksProcedureSwitchTimer = null;
-let contentSwipeStartX = null;
-let contentSwipeDeltaX = 0;
 let contentVideoSyncFrame = 0;
 let contentVideoLoadTimers = [];
 let contentTrackIsActive = false;
@@ -2798,6 +2797,9 @@ let contentWorksStopFrame = 0;
 let contentTrackObserver = null;
 let contentSequenceIndex = 0;
 let contentAudioUnlocked = false;
+let contentUserMuted = false;
+let contentVolumePreference = null;
+const contentPlaybackPolicies = new WeakMap();
 let contentAudioNeedsInteraction = false;
 let contentPendingPageAdvanceUntil = 0;
 
@@ -2892,23 +2894,59 @@ function scrollContentCardIntoView(cardNode) {
   });
 }
 
-/* Синхронно переводит ролик в нужный режим по звуку */
-function setContentVideoAudibleState(videoNode, shouldBeAudible) {
-  if (!videoNode) return;
-
-  videoNode.dataset.syncingAudio = "1";
-  videoNode.defaultMuted = !shouldBeAudible;
-  videoNode.muted = !shouldBeAudible;
-
-  if (shouldBeAudible && videoNode.volume === 0) {
-    videoNode.volume = 1;
+/* Ручная пауза и громкость имеют приоритет над автоматической очередью. */
+function getContentPlaybackPolicy(video) {
+  let state = contentPlaybackPolicies.get(video);
+  if (!state) {
+    state = { userPaused: false, expectedPauses: 0, expectedPlays: 0,
+      expectedMuted: video.muted, expectedVolume: video.volume };
+    contentPlaybackPolicies.set(video, state);
   }
-
-  window.setTimeout(() => {
-    if (videoNode.isConnected) {
-      delete videoNode.dataset.syncingAudio;
-    }
-  }, 0);
+  return state;
+}
+function adoptContentAudioPreference(video) {
+  const state = getContentPlaybackPolicy(video);
+  if (video.muted === state.expectedMuted && video.volume === state.expectedVolume) return false;
+  contentUserMuted = video.muted || video.volume <= 0;
+  contentVolumePreference = video.volume;
+  contentAudioUnlocked = !contentUserMuted;
+  contentAudioNeedsInteraction = false;
+  state.expectedMuted = video.muted;
+  state.expectedVolume = video.volume;
+  if (!contentUserMuted) {
+    const card = contentCards.find((node) => getContentCardVideoNode(node) === video);
+    const index = getConfiguredContentCardIndex(card);
+    if (index !== -1) contentSequenceIndex = index;
+  }
+  return true;
+}
+function pauseContentVideo(video) {
+  if (video.paused) return;
+  getContentPlaybackPolicy(video).expectedPauses++;
+  video.pause();
+}
+function playContentVideo(video) {
+  const state = getContentPlaybackPolicy(video);
+  if (state.userPaused) return Promise.resolve();
+  const expected = video.paused;
+  if (expected) state.expectedPlays++;
+  const promise = video.play();
+  if (promise?.catch) promise.catch(() => {
+    if (expected) state.expectedPlays = Math.max(0, state.expectedPlays - 1);
+  });
+  return promise;
+}
+function setContentVideoAudibleState(video, shouldBeAudible) {
+  if (!video) return;
+  const changedByUser = adoptContentAudioPreference(video);
+  if (changedByUser && !contentUserMuted) shouldBeAudible = true;
+  const state = getContentPlaybackPolicy(video);
+  const muted = !shouldBeAudible || contentUserMuted;
+  state.expectedMuted = muted;
+  state.expectedVolume = contentVolumePreference ?? video.volume;
+  video.defaultMuted = muted;
+  video.muted = muted;
+  if (contentVolumePreference !== null) video.volume = contentVolumePreference;
 }
 
 /* Обновляет, какой ролик сейчас должен быть со звуком */
@@ -3030,6 +3068,7 @@ function activateContentCardVideo(cardNode, options = {}) {
     contentAudioUnlocked && Boolean(activeCard) && activeCard === cardNode;
 
   const revealAndPlay = () => {
+    if (!contentTrackIsActive || document.hidden) return;
     cardNode.classList.add("content-card--ready");
     setContentVideoAudibleState(videoNode, shouldBeAudible);
     if (shouldBeAudible) {
@@ -3044,16 +3083,16 @@ function activateContentCardVideo(cardNode, options = {}) {
       }
     }
 
-    const playPromise = videoNode.play();
+    const playPromise = playContentVideo(videoNode);
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(() => {
-        if (!shouldBeAudible) return;
+        if (!contentTrackIsActive || document.hidden || !shouldBeAudible || contentUserMuted || getContentPlaybackPolicy(videoNode).userPaused) return;
 
         contentAudioUnlocked = false;
         contentAudioNeedsInteraction = true;
         setContentVideoAudibleState(videoNode, false);
 
-        const mutedRetry = videoNode.play();
+        const mutedRetry = playContentVideo(videoNode);
         if (mutedRetry && typeof mutedRetry.catch === "function") {
           mutedRetry.catch(() => {});
         }
@@ -3100,7 +3139,7 @@ function deactivateContentCardVideo(cardNode) {
   if (!videoNode) return;
 
   setContentVideoAudibleState(videoNode, false);
-  videoNode.pause();
+  pauseContentVideo(videoNode);
   videoNode.onloadeddata = null;
   videoNode.onerror = null;
   videoNode.onended = null;
@@ -3731,28 +3770,26 @@ if (contentTrack) {
 
     videoNode.dataset.sequenceBound = "1";
 
-    videoNode.addEventListener("click", () => {
-      unlockContentAudioForCard(cardNode);
+    const policy = getContentPlaybackPolicy(videoNode);
+    videoNode.addEventListener("pause", () => {
+      if (policy.expectedPauses > 0) { policy.expectedPauses--; return; }
+      if (!videoNode.ended) policy.userPaused = true;
     });
-
+    videoNode.addEventListener("play", () => {
+      if (policy.expectedPlays > 0) { policy.expectedPlays--; return; }
+      policy.userPaused = false;
+      const index = getConfiguredContentCardIndex(cardNode);
+      if (index !== -1) contentSequenceIndex = index;
+      applyContentSequenceState({ restartActive: false });
+    });
     videoNode.addEventListener("volumechange", () => {
-      if (videoNode.dataset.syncingAudio === "1") return;
-      if (videoNode.muted || videoNode.volume <= 0) return;
-
-      const nextIndex = getConfiguredContentCardIndex(cardNode);
-      if (nextIndex === -1) return;
-
-      contentAudioUnlocked = true;
-      contentAudioNeedsInteraction = false;
-      contentSequenceIndex = nextIndex;
-      applyContentSequenceState({
-        restartActive: false,
-      });
+      if (!adoptContentAudioPreference(videoNode)) return;
+      applyContentSequenceState({ restartActive: false });
     });
   });
 
   const resumeContentAudioFromInteraction = () => {
-    if (!contentTrackIsActive || !contentAudioNeedsInteraction) return;
+    if (!contentTrackIsActive || !contentAudioNeedsInteraction || contentUserMuted) return;
     contentAudioUnlocked = true;
     contentAudioNeedsInteraction = false;
     applyContentSequenceState({
@@ -3794,7 +3831,7 @@ if (contentTrack) {
     if (document.hidden) {
       document
         .querySelectorAll(".content-card__video")
-        .forEach((videoNode) => videoNode.pause());
+        .forEach((videoNode) => pauseContentVideo(videoNode));
       return;
     }
     if (contentTrackIsActive) {
@@ -3832,32 +3869,7 @@ if (contentTrack) {
     scheduleContentWorksStopCheck();
   }
 
-  contentTrack.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    contentSwipeStartX = event.clientX;
-    contentSwipeDeltaX = 0;
-    contentTrack.setPointerCapture?.(event.pointerId);
-  });
-
-  contentTrack.addEventListener("pointermove", (event) => {
-    if (contentSwipeStartX === null) return;
-    contentSwipeDeltaX = event.clientX - contentSwipeStartX;
-  });
-
-  const finishContentSwipe = (event) => {
-    if (contentSwipeStartX === null) return;
-    if (Math.abs(contentSwipeDeltaX) > 44) {
-      scrollContentTrack(contentSwipeDeltaX > 0 ? -1 : 1);
-    }
-    if (contentTrack.hasPointerCapture?.(event.pointerId)) {
-      contentTrack.releasePointerCapture(event.pointerId);
-    }
-    contentSwipeStartX = null;
-    contentSwipeDeltaX = 0;
-  };
-
-  contentTrack.addEventListener("pointerup", finishContentSwipe);
-  contentTrack.addEventListener("pointercancel", finishContentSwipe);
+  mediaMotion?.swipe(contentTrack, scrollContentTrack);
 }
 
 document
@@ -3943,16 +3955,16 @@ mediaMotion?.swipe(worksSliderViewport, (direction) => {
 /* Автопоказ: только видимые фото, неторопливо, с паузой после ручных действий. */
 let worksMediaPlayer = null;
 mediaMotion?.autoplay(heroSliderViewport?.closest(".hero-slider"), {
-  interval: 9000, advance: () => moveHeroSlide(1), prepare: warmHeroNeighbors,
+  interval: 6000, advance: () => moveHeroSlide(1), prepare: warmHeroNeighbors,
   busy: () => heroSlideImage?.dataset.mediaPending === "1", label: "студия",
 });
 mediaMotion?.autoplay(document.getElementById("masterPhotoShell"), {
-  interval: 10000, advance: () => applyMasterPhotoState(masterSlideIndex + 1),
+  interval: 6000, advance: () => applyMasterPhotoState(masterSlideIndex + 1),
   prepare: warmMasterNeighbors, busy: () => document.getElementById("masterPhoto")?.dataset.mediaPending === "1",
   label: "мастер",
 });
 worksMediaPlayer = mediaMotion?.autoplay(worksImageShell, {
-  interval: 9000, prepare: warmWorksNeighbors,
+  interval: 6000, prepare: warmWorksNeighbors,
   busy: () => worksSlideImage?.dataset.mediaPending === "1",
   advance: () => {
     const slides = getActiveWorksSlides();
@@ -3961,7 +3973,7 @@ worksMediaPlayer = mediaMotion?.autoplay(worksImageShell, {
   }, label: "работы",
 });
 mediaMotion?.autoplay(newsTrack, {
-  interval: 12000, advance: () => moveNews(1, true), label: "акции",
+  interval: 8000, advance: () => moveNews(1, true), label: "акции",
   controlHost: document.querySelector(".news-controls"),
 });
 

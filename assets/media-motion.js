@@ -1,6 +1,6 @@
 /* GLAIRE: плавные фото, осторожный автопоказ и точная прокрутка лент.
    Исходные файлы и карта не меняются. Ручные команды всегда имеют приоритет.
-   Автопоказ работает только в видимой галерее; его можно остановить кнопкой. */
+   Автопоказ работает только в видимой галерее и учитывает уменьшение движения. */
 (() => {
   "use strict";
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -20,8 +20,13 @@
       photoStates.set(image, state);
     }
     const generation = ++state.generation;
+    // Новый запрос не возвращает уже показанную фотографию к старому слою.
     state.animation?.cancel();
     state.animation = null;
+    if (state.previous && image.dataset.mediaPending !== "1") {
+      state.previous.remove();
+      state.previous = null;
+    }
     if (state.initialized && !state.previous && image.complete && image.naturalWidth) {
       const previous = image.cloneNode(false);
       previous.removeAttribute("id");
@@ -33,6 +38,10 @@
       previous.classList.add("media-previous-frame");
       previous.setAttribute("aria-hidden", "true");
       previous.loading = "eager";
+      previous.fetchPriority = "low";
+      const style = getComputedStyle(image);
+      previous.style.objectFit = style.objectFit;
+      previous.style.objectPosition = style.objectPosition;
       state.previous = previous;
       image.before(previous);
     }
@@ -59,7 +68,7 @@
       }
       state.animation = previous.animate(
         [{ opacity: 1 }, { opacity: 0 }],
-        { duration: 620, easing: "cubic-bezier(.22,.61,.36,1)", fill: "forwards" },
+        { duration: 280, easing: "cubic-bezier(.22,.61,.36,1)", fill: "forwards" },
       );
       state.animation.finished.then(remove, () => {});
     };
@@ -182,46 +191,29 @@
     }, true);
   }
 
-  function autoplay(root, { interval = 9000, advance, prepare = () => {}, busy = () => false, label = "Фотографии", controlHost = null }) {
+  function autoplay(root, { interval = 6000, advance, prepare = () => {}, busy = () => false }) {
     if (!root) return null;
-    let visible = false, paused = false, hovered = false, timer = 0;
+    let visible = false, timer = 0;
     const host = root.querySelector(".hero-slider__viewport, .master-slider__viewport, .works-slider__viewport") || root;
-    const control = document.createElement("button");
-    control.type = "button";
-    control.className = "media-autoplay-toggle";
-    control.setAttribute("aria-pressed", "false");
-    const update = () => {
-      control.textContent = paused ? "▷" : "Ⅱ";
-      control.setAttribute("aria-label", `${paused ? "Включить" : "Остановить"} автолистание — ${label}`);
-      control.title = control.getAttribute("aria-label");
-      control.setAttribute("aria-pressed", String(paused));
-    };
     const keyboardFocus = () => root.contains(document.activeElement) && document.activeElement.matches(":focus-visible");
     const stop = () => { clearTimeout(timer); timer = 0; };
     const schedule = (delay = interval) => {
       stop();
-      if (!visible || paused || hovered || blocked() || keyboardFocus() || reducedMotion.matches) return;
+      if (!visible || blocked() || keyboardFocus() || reducedMotion.matches) return;
       timer = setTimeout(() => {
         timer = 0;
-        if (!visible || paused || hovered || blocked() || keyboardFocus() || reducedMotion.matches) return;
+        if (!visible || blocked() || keyboardFocus() || reducedMotion.matches) return;
         if (!busy()) advance();
         schedule();
       }, delay);
     };
-    const interaction = () => schedule(Math.max(interval, 12000));
-    control.addEventListener("click", () => { paused = !paused; update(); schedule(); });
+    const interaction = () => schedule(Math.max(interval, 8000));
     root.addEventListener("pointerdown", () => { cancelRail(root); interaction(); }, { passive: true });
     root.addEventListener("wheel", () => { cancelRail(root); interaction(); }, { passive: true });
     root.addEventListener("keydown", interaction);
     root.addEventListener("focusin", () => { if (keyboardFocus()) stop(); });
     root.addEventListener("focusout", () => queueMicrotask(() => schedule()));
-    root.addEventListener("pointerenter", (event) => { if (event.pointerType === "mouse") { hovered = true; stop(); } });
-    root.addEventListener("pointerleave", () => { hovered = false; schedule(); });
     root.addEventListener("glaire:manual-slide", interaction);
-    const buttonHost = controlHost || host;
-    buttonHost.classList.add("media-autoplay-host");
-    buttonHost.append(control);
-    update();
     const player = { schedule, stop, interaction };
     players.add(player);
     const observer = new IntersectionObserver((entries) => {
