@@ -119,6 +119,7 @@ def main():
     for path in [ROOT / "admin-panel.js", *ROOT.glob("assets/**/*.js")]:
         subprocess.run([shutil.which("node"), "--check", str(path)], check=True, capture_output=True)
     subprocess.run([shutil.which("node"), str(ROOT / "scripts/check-wheel.cjs")], check=True, capture_output=True)
+    subprocess.run([shutil.which("node"), str(ROOT / "scripts/check-media-motion.cjs")], check=True, capture_output=True)
     if args.rebuild:
         before = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in [*paths, ROOT / "sitemap.xml"]}
         subprocess.run([shutil.which("python3"), str(ROOT / "scripts/build-site.py")], check=True, capture_output=True)

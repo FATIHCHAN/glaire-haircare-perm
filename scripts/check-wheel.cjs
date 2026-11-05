@@ -54,3 +54,20 @@ assert.equal(preview.preview, true);
 assert.match(preview.saved.code, /^TEST-FIXTURE-/);
 assert.notEqual(preview.key, first.key, 'Тестовые и публичные результаты разделены');
 console.log('Wheel: public repeat/reload/second-tab guards and local TEST mode passed; no real prize drawn.');
+// Позднее открытие во время закрытия не должно отменять первое нажатие на крестик.
+let finishClose;
+context.matchMedia = () => ({matches: false});
+context.setTimeout = fn => {finishClose = fn; return 1;};
+const closing = Object.create(Wheel.prototype);
+closing.dialog = {
+  open: true,
+  classList: {add() {}, remove() {}},
+  close() {this.open = false;},
+};
+closing.close();
+assert.equal(closing.closing, true);
+closing.open();
+assert.equal(closing.closing, true, 'Позднее open не отменяет принятую команду close');
+finishClose();
+assert.equal(closing.dialog.open, false);
+console.log('Wheel: first close survives a late open during the exit animation.');
