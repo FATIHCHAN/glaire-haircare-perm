@@ -1599,13 +1599,13 @@ const LOCAL_PHOTO_VARIANTS = {
   },
 };
 
-function assignResponsiveImage(image, candidate, preferLocal = true) {
+function assignResponsiveImage(image, candidate, preferLocal = true, reference = image) {
   const key = String(candidate).match(/\/v\d+\/([^?#]+)/)?.[1];
   const dimensions = IMAGE_DIMENSIONS[key];
   if (dimensions) syncImageFrame(image, ...dimensions);
   delete image.dataset.localImage;
   const revision = String(candidate).match(/\/(v\d+\/[^?#]+)/)?.[1];
-  responsiveImageObserver?.observe(image);
+  if (image.isConnected) responsiveImageObserver?.observe(image);
   if (preferLocal && LOCAL_GRAPHICS[revision]) {
     image.dataset.localImage = "1";
     image.removeAttribute("srcset");
@@ -1615,11 +1615,11 @@ function assignResponsiveImage(image, candidate, preferLocal = true) {
   }
   const localPhoto = preferLocal && LOCAL_PHOTO_VARIANTS[revision];
   if (localPhoto) {
-    const frame = image.parentElement;
+    const frame = reference.parentElement;
     const ratio = dimensions ? dimensions[0] / dimensions[1] : 1;
     const renderedWidth = Math.max(
       160,
-      Math.ceil(frame?.clientWidth || image.clientWidth || 360),
+      Math.ceil(frame?.clientWidth || reference.clientWidth || 360),
       Math.ceil((frame?.clientHeight || 0) * ratio),
     );
     const source = (width) =>
@@ -1642,7 +1642,7 @@ function assignResponsiveImage(image, candidate, preferLocal = true) {
     const widths = [320, 480, 640, 960, 1280];
     const renderedWidth = Math.max(
       160,
-      Math.ceil(image.parentElement?.clientWidth || image.clientWidth || 360),
+      Math.ceil(reference.parentElement?.clientWidth || reference.clientWidth || 360),
     );
     const source = (width) =>
       new URL(
@@ -1675,7 +1675,7 @@ function assignResponsiveImage(image, candidate, preferLocal = true) {
   const maxWidth = Math.min(limit, dimensions?.[0] || limit);
   const renderedWidth = Math.max(
     48,
-    Math.ceil(image.parentElement?.clientWidth || image.clientWidth || 360),
+    Math.ceil(reference.parentElement?.clientWidth || reference.clientWidth || 360),
   );
   const widths = [
     ...new Set(
@@ -2079,6 +2079,52 @@ function applySocialLinks() {
   applySocialGroup("master", MASTER_SOCIAL_LINKS, "socialLinksEmpty");
 }
 
+/* Плавная смена кадра: исходные адаптивные изображения и fallback сохраняются. */
+const mediaMotion = window.GlaireMediaMotion;
+const photoWarmups = new Map();
+function showGalleryPhoto(image, sources, onReady, onEmpty) {
+  if (!mediaMotion) return applyImageFallbacks(image, sources, onReady, onEmpty);
+  mediaMotion.photo(image, sources, applyImageFallbacks, onReady, onEmpty);
+}
+
+/* Прогреваем только соседей видимой галереи, не весь альбом и не карту. */
+function warmGalleryPhoto(reference, sources) {
+  const rect = reference?.getBoundingClientRect();
+  if (!rect || rect.bottom <= 0 || rect.top >= innerHeight || document.hidden ||
+      navigator.connection?.saveData || /(^|-)2g$/.test(navigator.connection?.effectiveType || "")) return;
+  const candidate = sources?.[0];
+  if (!candidate) return;
+  const key = `${candidate}|${Math.round(rect.width)}|${Math.round(rect.height)}`;
+  if (photoWarmups.has(key)) return;
+  const image = new Image();
+  image.decoding = "async";
+  image.fetchPriority = "low";
+  photoWarmups.set(key, image);
+  while (photoWarmups.size > 6) photoWarmups.delete(photoWarmups.keys().next().value);
+  runWhenIdle(() => assignResponsiveImage(image, candidate, true, reference), 1200);
+}
+function warmHeroNeighbors() {
+  if (!heroSlides.length) return;
+  [1, -1].forEach((step) => warmGalleryPhoto(heroSlideImage,
+    heroSlides[(heroSlideIndex + step + heroSlides.length) % heroSlides.length]?.sources));
+}
+function warmMasterNeighbors() {
+  [1, -1].forEach((step) => {
+    const index = (masterSlideIndex + step + MASTER_PHOTOS.length) % MASTER_PHOTOS.length;
+    const key = index ? `masterPhoto${index + 1}` : "masterPhoto";
+    warmGalleryPhoto(document.getElementById("masterPhoto"),
+      getImageCandidatesForKey(key, config[key], CONFIG_DEFAULT[key]));
+  });
+}
+function warmWorksNeighbors() {
+  const slides = getActiveWorksSlides();
+  if (!slides.length) return;
+  warmGalleryPhoto(worksSlideImage, slides[(worksSlideIndex + 1) % slides.length]?.sources);
+}
+function noteManualSlide(root) {
+  root?.dispatchEvent(new Event("glaire:manual-slide"));
+}
+
 /* Фотографии мастера: порядок и переключение в постоянной рамке. */
 let masterSlideIndex = 0;
 function applyMasterPhotoState(nextIndex = masterSlideIndex) {
@@ -2115,11 +2161,12 @@ function applyMasterPhotoState(nextIndex = masterSlideIndex) {
   shell.classList.toggle("is-empty", !candidates.length);
 
   if (candidates.length) {
-    applyImageFallbacks(
+    showGalleryPhoto(
       image,
       candidates,
       () => {
         shell.classList.remove("is-empty");
+        warmMasterNeighbors();
       },
       () => {
         shell.classList.add("is-empty");
@@ -2737,13 +2784,9 @@ const contentCards = Array.from(
         observer-объекты и логика очереди роликов со звуком.
       */
 let heroSlideIndex = 0;
-let swipeStartX = null;
-let swipeDeltaX = 0;
 let worksProcedureIndex = 0;
+let worksProcedureTargetIndex = 0;
 let worksSlideIndex = 0;
-let worksSwipeStartX = null;
-let worksSwipeDeltaX = 0;
-let worksSliderTimer = null;
 let worksProcedureSwitchTimer = null;
 let contentSwipeStartX = null;
 let contentSwipeDeltaX = 0;
@@ -2753,8 +2796,6 @@ let contentTrackIsActive = false;
 let contentBlockedByWorks = false;
 let contentWorksStopFrame = 0;
 let contentTrackObserver = null;
-let worksAutoplayObserver = null;
-let worksAutoplayActive = false;
 let contentSequenceIndex = 0;
 let contentAudioUnlocked = false;
 let contentAudioNeedsInteraction = false;
@@ -3220,19 +3261,6 @@ function scheduleContentWorksStopCheck() {
   });
 }
 
-/* Автопрокрутка блока моделей активна только пока секция в зоне просмотра */
-function setWorksAutoplayActive(nextActive) {
-  if (worksAutoplayActive === nextActive) return;
-  worksAutoplayActive = nextActive;
-
-  if (nextActive) {
-    restartWorksSliderAutoplay();
-    return;
-  }
-
-  window.clearInterval(worksSliderTimer);
-}
-
 const EMPTY_IMAGE_SRC =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
@@ -3454,7 +3482,7 @@ function setHeroSlide(nextIndex) {
 
   if (heroSlideImage) {
     describeImage(heroSlideImage, slide.alt);
-    applyImageFallbacks(heroSlideImage, slide.sources);
+    showGalleryPhoto(heroSlideImage, slide.sources, warmHeroNeighbors);
   }
 
   renderSliderDots();
@@ -3463,6 +3491,7 @@ function setHeroSlide(nextIndex) {
 /* Переключает слайдер студии на шаг вперёд или назад */
 function moveHeroSlide(direction) {
   setHeroSlide(heroSlideIndex + direction);
+  noteManualSlide(heroSliderViewport?.closest(".hero-slider"));
 }
 
 /* Возвращает активную процедуру в левом блоке работ */
@@ -3470,7 +3499,7 @@ function getActiveWorksProcedure() {
   return WORKS_PROCEDURES[worksProcedureIndex] || WORKS_PROCEDURES[0];
 }
 
-/* Возвращает 3 кадра выбранной процедуры */
+/* Возвращает фотографии выбранной процедуры в исходном порядке. */
 function getActiveWorksSlides() {
   return getActiveWorksProcedure()?.slides || [];
 }
@@ -3483,6 +3512,7 @@ function commitWorksProcedure(nextIndex, preserveSlide = false) {
   if (!total) return;
 
   worksProcedureIndex = (nextIndex + total) % total;
+  worksProcedureTargetIndex = worksProcedureIndex;
   const procedure = getActiveWorksProcedure();
 
   if (!preserveSlide) worksSlideIndex = 0;
@@ -3509,6 +3539,10 @@ function commitWorksProcedure(nextIndex, preserveSlide = false) {
 /* Переключает весь левый блок работ на другую процедуру */
 function setWorksProcedure(nextIndex, options = {}) {
   const { animate = true, preserveSlide = false } = options;
+  const total = WORKS_PROCEDURES.length;
+  if (!total) return;
+  worksProcedureTargetIndex = ((nextIndex % total) + total) % total;
+  nextIndex = worksProcedureTargetIndex;
 
   window.clearTimeout(worksProcedureSwitchTimer);
 
@@ -3529,7 +3563,7 @@ function setWorksProcedure(nextIndex, options = {}) {
 
 /* Переключает весь набор процедуры на шаг вперёд или назад */
 function moveWorksProcedure(direction) {
-  setWorksProcedure(worksProcedureIndex + direction);
+  setWorksProcedure(worksProcedureTargetIndex + direction);
 }
 
 /* Рисует точки навигации под кадрами выбранной процедуры */
@@ -3554,7 +3588,7 @@ function renderWorksSliderDots() {
     if (index === worksSlideIndex) dot.classList.add("is-active");
     dot.addEventListener("click", () => {
       setWorksSlide(index);
-      if (worksAutoplayActive) restartWorksSliderAutoplay();
+      restartWorksSliderAutoplay();
     });
     worksSliderDots.appendChild(dot);
   });
@@ -3593,7 +3627,7 @@ function setWorksSlide(nextIndex) {
       worksSliderViewport.style.setProperty("--image-aspect", "3 / 4");
       worksSlideImage.src = EMPTY_IMAGE_SRC;
     } else {
-      applyImageFallbacks(worksSlideImage, slide.sources);
+      showGalleryPhoto(worksSlideImage, slide.sources, warmWorksNeighbors);
     }
   }
 
@@ -3625,21 +3659,7 @@ function moveWorksSlide(direction) {
         затем переключает весь левый блок на следующую процедуру.
       */
 function restartWorksSliderAutoplay() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  window.clearInterval(worksSliderTimer);
-  if (WORKS_PROCEDURES.length <= 1 && getActiveWorksSlides().length <= 1)
-    return;
-  worksSliderTimer = window.setInterval(() => {
-    const slides = getActiveWorksSlides();
-    if (!slides.length) return;
-
-    if (worksSlideIndex >= slides.length - 1) {
-      setWorksProcedure(worksProcedureIndex + 1);
-      return;
-    }
-
-    moveWorksSlide(1);
-  }, 4200);
+  worksMediaPlayer?.interaction();
 }
 
 /* Вычисляет ширину одного шага горизонтальной ленты контента */
@@ -3685,38 +3705,23 @@ if (heroSlideImage) {
 if (worksSlideImage) {
   worksPrevBtn?.addEventListener("click", () => {
     moveWorksSlide(-1);
-    if (worksAutoplayActive) restartWorksSliderAutoplay();
+    restartWorksSliderAutoplay();
   });
   worksNextBtn?.addEventListener("click", () => {
     moveWorksSlide(1);
-    if (worksAutoplayActive) restartWorksSliderAutoplay();
+    restartWorksSliderAutoplay();
   });
 
   worksProcedurePrevBtn?.addEventListener("click", () => {
     moveWorksProcedure(-1);
-    if (worksAutoplayActive) restartWorksSliderAutoplay();
+    restartWorksSliderAutoplay();
   });
   worksProcedureNextBtn?.addEventListener("click", () => {
     moveWorksProcedure(1);
-    if (worksAutoplayActive) restartWorksSliderAutoplay();
+    restartWorksSliderAutoplay();
   });
 
-  if (worksSection && "IntersectionObserver" in window) {
-    worksAutoplayObserver = new IntersectionObserver(
-      (entries) => {
-        const isVisible = entries.some(
-          (entry) => entry.isIntersecting || entry.intersectionRatio > 0,
-        );
-        setWorksAutoplayActive(isVisible);
-      },
-      {
-        rootMargin: "80px 0px",
-      },
-    );
-    worksAutoplayObserver.observe(worksSection);
-  } else {
-    setWorksAutoplayActive(true);
-  }
+
 }
 
 if (contentTrack) {
@@ -3862,24 +3867,10 @@ document
   .getElementById("masterNextBtn")
   .addEventListener("click", () => applyMasterPhotoState(masterSlideIndex + 1));
 const masterViewport = document.getElementById("masterSliderViewport");
-let masterPointerStart = null;
-masterViewport.addEventListener("pointerdown", (event) => {
-  if (event.pointerType === "mouse" && event.button !== 0) return;
-  masterPointerStart = { x: event.clientX, y: event.clientY };
-  masterViewport.setPointerCapture?.(event.pointerId);
+mediaMotion?.swipe(masterViewport, (direction) => {
+  applyMasterPhotoState(masterSlideIndex + direction);
+  noteManualSlide(document.getElementById("masterPhotoShell"));
 });
-masterViewport.addEventListener("pointerup", (event) => {
-  if (!masterPointerStart) return;
-  const dx = event.clientX - masterPointerStart.x;
-  const dy = event.clientY - masterPointerStart.y;
-  if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy))
-    applyMasterPhotoState(masterSlideIndex + (dx > 0 ? -1 : 1));
-  masterPointerStart = null;
-});
-masterViewport.addEventListener("pointercancel", () => {
-  masterPointerStart = null;
-});
-masterViewport.addEventListener("dragstart", (event) => event.preventDefault());
 masterViewport.tabIndex = 0;
 masterViewport.setAttribute("role", "region");
 masterViewport.setAttribute(
@@ -3902,17 +3893,14 @@ function updateNewsControls() {
   newsNext.disabled =
     newsTrack.scrollLeft + newsTrack.clientWidth >= newsTrack.scrollWidth - 2;
 }
-function moveNews(direction) {
+function moveNews(direction, wrap = false) {
+  if (!wrap) noteManualSlide(newsTrack);
   const card = newsTrack.firstElementChild;
   const step =
     card.getBoundingClientRect().width +
     parseFloat(getComputedStyle(newsTrack).columnGap);
-  newsTrack.scrollBy({
-    left: direction * step,
-    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "auto"
-      : "smooth",
-  });
+  if (mediaMotion) mediaMotion.scrollRail(newsTrack, direction, step, wrap);
+  else newsTrack.scrollBy({ left: direction * step, behavior: "smooth" });
 }
 newsPrev.addEventListener("click", () => moveNews(-1));
 newsNext.addEventListener("click", () => moveNews(1));
@@ -3941,65 +3929,42 @@ if (heroSliderViewport) {
     event.preventDefault();
     moveHeroSlide(event.key === "ArrowLeft" ? -1 : 1);
   });
-  heroSliderViewport.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    swipeStartX = event.clientX;
-    swipeDeltaX = 0;
-    heroSliderViewport.setPointerCapture?.(event.pointerId);
+  mediaMotion?.swipe(heroSliderViewport, (direction) => {
+    moveHeroSlide(direction);
+    noteManualSlide(heroSliderViewport.closest(".hero-slider"));
   });
-
-  heroSliderViewport.addEventListener("pointermove", (event) => {
-    if (swipeStartX === null) return;
-    swipeDeltaX = event.clientX - swipeStartX;
-  });
-
-  const finishSwipe = (event) => {
-    if (swipeStartX === null) return;
-    if (Math.abs(swipeDeltaX) > 44) {
-      moveHeroSlide(swipeDeltaX > 0 ? -1 : 1);
-    }
-    if (heroSliderViewport.hasPointerCapture?.(event.pointerId)) {
-      heroSliderViewport.releasePointerCapture(event.pointerId);
-    }
-    swipeStartX = null;
-    swipeDeltaX = 0;
-  };
-
-  heroSliderViewport.addEventListener("pointerup", finishSwipe);
-  heroSliderViewport.addEventListener("pointercancel", finishSwipe);
 }
 
-const worksSwipeSurface = worksSliderViewport;
+mediaMotion?.swipe(worksSliderViewport, (direction) => {
+  moveWorksSlide(direction);
+  restartWorksSliderAutoplay();
+});
 
-if (worksSwipeSurface) {
-  worksSwipeSurface.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    worksSwipeStartX = event.clientX;
-    worksSwipeDeltaX = 0;
-    worksSwipeSurface.setPointerCapture?.(event.pointerId);
-  });
+/* Автопоказ: только видимые фото, неторопливо, с паузой после ручных действий. */
+let worksMediaPlayer = null;
+mediaMotion?.autoplay(heroSliderViewport?.closest(".hero-slider"), {
+  interval: 9000, advance: () => moveHeroSlide(1), prepare: warmHeroNeighbors,
+  busy: () => heroSlideImage?.dataset.mediaPending === "1", label: "студия",
+});
+mediaMotion?.autoplay(document.getElementById("masterPhotoShell"), {
+  interval: 10000, advance: () => applyMasterPhotoState(masterSlideIndex + 1),
+  prepare: warmMasterNeighbors, busy: () => document.getElementById("masterPhoto")?.dataset.mediaPending === "1",
+  label: "мастер",
+});
+worksMediaPlayer = mediaMotion?.autoplay(worksImageShell, {
+  interval: 9000, prepare: warmWorksNeighbors,
+  busy: () => worksSlideImage?.dataset.mediaPending === "1",
+  advance: () => {
+    const slides = getActiveWorksSlides();
+    if (worksSlideIndex >= slides.length - 1) setWorksProcedure(worksProcedureIndex + 1);
+    else moveWorksSlide(1);
+  }, label: "работы",
+});
+mediaMotion?.autoplay(newsTrack, {
+  interval: 12000, advance: () => moveNews(1, true), label: "акции",
+  controlHost: document.querySelector(".news-controls"),
+});
 
-  worksSwipeSurface.addEventListener("pointermove", (event) => {
-    if (worksSwipeStartX === null) return;
-    worksSwipeDeltaX = event.clientX - worksSwipeStartX;
-  });
-
-  const finishWorksSwipe = (event) => {
-    if (worksSwipeStartX === null) return;
-    if (Math.abs(worksSwipeDeltaX) > 44) {
-      moveWorksSlide(worksSwipeDeltaX > 0 ? -1 : 1);
-      if (worksAutoplayActive) restartWorksSliderAutoplay();
-    }
-    if (worksSwipeSurface.hasPointerCapture?.(event.pointerId)) {
-      worksSwipeSurface.releasePointerCapture(event.pointerId);
-    }
-    worksSwipeStartX = null;
-    worksSwipeDeltaX = 0;
-  };
-
-  worksSwipeSurface.addEventListener("pointerup", finishWorksSwipe);
-  worksSwipeSurface.addEventListener("pointercancel", finishWorksSwipe);
-}
 
 /* ------------------------------------------------------------------ */
 /* Локальная админка                                                   */
