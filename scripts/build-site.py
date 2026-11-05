@@ -22,6 +22,12 @@ event_bundle = "/* Автоматически собрано scripts/build-site.
 for relative in event_parts:
     event_bundle += f"\n/* Источник: {relative} */\n" + (ROOT / relative).read_text() + "\n;\n"
 (ROOT / "assets/events/halloween/event-layer.js").write_text(event_bundle)
+# Общая галерея и её контроллер исполняются из одного файла, без гонки загрузок.
+runtime = "/* Собрано scripts/build-site.py из media-motion.js и site.js. */\n"
+for relative in ("assets/media-motion.js", "assets/site.js"):
+    runtime += f"\n/* Источник: {relative} */\n" + (ROOT / relative).read_text() + "\n;\n"
+(ROOT / "assets/site-runtime.js").write_text(runtime)
+
 # Версия ресурса меняется от его содержимого: кеш не возвращает старый код.
 home_path = ROOT / "index.html"
 home = home_path.read_text()
