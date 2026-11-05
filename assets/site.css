@@ -492,34 +492,20 @@ h2 {
   white-space: nowrap;
 }
 
+/* На компьютере пункты остаются в строке шапки; ниже — меню по кнопке. */
 .nav {
-  display: none;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .nav.is-open {
-  display: grid;
+  display: flex;
 }
 
-@media (min-width: 1081px) {
-  .nav {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
-    width: min(420px, calc(100vw - 32px));
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: rgba(16, 22, 31, 0.98);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .nav a,
-  .nav button {
-    width: 100%;
-    justify-content: center;
-  }
+.nav > a,
+.nav > button {
+  white-space: nowrap;
 }
 
 .nav__meta {
@@ -569,7 +555,7 @@ h2 {
 }
 
 .menu-toggle {
-  display: inline-grid;
+  display: none;
   place-items: center;
   margin-left: auto;
   width: 46px;
