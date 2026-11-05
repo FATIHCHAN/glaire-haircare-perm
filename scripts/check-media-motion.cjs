@@ -33,13 +33,14 @@ class Node {
   emit(type, properties = {}) { this.dispatchEvent({type, target:this, ...properties}); }
   setAttribute(k,v) { this.attrs[k] = String(v); }
   removeAttribute(k) { delete this.attrs[k]; }
-  getAttribute(k) { return this.attrs[k]; }
+  getAttribute(k) { return this.attrs[k] ?? null; }
   querySelector() { return null; }
   append(node) { node.parentElement = this; this.children.push(node); }
   contains(n) { return n === this || this.children.includes(n); }
   matches() { return false; }
   cloneNode() { const n = new Node(); n.src=this.src; return n; }
   before(n) { this.parentElement.append(n); }
+  after(n) { this.parentElement.append(n); }
   remove() { if (this.parentElement) this.parentElement.children = this.parentElement.children.filter(n=>n!==this); }
   animate(keyframes, options) {
     let resolve, reject; const finished = new Promise((r,j) => {resolve=r; reject=j;});
@@ -168,6 +169,35 @@ async function main() {
   assert.equal(frame.children[1].style.objectFit,'contain');
   await loads[4]();advance(280);await Promise.resolve();
   assert.equal(frame.children.length,1);
+  // Мастер/работы: видимый источник и кроп не меняются до завершения проявления.
+  const portrait=new Node(), portraitFrame=new Node();portraitFrame.append(portrait);
+  portrait.complete=true;portrait.naturalWidth=640;portrait.setAttribute('src','portrait-1');
+  portrait.decode=()=>Promise.resolve();portrait.style.objectPosition='68% 34%';
+  const stagedLoads=[];const stagedLoad=(img,sources,success,failure)=>{
+    img.setAttribute('src',sources[0]);img.complete=true;img.naturalWidth=640;
+    stagedLoads.push({img,success,failure});
+  };
+  motion.stablePhoto(portrait,['portrait-2'],stagedLoad,null,null,{position:'center'});
+  assert.equal(portrait.getAttribute('src'),'portrait-1');assert.equal(portrait.style.objectPosition,'68% 34%');
+  assert.equal(portraitFrame.children.length,2);await stagedLoads[0].success();
+  motion.stablePhoto(portrait,['portrait-3'],stagedLoad);
+  motion.stablePhoto(portrait,['portrait-4'],stagedLoad);
+  assert.equal(stagedLoads.length,1,'An active fade must not be interrupted');
+  advance(319);await Promise.resolve();assert.equal(portrait.getAttribute('src'),'portrait-1');
+  advance(1);await new Promise(setImmediate);
+  assert.equal(portrait.getAttribute('src'),'portrait-2');assert.equal(stagedLoads.length,2);
+  assert.equal(stagedLoads[1].img.getAttribute('src'),'portrait-4','Latest quick command is shown next');
+  assert.equal(portraitFrame.children.length,2);
+  await stagedLoads[1].success();advance(320);await new Promise(setImmediate);
+  assert.equal(portrait.getAttribute('src'),'portrait-4');assert.equal(portraitFrame.children.length,1);
+  motion.stablePhoto(portrait,['broken'],stagedLoad);stagedLoads[2].failure();
+  assert.equal(portrait.getAttribute('src'),'portrait-4');assert.equal(portraitFrame.children.length,1);
+  motion.stablePhoto(portrait,['slow'],stagedLoad);
+  motion.stablePhoto(portrait,['fresh'],stagedLoad);
+  await stagedLoads[3].success();assert.equal(portraitFrame.children.length,2);
+  await stagedLoads[4].success();advance(320);await new Promise(setImmediate);
+  assert.equal(portrait.getAttribute('src'),'fresh');assert.equal(portraitFrame.children.length,1);
+  console.log('Stable portraits/works: unchanged source/crop during loading, uninterrupted fade, latest queued target, network failure and stale callbacks passed.');
   console.log('Media motion: swipe/button priority, rapid rail steps, autoplay visibility/modal/reduced-motion without pause buttons, stale image loads passed.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
