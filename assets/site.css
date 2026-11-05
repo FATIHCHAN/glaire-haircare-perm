@@ -2088,14 +2088,7 @@ h2 {
 .works-procedure-body {
   display: grid;
   gap: 14px;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.works-procedure-body.is-switching {
-  opacity: 0;
-  transform: translateY(8px);
+  align-content: start;
 }
 
 .works-image {
@@ -2121,9 +2114,6 @@ h2 {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  transition:
-    opacity 0.22s ease,
-    transform 0.32s ease;
 }
 
 .works-image.is-contain img {
@@ -2176,14 +2166,6 @@ h2 {
 
 .works-image.is-placeholder .works-slide-placeholder {
   opacity: 1;
-}
-
-.works-image:not(.is-placeholder):hover img {
-  transform: scale(1.015);
-}
-
-.works-image.is-contain:not(.is-placeholder):hover img {
-  transform: none;
 }
 
 .works-slider__footer {
@@ -3299,7 +3281,8 @@ footer {
    Одновременно остаётся не больше одного временного слоя на галерею. */
 /* Рамка не меняется при появлении предыдущего слоя. */
 .hero-slider__viewport { position: relative; }
-img.media-previous-frame {
+img.media-previous-frame,
+img.media-incoming-frame {
   position: absolute !important;
   inset: 0;
   z-index: 1;
@@ -3309,9 +3292,14 @@ img.media-previous-frame {
   transform: none !important;
   transition: none !important;
 }
-/* Без дополнительного зума и сдвига между одинаковыми рамками кадров. */
-.works-image:not(.is-placeholder):hover img { transform: none; }
-.works-procedure-body.is-switching { transform: none; }
+/* Содержание карточки не перераспределяет свободную высоту при смене текста. */
+.master-card__media,
+.works-visual { align-content: start; }
+.works-procedure-copy strong { width: 100%; min-width: 0; display: grid; align-content: center; }
+/* Даже при композиции слоя на мобильном браузере рамка остаётся постоянной. */
+.master-slider__viewport,
+.works-slider__viewport { isolation: isolate; }
+
 .content-card > .photo-counter {
   position: static;
   justify-self: end;
