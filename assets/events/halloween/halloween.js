@@ -281,6 +281,13 @@
     open();
     if (wheel.dialog.open) autoShownThisVisit = true;
   };
+  // Если посетитель закрыл вручную открытое колесо уже у мастера,
+  // не показываем его тут же повторно из-за восстановления фокуса/прокрутки.
+  wheel.dialog.addEventListener("close", () => {
+    const rect = masterTrigger?.getBoundingClientRect();
+    if (rect && rect.top < innerHeight * .78 && rect.bottom > innerHeight * .12)
+      autoShownThisVisit = true;
+  });
   const updateScroll = () => {
     scrollFrame = 0;
     autoOpen();
